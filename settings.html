@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Settings — Studio RYST</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#f3f4f1; --panel:#ffffff; --panel2:#f7f8f5;
+    --line:#e3e5e0; --accent:#3d9b69; --accent-d:#2f7d54; --accent-soft:#eaf4ee;
+    --ink:#1d211c; --muted:#5f655d; --muted2:#9aa097; --danger:#c0584b;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;min-height:100%;background:var(--bg);color:var(--ink);font-family:"Outfit",system-ui,sans-serif;font-weight:400;-webkit-font-smoothing:antialiased}
+  button{font-family:inherit;cursor:pointer}
+  input,textarea,select{font-family:inherit}
+
+  /* ---- HEADER ---- */
+  header.bar{display:flex;align-items:center;gap:10px;padding:10px 20px;background:var(--panel);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:10;height:59px}
+  header.bar img.hdr-logo{height:36px;object-fit:contain}
+  .bar-title{font-size:14px;font-weight:600;color:var(--ink);flex:1}
+  .btn{display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border-radius:9px;border:1px solid var(--line);background:var(--panel);font-size:13px;font-weight:500;color:var(--ink);text-decoration:none;transition:.15s;cursor:pointer}
+  .btn:hover{border-color:var(--accent);color:var(--accent-d)}
+  .btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+  .btn.primary:hover{background:var(--accent-d);border-color:var(--accent-d)}
+
+  /* ---- TABS ---- */
+  .cfg-tabs{display:flex;align-items:center;gap:2px;border-bottom:2px solid var(--line);padding:24px 32px 0;position:sticky;top:59px;background:var(--bg);z-index:5}
+  .cfg-tab{background:transparent;border:none;border-bottom:2px solid transparent;margin-bottom:-2px;padding:10px 18px;font-size:13.5px;font-weight:500;color:var(--muted2);cursor:pointer;border-radius:8px 8px 0 0;transition:.15s;font-family:inherit}
+  .cfg-tab:hover{color:var(--ink)}
+  .cfg-tab.active{color:var(--accent-d);font-weight:700;border-bottom-color:var(--accent)}
+
+  /* ---- CONTENT ---- */
+  .cfg-body{max-width:1020px;margin:0 auto;padding:32px 32px 80px}
+  .sd{color:var(--muted);font-size:13px;margin:0 0 22px}
+  .gh-mini{font-size:11px;letter-spacing:1.2px;text-transform:uppercase;color:var(--accent-d);font-weight:700;margin:0 0 12px;display:flex;align-items:center;gap:8px}
+  .gh-mini::after{content:"";flex:1;height:1px;background:var(--line)}
+  .hint{color:var(--muted2);font-size:12.5px;margin:4px 0}
+  .f{display:flex;flex-direction:column;gap:5px;margin-bottom:14px}
+  .f span{font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.4px}
+  .t{width:100%;border:1px solid var(--line);border-radius:9px;padding:9px 12px;font-size:13.5px;background:var(--panel);color:var(--ink);outline:none;transition:.15s}
+  .t:focus{border-color:var(--accent);background:#fff}
+  textarea.t{resize:vertical;min-height:90px}
+
+  /* ---- RATE CARD TABLE ---- */
+  .rc-table-wrap{width:100%;overflow-x:auto;border:1px solid var(--line);border-radius:12px;background:var(--panel);margin-bottom:14px}
+  table.rc-table{width:100%;border-collapse:collapse;min-width:860px}
+  table.rc-table thead th{background:var(--panel2);border-bottom:2px solid var(--line);padding:10px 12px;font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:var(--muted2);font-weight:600;white-space:nowrap}
+  table.rc-table thead th.r{text-align:right}
+  table.rc-table thead th.c{text-align:center}
+  table.rc-table tbody tr{border-bottom:1px solid var(--line)}
+  table.rc-table tbody tr:last-child{border-bottom:none}
+  table.rc-table tbody tr:hover td{background:var(--accent-soft)}
+  table.rc-table td{padding:4px 6px;vertical-align:middle}
+  table.rc-table td input{width:100%;background:transparent;border:1px solid transparent;border-radius:7px;padding:7px 9px;font-size:13px;font-family:inherit;color:var(--ink)}
+  table.rc-table td input:hover{border-color:var(--line);background:var(--panel2)}
+  table.rc-table td input:focus{outline:none;border-color:var(--accent);background:#fff}
+  table.rc-table td input.r{text-align:right}
+  table.rc-table td input.c{text-align:center}
+  .td-margin{font-size:12px;text-align:center;color:var(--accent-d);font-weight:600;white-space:nowrap;padding:0 10px !important}
+  .td-margin small{display:block;color:var(--muted2);font-weight:400;font-size:10.5px}
+  .td-disc{padding:3px 6px !important}
+  .disc-row{display:flex;align-items:center;gap:4px;margin:2px 0}
+  .disc-lbl{font-size:10px;color:var(--muted2);font-weight:600;width:30px;text-align:right;flex-shrink:0}
+  .disc-inp{width:58px !important;padding:4px 6px !important;font-size:12px !important;text-align:right}
+  .disc-pct{font-size:11px;color:var(--muted2);flex-shrink:0}
+  .rc-del{background:transparent;border:1px solid var(--line);color:var(--muted2);border-radius:8px;width:30px;height:30px;font-size:16px;line-height:1;padding:0}
+  .rc-del:hover{border-color:var(--danger);color:var(--danger)}
+  .rc-foot{display:flex;gap:10px;margin-top:18px}
+  .rc-add{background:transparent;border:1px dashed #cdd1cb;color:var(--muted);padding:11px 16px;border-radius:9px;font-size:13px}
+  .rc-add:hover{border-color:var(--accent);color:var(--accent-d)}
+
+  /* ---- IMAGE PREVIEWS ---- */
+  .logo-preview{height:54px;margin:8px 0;background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:6px 10px;display:inline-flex;align-items:center}
+  .logo-preview img{max-height:42px}
+  .qr-preview img{height:80px;border:1px solid var(--line);border-radius:8px;padding:4px;background:#fff;margin:8px 0}
+
+  /* ---- TOAST ---- */
+  .toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(20px);background:#1d211c;color:#fff;padding:12px 20px;border-radius:10px;font-size:13px;opacity:0;transition:.25s;z-index:60}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+  /* ---- PIN GATE ---- */
+  #pinOverlay{position:fixed;inset:0;background:var(--bg);display:flex;align-items:center;justify-content:center;z-index:100}
+  #pinOverlay[hidden]{display:none}
+  .pin-card{background:var(--panel);border:1px solid var(--line);border-radius:20px;padding:36px 32px 28px;width:300px;text-align:center;box-shadow:0 8px 32px rgba(0,0,0,.1)}
+  .pin-card h3{margin:0 0 4px;font-size:20px;font-weight:700;color:var(--ink)}
+  .pin-card p{margin:0 0 24px;font-size:13px;color:var(--muted)}
+  .pin-dots{display:flex;justify-content:center;gap:14px;margin-bottom:24px}
+  .pin-dot{width:15px;height:15px;border-radius:50%;border:2px solid var(--accent);background:transparent;transition:.15s}
+  .pin-dot.filled{background:var(--accent)}
+  .pin-pad{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px}
+  .pin-key{background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:15px 0;font-size:19px;font-weight:600;cursor:pointer;color:var(--ink);transition:.12s}
+  .pin-key:hover{border-color:var(--accent);color:var(--accent-d)}
+  .pin-key:active{background:var(--accent);color:#fff;border-color:var(--accent)}
+  .pin-err{color:var(--danger);font-size:13px;min-height:18px;margin-top:-8px}
+  .pin-home{margin-top:16px}
+
+  @media(max-width:680px){
+    .cfg-tabs{padding:16px 14px 0}
+    .cfg-body{padding:20px 14px 60px}
+    .rc-table-wrap{border-radius:8px}
+  }
+  .admin-block{position:fixed;inset:0;z-index:60;background:var(--bg);display:none;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:24px;text-align:center}
+  .admin-block.show{display:flex}
+</style>
+</head>
+<body>
+
+<header class="bar">
+  <img class="hdr-logo" id="hdrLogo" src="" alt="Studio RYST">
+  <span class="bar-title">Settings</span>
+  <a class="btn" href="login.html">← Home</a>
+</header>
+
+<div class="cfg-tabs">
+  <button class="cfg-tab active" data-tab="rate">Rate Card</button>
+  <button class="cfg-tab" data-tab="studio">Studio Settings</button>
+  <button class="cfg-tab" data-tab="whatsapp">WhatsApp Templates</button>
+  <button class="cfg-tab" data-tab="users">User Access</button>
+</div>
+
+<div class="cfg-body">
+  <!-- Rate Card pane -->
+  <div id="paneRate">
+    <p class="sd">Master pricing. The quote pulls selling rate, SAC code and GST % from here. Purchase cost is internal — never shown on the client quote.</p>
+    <div class="rc-table-wrap">
+      <table class="rc-table">
+        <thead><tr>
+          <th>Service description</th>
+          <th style="width:106px">SAC code</th>
+          <th class="r" style="width:148px">Purchase cost<br><span style="font-weight:400;text-transform:none;letter-spacing:0;font-size:10px">(pre-tax)</span></th>
+          <th class="c" style="width:68px">GST %</th>
+          <th class="r" style="width:128px">Base rate / hr</th>
+          <th class="c" style="width:148px">Margin <span style="font-weight:400;text-transform:none;letter-spacing:0;font-size:10px">/ Discount tiers</span></th>
+          <th style="width:36px"></th>
+        </tr></thead>
+        <tbody id="rcBody"></tbody>
+      </table>
+    </div>
+    <button class="rc-add" id="rcAdd">+ Add service</button>
+    <div class="rc-foot">
+      <button class="btn primary" id="rcSave">Save rate card</button>
+    </div>
+  </div>
+
+  <!-- Studio Settings pane -->
+  <div id="paneStudio" hidden>
+    <p class="sd">Saved locally on this device. These appear on every quote.</p>
+    <label class="f"><span>Logo (PNG/JPG)</span><input type="file" id="logoFile" accept="image/*" class="t"></label>
+    <div id="logoPrev"></div>
+    <label class="f"><span>Payment QR (PNG/JPG)</span><input type="file" id="qrFile" accept="image/*" class="t"></label>
+    <div id="qrPrev"></div>
+    <label class="f"><span>Company header block (right of logo)</span><textarea class="t" id="setCompany" rows="5"></textarea></label>
+    <label class="f"><span>Bank / payment details block</span><textarea class="t" id="setBank" rows="6"></textarea></label>
+    <label class="f"><span>Default terms (one per line)</span><textarea class="t" id="setTerms" rows="8"></textarea></label>
+    <label class="f"><span>Quote no. prefix</span><input class="t" id="setPrefix" placeholder="RYST"></label>
+    <div class="rc-foot">
+      <button class="btn primary" id="setSave">Save settings</button>
+    </div>
+  </div>
+
+  <!-- WhatsApp Templates pane -->
+  <div id="paneWhatsapp" hidden>
+    <p class="sd">Synced for all staff. Used by the "Send welcome message" / "Send feedback request" buttons on a quote — each opens WhatsApp with the text below pre-filled, ready to send. Placeholders: <code>{name}</code>, <code>{date}</code>, <code>{zone}</code>, <code>{link}</code> (feedback form link — feedback template only).</p>
+    <label class="f"><span>Pre-shoot welcome message</span><textarea class="t" id="setWelcomeTpl" rows="4"></textarea></label>
+    <label class="f"><span>Post-shoot feedback request</span><textarea class="t" id="setFeedbackTpl" rows="4"></textarea></label>
+    <label class="f"><span>Google review link <span style="font-weight:400;color:var(--muted2)">(shown to clients who rate 5★)</span></span><input class="t" id="setGoogleUrl" placeholder="https://g.page/r/…/review"></label>
+    <div class="rc-foot">
+      <button class="btn primary" id="tplSave" disabled>Save templates</button>
+    </div>
+  </div>
+
+  <!-- User Access pane -->
+  <div id="paneUsers" hidden>
+    <p class="sd">Map each Google login to a role. <b>Admins</b> can change settings, the rate card and targets. <b>Coordinators</b> use the tools but can’t change those. mailyuvanesh@gmail.com is always an admin and can’t be locked out.</p>
+    <div class="rc-table-wrap">
+      <table class="rc-table" style="min-width:520px">
+        <thead><tr>
+          <th>Google email</th>
+          <th style="width:170px">Name</th>
+          <th class="c" style="width:150px">Role</th>
+          <th style="width:36px"></th>
+        </tr></thead>
+        <tbody id="usersBody"></tbody>
+      </table>
+    </div>
+    <button class="rc-add" id="userAdd">+ Add user</button>
+    <div class="rc-foot">
+      <button class="btn primary" id="usersSave">Save user access</button>
+    </div>
+  </div>
+</div>
+
+<div id="adminBlock" class="admin-block">
+  <div style="font-size:44px">🔒</div>
+  <div style="font-size:19px;font-weight:700;color:var(--ink)">Admins only</div>
+  <div style="font-size:14px;color:var(--muted2);max-width:380px;line-height:1.5">Settings, the rate card and targets can only be changed by an admin. Your account is signed in as a coordinator.</div>
+  <a class="btn primary" href="login.html" style="margin-top:6px">← Back to home</a>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<!-- PIN gate — shown on load, hidden after correct entry -->
+<div id="pinOverlay">
+  <div class="pin-card">
+    <h3>Settings</h3>
+    <p>Enter PIN to continue</p>
+    <div class="pin-dots">
+      <span class="pin-dot" id="pd0"></span>
+      <span class="pin-dot" id="pd1"></span>
+      <span class="pin-dot" id="pd2"></span>
+      <span class="pin-dot" id="pd3"></span>
+    </div>
+    <div class="pin-pad" id="pinPad"></div>
+    <div class="pin-err" id="pinErr"></div>
+    <div class="pin-home"><a class="btn" href="login.html">← Back to home</a></div>
+  </div>
+</div>
+
+<script>
+const PROXY_URL = 'https://ryst-109a-proxy.onrender.com/studio';
+const K_SET     = 'ryst_quote_settings';
+const FALLBACK_GST = 18;
+const ZONES     = ["Podcast", "Photography", "Culinary", "Multi-Zone"];
+const RC_PIN_HASH = "8e9b669109df89620b94f2387dc53206a82ddc71d658f8f7a2b3a9b417370d3e";
+
+const $ = s => document.querySelector(s);
+const esc = s => (s||"").toString().replace(/[&<>"]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const inr = n => Number(n||0).toLocaleString("en-IN",{maximumFractionDigits:2});
+const money = n => "₹"+inr(n);
+
+/* ---------- STORAGE KEY ---------- */
+const DEFAULT_SETTINGS = {
+  logo:"", qr:"",
+  company:`STUDIO RYST
+GST NO. 33AAVFD1588M1ZR
+STUDIO RYST, 113(52), ANKUR PLAZA,
+G.N. CHETTY ROAD, T. NAGAR, CHENNAI - 600017`,
+  bank:`Name: DREAMOUR MULTIVENTURES
+Account Number: 99997530075757
+IFSC: HDFC0000124
+Branch: KILPAUK
+Account Type: CURRENT`,
+  prefix:"RYST",
+  rateCard:[
+    {desc:"Studio Rental — Podcast (per hour)",     sac:"997212", cost:"", gst:18, rate:2250, disc4:11.11, disc8:16.67},
+    {desc:"Studio Rental — Photography (per hour)", sac:"997212", cost:"", gst:18, rate:2750, disc4:9.09,  disc8:18.18},
+    {desc:"Studio Rental — Culinary (per hour)",    sac:"997212", cost:"", gst:18, rate:3000, disc4:0,     disc8:8.33},
+    {desc:"Studio Rental — Multi-Zone (per hour)",  sac:"997212", cost:"", gst:18, rate:3250, disc4:0,     disc8:8.33},
+    {desc:"Professional Videography Services with Camera", sac:"999612", cost:"4000", gst:18, rate:5400},
+    {desc:"Video Post-Production & Editing Services",      sac:"999612", cost:"3000", gst:18, rate:4000},
+    {desc:"Sound Recording Engineer",                      sac:"999612", cost:"1000", gst:18, rate:1800}
+  ],
+  terms:`This quotation is valid for 7 days from the date of issue.
+Photography & videography bookings require 50% advance to confirm; the balance is payable before the session.
+Studio rentals require 100% advance payment to confirm the booking.
+All payments are non-refundable.
+One complimentary reschedule is permitted if requested at least 48 hours prior to the booked slot.
+No refund or reschedule is available within 48 hours of the booked slot.
+Prices are inclusive of GST at prevailing rates.`
+};
+
+function zoneOf(desc){
+  const d=(desc||"").toLowerCase();
+  return [...ZONES].sort((a,b)=>b.length-a.length).find(z=>d.includes(z.toLowerCase()))||null;
+}
+function isStudioHourly(desc){ return /studio/i.test(desc||"") && !!zoneOf(desc); }
+
+function loadSettings(){
+  try{
+    const s=Object.assign({},DEFAULT_SETTINGS,JSON.parse(localStorage.getItem(K_SET)||"{}"));
+    if(!Array.isArray(s.rateCard)||!s.rateCard.length) s.rateCard=DEFAULT_SETTINGS.rateCard.map(x=>({...x}));
+    normalizeRateCard(s.rateCard);
+    return s;
+  }catch(e){ return JSON.parse(JSON.stringify(DEFAULT_SETTINGS)); }
+}
+function normalizeRateCard(card){
+  if(!Array.isArray(card)) return card;
+  card.forEach(c=>{
+    if(isStudioHourly(c.desc)){
+      const zone=zoneOf(c.desc);
+      const def=DEFAULT_SETTINGS.rateCard.find(d=>isStudioHourly(d.desc)&&zoneOf(d.desc)===zone)||{};
+      if(c.disc4===""||c.disc4==null) c.disc4=def.disc4??0;
+      if(c.disc8===""||c.disc8==null) c.disc8=def.disc8??0;
+    }
+  });
+  return card;
+}
+
+let settings = loadSettings();
+let rcDraft  = [];
+let proxyToken = localStorage.getItem('ryst_proxy_token')||'';
+let TEMPLATES = { welcomeTemplate:'', feedbackTemplate:'', googleReviewUrl:'' };
+
+/* ---------- HEADER LOGO ---------- */
+function applyLogo(){
+  const el = document.getElementById('hdrLogo');
+  if(el && settings.logo) el.src = settings.logo;
+}
+applyLogo();
+
+/* ---------- AUTH + ROLE GATE ---------- */
+// Read the role from the signed token payload (falls back to localStorage).
+// This gates the UI; the proxy independently rejects non-admin writes (403).
+function myRole(){
+  try{
+    let p=(proxyToken.split('.')[0]||'').replace(/-/g,'+').replace(/_/g,'/');
+    p+='='.repeat((4-p.length%4)%4);
+    const d=JSON.parse(atob(p));
+    if(d && d.role) return d.role;
+  }catch(e){}
+  return localStorage.getItem('ryst_user_role')||'coordinator';
+}
+(async function boot(){
+  if(!proxyToken){ window.location.href='login.html'; return; }
+  if(myRole()!=='admin'){
+    document.getElementById('pinOverlay').hidden=true;
+    document.getElementById('adminBlock').classList.add('show');
+    return;
+  }
+  // Validate token in background — if it expired redirect quietly
+  fetch(PROXY_URL+'/quotes',{headers:{'X-Token':proxyToken}})
+    .then(r=>{ if(r && r.status===401){ localStorage.removeItem('ryst_proxy_token'); window.location.href='login.html'; } })
+    .catch(()=>{});
+})();
+
+/* ---------- PIN GATE ---------- */
+let _pinBuf = "";
+async function sha256(s){
+  const b=await crypto.subtle.digest("SHA-256",new TextEncoder().encode(s));
+  return Array.from(new Uint8Array(b)).map(x=>x.toString(16).padStart(2,"0")).join("");
+}
+(function buildPinPad(){
+  const pad=document.getElementById("pinPad"); if(!pad) return;
+  [1,2,3,4,5,6,7,8,9,"⌫",0,"✓"].forEach(k=>{
+    const b=document.createElement("button");
+    b.className="pin-key"; b.textContent=String(k); b.type="button";
+    b.addEventListener("click",()=>handlePinKey(String(k)));
+    pad.appendChild(b);
+  });
+})();
+function updatePinDots(){
+  for(let i=0;i<4;i++) document.getElementById("pd"+i).classList.toggle("filled",i<_pinBuf.length);
+}
+async function handlePinKey(k){
+  if(k==="⌫"){ _pinBuf=_pinBuf.slice(0,-1); updatePinDots(); return; }
+  if(k==="✓"){ await checkPin(); return; }
+  if(_pinBuf.length>=4) return;
+  _pinBuf+=k; updatePinDots();
+  if(_pinBuf.length===4) await checkPin();
+}
+async function checkPin(){
+  if(await sha256(_pinBuf)===RC_PIN_HASH){
+    document.getElementById("pinOverlay").hidden=true;
+    loadPanel();
+  } else {
+    document.getElementById("pinErr").textContent="Incorrect PIN";
+    for(let i=0;i<4;i++) document.getElementById("pd"+i).classList.add("filled");
+    setTimeout(()=>{ _pinBuf=""; updatePinDots(); document.getElementById("pinErr").textContent=""; },700);
+  }
+}
+
+/* ---------- TABS ---------- */
+function switchTab(tab){
+  document.getElementById("paneRate").hidden    = tab!=="rate";
+  document.getElementById("paneStudio").hidden  = tab!=="studio";
+  document.getElementById("paneWhatsapp").hidden= tab!=="whatsapp";
+  document.getElementById("paneUsers").hidden   = tab!=="users";
+  document.querySelectorAll(".cfg-tab").forEach(b=>b.classList.toggle("active",b.dataset.tab===tab));
+}
+document.querySelectorAll(".cfg-tab").forEach(b=>b.addEventListener("click",()=>switchTab(b.dataset.tab)));
+
+/* ---------- LOAD PANEL (after PIN) ---------- */
+async function loadPanel(){
+  // Fetch fresh rates from proxy; fall back to localStorage
+  if(proxyToken){
+    try{
+      const res=await fetch(PROXY_URL+'/rates',{headers:{'X-Token':proxyToken}});
+      if(res.ok){
+        const d=await res.json();
+        if(Array.isArray(d.rateCard)&&d.rateCard.length){
+          settings.rateCard=normalizeRateCard(d.rateCard);
+          localStorage.setItem(K_SET,JSON.stringify(settings));
+        }
+      }
+    }catch(e){}
+  }
+  applyLogo();
+  rcDraft=settings.rateCard.map(c=>({...c}));
+  renderRateCard();
+  document.getElementById("setCompany").value=settings.company||"";
+  document.getElementById("setBank").value=settings.bank||"";
+  document.getElementById("setTerms").value=settings.terms||"";
+  document.getElementById("setPrefix").value=settings.prefix||"RYST";
+  renderImgPrev("logo","#logoPrev");
+  renderImgPrev("qr","#qrPrev");
+  bindSettings();
+  loadUsers();
+  loadTemplates();
+}
+
+/* ---------- RATE CARD RENDER ---------- */
+function renderRateCard(){
+  const body=document.getElementById("rcBody"); body.innerHTML="";
+  rcDraft.forEach((c,i)=>{
+    const isStudio=isStudioHourly(c.desc);
+    const hasCost=c.cost!==""&&c.cost!=null, hasRate=c.rate!==""&&c.rate!=null;
+    const rateNum=parseFloat(c.rate)||0, costNum=hasCost?parseFloat(c.cost)||0:null;
+    const margin=(costNum!==null&&hasRate)?rateNum-costNum:null;
+    const mpct=(margin!==null&&rateNum>0)?Math.round(margin/rateNum*100):null;
+    const lastCol=isStudio
+      ?`<td class="td-disc">
+          <div class="disc-row"><span class="disc-lbl">4–7hr</span><input class="disc-inp" data-i="${i}" data-k="disc4" type="number" min="0" max="100" step="0.01" inputmode="decimal" placeholder="0" value="${esc(c.disc4??'')}"><span class="disc-pct">%</span></div>
+          <div class="disc-row"><span class="disc-lbl">8+hr</span><input class="disc-inp" data-i="${i}" data-k="disc8" type="number" min="0" max="100" step="0.01" inputmode="decimal" placeholder="0" value="${esc(c.disc8??'')}"><span class="disc-pct">%</span></div>
+        </td>`
+      :`<td class="td-margin">${margin!==null?money(Math.round(margin)):"—"}${mpct!==null?`<small>${mpct}% margin</small>`:""}</td>`;
+    const row=document.createElement("tr"); row.dataset.row=String(i);
+    row.innerHTML=`
+      <td><input data-i="${i}" data-k="desc" placeholder="Service description" value="${esc(c.desc)}" style="min-width:170px"></td>
+      <td><input data-i="${i}" data-k="sac" placeholder="997212" value="${esc(c.sac)}"></td>
+      <td><input class="r" data-i="${i}" data-k="cost" type="number" min="0" inputmode="decimal" placeholder="0" value="${esc(c.cost)}" title="Pre-tax purchase cost"></td>
+      <td><input class="c" data-i="${i}" data-k="gst" type="number" min="0" step="0.5" inputmode="decimal" placeholder="18" value="${esc(c.gst)}"></td>
+      <td><input class="r" data-i="${i}" data-k="rate" type="number" min="0" inputmode="decimal" placeholder="0" value="${esc(c.rate)}"></td>
+      ${lastCol}
+      <td><button class="rc-del" data-del="${i}" title="Remove">×</button></td>`;
+    body.appendChild(row);
+  });
+  body.querySelectorAll("input[data-i]").forEach(inp=>{
+    inp.addEventListener("input",e=>{
+      const i=+e.target.dataset.i, k=e.target.dataset.k, val=e.target.value;
+      rcDraft[i][k]=(k==="disc4"||k==="disc8")?(val===""?"":parseFloat(val)):val;
+      if(["cost","rate"].includes(k)&&!isStudioHourly(rcDraft[i].desc)) updateRcMargin(i);
+    });
+  });
+  body.querySelectorAll("[data-del]").forEach(b=>b.addEventListener("click",e=>{
+    rcDraft.splice(+e.target.dataset.del,1); renderRateCard();
+  }));
+}
+function updateRcMargin(i){
+  const c=rcDraft[i];
+  const hasCost=c.cost!==""&&c.cost!=null, hasRate=c.rate!==""&&c.rate!=null;
+  const rateNum=parseFloat(c.rate)||0, costNum=hasCost?parseFloat(c.cost)||0:null;
+  const margin=(costNum!==null&&hasRate)?rateNum-costNum:null;
+  const mpct=(margin!==null&&rateNum>0)?Math.round(margin/rateNum*100):null;
+  const row=document.querySelector(`#rcBody tr[data-row="${i}"]`);
+  if(!row) return;
+  const cell=row.querySelector(".td-margin");
+  if(cell) cell.innerHTML=margin!==null?`${money(Math.round(margin))}${mpct!==null?`<small>${mpct}% margin</small>`:""}`:"—";
+}
+
+/* ---------- SAVE RATE CARD ---------- */
+async function saveRateCard(){
+  const btn=document.getElementById("rcSave");
+  btn.disabled=true; btn.textContent="Saving…";
+  settings.rateCard=normalizeRateCard(rcDraft
+    .filter(c=>(c.desc||"").trim()!=="")
+    .map(c=>{
+      const base={desc:c.desc.trim(),sac:(c.sac||"").trim(),cost:c.cost,gst:(c.gst===""||c.gst==null)?FALLBACK_GST:parseFloat(c.gst),rate:c.rate};
+      if(isStudioHourly(c.desc)){
+        base.disc4=(c.disc4===""||c.disc4==null)?0:parseFloat(c.disc4);
+        base.disc8=(c.disc8===""||c.disc8==null)?0:parseFloat(c.disc8);
+      }
+      return base;
+    }));
+  if(!settings.rateCard.length) settings.rateCard=DEFAULT_SETTINGS.rateCard.map(x=>({...x}));
+  localStorage.setItem(K_SET,JSON.stringify(settings));
+  if(proxyToken){
+    try{
+      const res=await fetch(PROXY_URL+'/rates',{method:'PUT',
+        headers:{'X-Token':proxyToken,'Content-Type':'application/json'},
+        body:JSON.stringify({version:1,rateCard:settings.rateCard})});
+      if(res.status===401){ localStorage.removeItem('ryst_proxy_token'); window.location.href='login.html'; return; }
+      if(!res.ok) toast("Saved locally — cloud sync failed ("+res.status+")");
+      else toast("Rate card saved");
+    }catch(e){ toast("Saved locally — cloud unreachable"); }
+  } else { toast("Saved locally"); }
+  btn.disabled=false; btn.textContent="Save rate card";
+  rcDraft=settings.rateCard.map(c=>({...c}));
+  renderRateCard();
+}
+
+/* ---------- SETTINGS ---------- */
+function renderImgPrev(key,sel){
+  const v=settings[key]; const container=$(sel);
+  if(!v){ container.innerHTML=`<p class="hint">No ${key==="logo"?"logo":"QR"} set.</p>`; return; }
+  const wrap=document.createElement("div"); wrap.className=key==="logo"?"logo-preview":"qr-preview";
+  const img=document.createElement("img"); img.src=v; wrap.appendChild(img);
+  container.innerHTML=""; container.appendChild(wrap);
+}
+function pickImage(e,key,sel){
+  const f=e.target.files[0]; if(!f) return;
+  const r=new FileReader();
+  r.onload=()=>{ settings[key]=r.result; renderImgPrev(key,sel); };
+  r.readAsDataURL(f);
+}
+function saveSettings(){
+  settings.company=document.getElementById("setCompany").value;
+  settings.bank=document.getElementById("setBank").value;
+  settings.terms=document.getElementById("setTerms").value;
+  settings.prefix=(document.getElementById("setPrefix").value||"").trim()||"RYST";
+  localStorage.setItem(K_SET,JSON.stringify(settings));
+  applyLogo();
+  toast("Settings saved");
+}
+
+/* ---------- WHATSAPP TEMPLATES ---------- */
+async function loadTemplates(){
+  if(!proxyToken) return;
+  // Save stays disabled until this resolves — loadPanel() fires this
+  // unawaited, so without the guard a user who reaches this tab and hits
+  // Save before the fetch returns would have their own typed edit silently
+  // clobbered the moment the (older) server response lands and overwrites
+  // the fields right before saveTemplates() reads them back out.
+  const btn=document.getElementById("tplSave");
+  if(btn) btn.disabled=true;
+  try{
+    const res=await fetch(PROXY_URL+'/templates',{headers:{'X-Token':proxyToken}});
+    if(res.ok){
+      const d=await res.json();
+      TEMPLATES={ welcomeTemplate:d.welcomeTemplate||'', feedbackTemplate:d.feedbackTemplate||'', googleReviewUrl:d.googleReviewUrl||'' };
+    }
+  }catch(e){}
+  document.getElementById("setWelcomeTpl").value=TEMPLATES.welcomeTemplate;
+  document.getElementById("setFeedbackTpl").value=TEMPLATES.feedbackTemplate;
+  document.getElementById("setGoogleUrl").value=TEMPLATES.googleReviewUrl;
+  if(btn) btn.disabled=false;
+}
+async function saveTemplates(){
+  const btn=document.getElementById("tplSave");
+  btn.disabled=true; btn.textContent="Saving…";
+  TEMPLATES={
+    welcomeTemplate: document.getElementById("setWelcomeTpl").value,
+    feedbackTemplate: document.getElementById("setFeedbackTpl").value,
+    googleReviewUrl: document.getElementById("setGoogleUrl").value.trim(),
+  };
+  if(proxyToken){
+    try{
+      const res=await fetch(PROXY_URL+'/templates',{method:'PUT',
+        headers:{'X-Token':proxyToken,'Content-Type':'application/json'},
+        body:JSON.stringify({version:1,...TEMPLATES})});
+      if(res.status===401){ localStorage.removeItem('ryst_proxy_token'); window.location.href='login.html'; return; }
+      if(res.status===403) toast("Admins only");
+      else if(!res.ok) toast("Save failed ("+res.status+")");
+      else toast("Templates saved");
+    }catch(e){ toast("Could not reach the server"); }
+  }
+  btn.disabled=false; btn.textContent="Save templates";
+}
+
+/* ---------- BINDINGS ---------- */
+function bindSettings(){
+  document.getElementById("rcAdd").addEventListener("click",()=>{
+    rcDraft.push({desc:"",sac:"",cost:"",gst:FALLBACK_GST,rate:""}); renderRateCard();
+  });
+  document.getElementById("rcSave").addEventListener("click",saveRateCard);
+  document.getElementById("setSave").addEventListener("click",saveSettings);
+  document.getElementById("logoFile").addEventListener("change",e=>pickImage(e,"logo","#logoPrev"));
+  document.getElementById("qrFile").addEventListener("change",e=>pickImage(e,"qr","#qrPrev"));
+  document.getElementById("userAdd").addEventListener("click",addUser);
+  document.getElementById("usersSave").addEventListener("click",saveUsers);
+  document.getElementById("tplSave").addEventListener("click",saveTemplates);
+}
+
+/* ---------- USER ACCESS ---------- */
+const SUPER_ADMIN_EMAIL = 'mailyuvanesh@gmail.com';
+let usersDraft = [];
+async function loadUsers(){
+  usersDraft = [
+    {email:'mailyuvanesh@gmail.com', name:'Yuvanesh', role:'admin'},
+    {email:'studioryst01@gmail.com', name:'Pooja', role:'coordinator'},
+  ];
+  if(proxyToken){
+    try{
+      const res=await fetch(PROXY_URL+'/user-roles',{headers:{'X-Token':proxyToken}});
+      if(res.ok){
+        const d=await res.json();
+        if(Array.isArray(d.users)&&d.users.length)
+          usersDraft=d.users.map(u=>({email:(u.email||'').toLowerCase(),name:u.name||'',role:u.role==='admin'?'admin':'coordinator'}));
+      }
+    }catch(e){}
+  }
+  renderUsers();
+}
+function renderUsers(){
+  const body=document.getElementById("usersBody"); body.innerHTML="";
+  usersDraft.forEach((u,i)=>{
+    const isSuper = u.email===SUPER_ADMIN_EMAIL;
+    const tr=document.createElement("tr");
+    tr.innerHTML=`
+      <td><input data-i="${i}" data-k="email" type="email" placeholder="name@gmail.com" value="${esc(u.email)}" ${isSuper?'readonly':''} style="min-width:210px"></td>
+      <td><input data-i="${i}" data-k="name" placeholder="Name" value="${esc(u.name)}"></td>
+      <td><select class="t" data-i="${i}" data-k="role" ${isSuper?'disabled':''} style="text-align:center">
+            <option value="admin"${u.role==='admin'?' selected':''}>Admin</option>
+            <option value="coordinator"${u.role!=='admin'?' selected':''}>Coordinator</option>
+          </select></td>
+      <td>${isSuper?'<span title="Always an admin" style="color:var(--muted2)">🔒</span>':`<button class="rc-del" data-del="${i}" title="Remove">×</button>`}</td>`;
+    body.appendChild(tr);
+  });
+  body.querySelectorAll("input[data-i],select[data-i]").forEach(el=>{
+    el.addEventListener("input",e=>{
+      const i=+e.target.dataset.i, k=e.target.dataset.k;
+      usersDraft[i][k] = k==='email' ? e.target.value.trim().toLowerCase() : e.target.value;
+    });
+  });
+  body.querySelectorAll("[data-del]").forEach(b=>b.addEventListener("click",e=>{
+    usersDraft.splice(+e.target.dataset.del,1); renderUsers();
+  }));
+}
+function addUser(){ usersDraft.push({email:"",name:"",role:"coordinator"}); renderUsers(); }
+async function saveUsers(){
+  const btn=document.getElementById("usersSave"); btn.disabled=true; btn.textContent="Saving…";
+  let users=usersDraft
+    .map(u=>({email:(u.email||"").trim().toLowerCase(), name:(u.name||"").trim(), role:u.role==='admin'?'admin':'coordinator'}))
+    .filter(u=>/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(u.email));
+  const seen={}; users.forEach(u=>seen[u.email]=u); users=Object.values(seen);   // dedupe, last wins
+  const sa=users.find(u=>u.email===SUPER_ADMIN_EMAIL);
+  if(sa) sa.role='admin'; else users.unshift({email:SUPER_ADMIN_EMAIL,name:'Yuvanesh',role:'admin'});
+  if(proxyToken){
+    try{
+      const res=await fetch(PROXY_URL+'/user-roles',{method:'PUT',
+        headers:{'X-Token':proxyToken,'Content-Type':'application/json'},
+        body:JSON.stringify({version:1,users})});
+      if(res.status===401){ localStorage.removeItem('ryst_proxy_token'); window.location.href='login.html'; return; }
+      else if(res.status===403) toast("Admins only — cannot save");
+      else if(!res.ok) toast("Save failed ("+res.status+")");
+      else toast("User access saved · applies on next sign-in");
+    }catch(e){ toast("Cloud unreachable"); }
+  }
+  usersDraft=users.map(u=>({...u})); renderUsers();
+  btn.disabled=false; btn.textContent="Save user access";
+}
+
+/* ---------- TOAST ---------- */
+function toast(msg){
+  const t=document.getElementById("toast");
+  t.textContent=msg; t.classList.add("show");
+  setTimeout(()=>t.classList.remove("show"),2400);
+}
+</script>
+</body>
+</html>

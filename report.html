@@ -1,0 +1,447 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Growth Report · Studio RYST</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#f3f4f1; --panel:#ffffff; --panel2:#f7f8f5;
+    --line:#e3e5e0; --accent:#3d9b69; --accent-d:#2f7d54; --accent-soft:#eaf4ee;
+    --ink:#1d211c; --muted:#5f655d; --muted2:#9aa097;
+    --up:#2f7d54; --down:#c0584b;
+    --z-pod:#3d9b69; --z-photo:#c8893d; --z-cul:#c0584b; --z-multi:#5b7db1;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:var(--bg);color:var(--ink);font-family:"Outfit",system-ui,sans-serif;-webkit-font-smoothing:antialiased;min-height:100%}
+  button,select,input{font-family:inherit}
+  button{cursor:pointer}
+  .wrap{max-width:1120px;margin:0 auto;padding:18px 16px 60px}
+
+  header.top{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:6px 2px 18px}
+  header.top img{height:38px;object-fit:contain}
+  header.top .ttl{font-weight:700;font-size:18px;letter-spacing:.2px}
+  header.top .ttl small{display:block;font-weight:500;font-size:11.5px;color:var(--muted2);letter-spacing:.4px}
+  header.top .spacer{flex:1}
+  .sel{padding:9px 12px;border:1.5px solid var(--line);border-radius:9px;background:var(--panel);font-size:13px;font-weight:600;color:var(--ink);outline:none}
+  .sel:focus{border-color:var(--accent)}
+  .tbtn{background:var(--panel);border:1.5px solid var(--line);color:var(--muted);padding:8px 14px;border-radius:9px;font-size:12.5px;font-weight:600;transition:.15s}
+  .tbtn:hover{border-color:var(--accent);color:var(--accent-d)}
+
+  .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:18px}
+  .kpi{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px 16px 15px;box-shadow:0 6px 18px rgba(40,50,40,.04)}
+  .kpi .lbl{font-size:11.5px;font-weight:600;color:var(--muted2);letter-spacing:.4px;text-transform:uppercase}
+  .kpi .val{font-size:25px;font-weight:700;margin-top:7px;letter-spacing:-.5px}
+  .kpi .sub{font-size:12px;color:var(--muted);margin-top:4px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .kpi.hero{background:linear-gradient(135deg,var(--accent) 0%,var(--accent-d) 100%);border:none;color:#fff}
+  .kpi.hero .lbl,.kpi.hero .sub{color:#dff0e6}
+  .d{font-size:11.5px;font-weight:700;padding:1px 7px;border-radius:20px}
+  .d.up{color:var(--up);background:#e7f4ec}
+  .d.down{color:var(--down);background:#fbecea}
+  .kpi.hero .d.up{color:#eafaf0;background:rgba(255,255,255,.18)}
+  .kpi.hero .d.down{color:#ffe7e2;background:rgba(255,255,255,.18)}
+
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .grid .full{grid-column:1 / -1}
+  .panel{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px 18px 18px;box-shadow:0 6px 18px rgba(40,50,40,.04)}
+  .panel h2{font-size:13px;font-weight:700;letter-spacing:.3px;margin-bottom:4px}
+  .panel .cap{font-size:11.5px;color:var(--muted2);margin-bottom:14px}
+
+  /* Monthly trend bars */
+  .trend{display:flex;align-items:flex-end;gap:6px;height:180px;padding-top:8px}
+  .mb{flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;height:100%;justify-content:flex-end;min-width:0}
+  .mb-bar{width:100%;max-width:34px;background:linear-gradient(180deg,var(--accent),var(--accent-d));border-radius:5px 5px 0 0;min-height:2px;transition:height .3s;cursor:default}
+  .mb.cur .mb-bar{background:linear-gradient(180deg,#4fb37e,var(--accent-d));box-shadow:0 0 0 2px var(--accent-soft)}
+  .mb-lbl{font-size:10px;color:var(--muted2);font-weight:600;white-space:nowrap}
+  .mb-val{font-size:9.5px;color:var(--muted);font-weight:700;white-space:nowrap}
+
+  /* Horizontal bars */
+  .hbars{display:flex;flex-direction:column;gap:12px}
+  .hbar{display:grid;grid-template-columns:96px 1fr auto;align-items:center;gap:10px;font-size:12.5px}
+  .hbar .nm{color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:flex;align-items:center;gap:6px}
+  .dot{width:9px;height:9px;border-radius:3px;flex-shrink:0}
+  .hbar .track{height:10px;background:var(--panel2);border-radius:6px;overflow:hidden}
+  .hbar .fill{display:block;height:10px;border-radius:6px;min-width:2px}
+  .hbar .amt{font-weight:700;font-variant-numeric:tabular-nums;white-space:nowrap}
+
+  /* Utilization */
+  .util{display:flex;flex-direction:column;gap:14px}
+  .util .u{display:flex;flex-direction:column;gap:5px}
+  .util .u-top{display:flex;justify-content:space-between;font-size:12.5px}
+  .util .u-top .nm{color:var(--muted);display:flex;align-items:center;gap:6px}
+  .util .u-top .pct{font-weight:700}
+  .util .track{height:9px;background:var(--panel2);border-radius:6px;overflow:hidden}
+  .util .fill{display:block;height:9px;border-radius:6px;background:linear-gradient(90deg,var(--accent),var(--accent-d))}
+  .op-row{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted);margin-top:14px;flex-wrap:wrap}
+  .op-row input{width:56px;padding:6px 8px;border:1.5px solid var(--line);border-radius:8px;font-size:13px;text-align:center}
+
+  /* Table */
+  table{width:100%;border-collapse:collapse;font-size:13px}
+  th{text-align:left;font-size:10.5px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--muted2);padding:8px 10px;border-bottom:1px solid var(--line);white-space:nowrap}
+  td{padding:10px 10px;border-bottom:1px solid var(--panel2)}
+  tr:last-child td{border-bottom:none}
+  td.r{text-align:right;font-weight:700;font-variant-numeric:tabular-nums;white-space:nowrap}
+  .zpill{font-size:10.5px;font-weight:700;padding:2px 8px;border-radius:10px;white-space:nowrap}
+  .empty{padding:34px 12px;text-align:center;color:var(--muted2);font-size:13px}
+
+  #toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(20px);background:var(--ink);color:#fff;padding:12px 20px;border-radius:11px;font-size:13.5px;opacity:0;pointer-events:none;transition:.25s;z-index:80}
+  #toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+  #toast.err{background:var(--down)}
+  #loader{position:fixed;inset:0;background:rgba(243,244,241,.85);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;z-index:90;color:var(--muted)}
+  #loader.hide{display:none}
+  .spin{width:34px;height:34px;border:3px solid var(--line);border-top-color:var(--accent);border-radius:50%;animation:sp 1s linear infinite}
+  @keyframes sp{to{transform:rotate(360deg)}}
+
+  @media(max-width:820px){ .kpis{grid-template-columns:1fr 1fr} .grid{grid-template-columns:1fr} }
+  @media(max-width:520px){ header.top .who{display:none} .kpi .val{font-size:21px} .mb-val{display:none} .trend{height:150px} }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <img id="logo" alt="RYST" src="" />
+    <div class="ttl">Growth Report<small>Studio RYST · sales &amp; utilization</small></div>
+    <div class="spacer"></div>
+    <select class="sel" id="period">
+      <option value="this-month">This month</option>
+      <option value="last-month">Last month</option>
+      <option value="last-3">Last 3 months</option>
+      <option value="this-year">This year</option>
+      <option value="all">All time</option>
+    </select>
+    <button class="tbtn" onclick="window.location.href='login.html'">⌂ Home</button>
+    <button class="tbtn" id="logoutBtn">⎋ Log out</button>
+  </header>
+
+  <div class="kpis">
+    <div class="kpi hero">
+      <div class="lbl">Sales (ex-GST)</div>
+      <div class="val" id="kSales">—</div>
+      <div class="sub" id="kSalesSub"></div>
+    </div>
+    <div class="kpi">
+      <div class="lbl">Invoices</div>
+      <div class="val" id="kQuotes">—</div>
+      <div class="sub" id="kQuotesSub"></div>
+    </div>
+    <div class="kpi">
+      <div class="lbl">Average invoice value</div>
+      <div class="val" id="kAvg">—</div>
+      <div class="sub" id="kAvgSub"></div>
+    </div>
+    <div class="kpi">
+      <div class="lbl">Booked hours</div>
+      <div class="val" id="kHours">—</div>
+      <div class="sub" id="kHoursSub"></div>
+    </div>
+  </div>
+
+  <div class="grid">
+    <div class="panel full">
+      <h2>Monthly sales trend</h2>
+      <div class="cap">Net value (ex-GST) of quotes paid in full · last 12 months</div>
+      <div class="trend" id="trend"></div>
+    </div>
+
+    <div class="panel">
+      <h2>Sales by zone</h2>
+      <div class="cap" id="salesZoneCap">Net value (ex-GST) and booked hours, selected period</div>
+      <div class="hbars" id="salesZone"></div>
+    </div>
+
+    <div class="panel">
+      <h2>Studio utilization</h2>
+      <div class="cap">Booked hours vs available capacity</div>
+      <div class="util" id="util"></div>
+      <div class="op-row">
+        Operating hours/day
+        <input type="number" id="opHours" min="1" max="24" value="12" />
+        <span id="capNote"></span>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h2>Top customers</h2>
+      <div class="cap" id="topCustCap">By total invoiced value, selected period</div>
+      <div class="hbars" id="topCust"></div>
+    </div>
+
+    <div class="panel full">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap">
+        <div><h2 style="margin-bottom:2px">Invoices</h2><div class="cap" id="invoicesCap" style="margin-bottom:0">Quotes paid in full — the quote number doubles as the invoice number</div></div>
+        <input class="sel" id="invSearch" placeholder="Search client or quote no…" style="font-weight:400;min-width:200px" />
+      </div>
+      <div style="overflow-x:auto;margin-top:10px"><table>
+        <thead><tr><th>Invoice</th><th>Date</th><th>Client</th><th>Zone</th><th style="text-align:right">Amount</th></tr></thead>
+        <tbody id="invoices"></tbody>
+      </table></div>
+    </div>
+  </div>
+</div>
+
+<div id="loader"><div class="spin"></div><div id="loaderMsg">Loading report…</div></div>
+<div id="toast"></div>
+
+<script>
+const PROXY_URL = 'https://ryst-109a-proxy.onrender.com/studio';
+const TOKEN = localStorage.getItem('ryst_proxy_token') || '';
+if(!TOKEN){ window.location.href='login.html'; }
+
+const $=s=>document.querySelector(s);
+const esc=s=>(s==null?'':String(s)).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const INR0=new Intl.NumberFormat('en-IN',{style:'currency',currency:'INR',maximumFractionDigits:0});
+const money=n=>INR0.format(Math.round(Number(n)||0));
+function compactINR(n){ n=Number(n)||0; const a=Math.abs(n);
+  if(a>=1e7) return '₹'+(n/1e7).toFixed(2)+'Cr';
+  if(a>=1e5) return '₹'+(n/1e5).toFixed(2)+'L';
+  if(a>=1e3) return '₹'+(n/1e3).toFixed(n>=1e4?0:1)+'k';
+  return '₹'+Math.round(n); }
+const ZONE_COLORS={Podcast:'var(--z-pod)',Photography:'var(--z-photo)',Culinary:'var(--z-cul)','Multi-Zone':'var(--z-multi)'};
+const PHYS_ZONES=['Podcast','Photography','Culinary'];
+const zColor=z=>ZONE_COLORS[z]||'var(--muted2)';
+
+let QUOTES=[], SESSIONS=[], SALES=[], PERIOD='this-month', OPHOURS=12;
+
+// ── Logo (shared with other tools) ──
+(function(){ try{const s=JSON.parse(localStorage.getItem('ryst_quote_settings')||'null'); if(s&&s.logo){$('#logo').src=s.logo;return;}}catch(e){}
+  const l=localStorage.getItem('ryst_logo'); if(l)$('#logo').src=l; else $('#logo').style.display='none'; })();
+
+let toastT;
+function toast(m,err){ const t=$('#toast'); t.textContent=m; t.className='show'+(err?' err':''); clearTimeout(toastT); toastT=setTimeout(()=>t.className='',3200); }
+
+async function api(path){
+  const ctrl=new AbortController();
+  const slow=setTimeout(()=>{ $('#loaderMsg').textContent='Waking up the server… up to a minute.'; },4000);
+  const abort=setTimeout(()=>ctrl.abort(),75000);
+  try{
+    const res=await fetch(PROXY_URL+path,{headers:{'X-Token':TOKEN},signal:ctrl.signal});
+    if(res.status===401){ localStorage.removeItem('ryst_proxy_token'); window.location.href='login.html'; throw new Error('Session expired'); }
+    if(!res.ok) throw new Error('Error '+res.status);
+    return await res.json();
+  } finally { clearTimeout(slow); clearTimeout(abort); }
+}
+
+async function load(){
+  $('#loader').className='';
+  try{
+    const [q,s]=await Promise.all([api('/quotes'), api('/schedule')]);
+    QUOTES=Array.isArray(q.quotes)?q.quotes:[];
+    SESSIONS=Array.isArray(s.sessions)?s.sessions:[];
+    SALES=buildSaleRecords();
+    render();
+  }catch(e){ toast(e.message||'Could not load report',true); }
+  finally{ $('#loader').className='hide'; }
+}
+
+// ── Quote money helpers (mirror quote.html) ──
+function qSub(q){ return (q.items||[]).reduce((s,it)=>s+(parseFloat(it.price)||0)*(parseFloat(it.qty)||0),0); }
+function qGst(q){ return (q.items||[]).reduce((s,it)=>s+((parseFloat(it.price)||0)*(parseFloat(it.qty)||0))*(parseFloat(it.gst)||0)/100,0); }
+function qNet(q){ const sub=qSub(q); const disc=Math.min(parseFloat(q.discount)||0, Math.floor(sub*0.10)); return sub-disc; }
+function qGrandTotal(q){ return Math.round(qNet(q)+qGst(q)); }
+function qDate(q){ return (q.date || (q.savedAt? new Date(q.savedAt).toISOString().slice(0,10):'')) || ''; }
+function qMonth(q){ return qDate(q).slice(0,7); }
+
+// ── Sales records: quotes only, and only the ones actually PAID IN FULL —
+// i.e. converted to an invoice, matching the booking register. An earlier
+// version of this page counted every quote regardless of payment status
+// (wildly overstating "Sales" with never-won quotes) and separately blended
+// in Booked leads without a quote, which double-counted any booking that
+// later also got a formal quote raised for it. Both are gone now: every
+// real booking has a quote (see the leads.json → quotes.json migration this
+// fix shipped with), so quotes are the single source of truth.
+function quotePaid(q){ return (q.payments||[]).reduce((s,p)=>s+(Number(p.amount)||0),0); }
+function isQuoteFullyPaid(q){ const t=qGrandTotal(q); return t>0 && quotePaid(q)>=t; }
+function buildSaleRecords(){
+  return QUOTES.filter(isQuoteFullyPaid).map(q=>({qno:q.qno, date:qDate(q), cname:q.cname, cphone:q.cphone||'', zone:q.zone, net:qNet(q), gross:qGrandTotal(q), invoiceNo:q.invoiceNo||''}));
+}
+const normPhone=p=>String(p||'').replace(/\D/g,'').slice(-10);
+
+// ── Period ranges (local, no TZ shift) ──
+const pad=n=>String(n).padStart(2,'0');
+const ymd=(y,m,d)=>y+'-'+pad(m+1)+'-'+pad(d);
+function rangeFor(key, back){
+  const now=new Date(), y=now.getFullYear(), m=now.getMonth(); back=back||0;
+  if(key==='this-month'||key==='last-month'){
+    const d=new Date(y, m-((key==='last-month'?1:0)+back), 1);
+    const yy=d.getFullYear(), M=d.getMonth();
+    return {from:ymd(yy,M,1), to:ymd(yy,M,new Date(yy,M+1,0).getDate())};
+  }
+  if(key==='last-3'){
+    const s=new Date(y, m-2-back*3, 1), e=new Date(y, m+1-back*3, 0);
+    return {from:ymd(s.getFullYear(),s.getMonth(),1), to:ymd(e.getFullYear(),e.getMonth(),e.getDate())};
+  }
+  if(key==='this-year'){ const yy=y-back; return {from:ymd(yy,0,1), to:ymd(yy,11,31)}; }
+  return {from:'0000-01-01', to:'9999-12-31'};
+}
+const inRange=(d,r)=> d && d>=r.from && d<=r.to;
+function daysInRange(r){ if(r.from==='0000-01-01') return 0; return Math.round((new Date(r.to+'T00:00:00')-new Date(r.from+'T00:00:00'))/86400000)+1; }
+
+// ── Schedule helpers ──
+const DOW=['sun','mon','tue','wed','thu','fri','sat'];
+function durH(s){ if(!s.start||!s.end) return 0; const [h1,m1]=s.start.split(':').map(Number),[h2,m2]=s.end.split(':').map(Number); let d=(h2*60+m2)-(h1*60+m1); if(d<0)d+=1440; return d/60; }
+function eachDate(r,cb){ let d=new Date(r.from+'T00:00:00'); const end=new Date(r.to+'T00:00:00'); let g=0; while(d<=end && g<400){ cb(d); d.setDate(d.getDate()+1); g++; } }
+// schedule.json (owned by the Schedule Manager) stores zone as its own
+// lowercase keys ("podcast"/"photography"/"culinary") — a different
+// convention than the capitalized zone names quotes/leads/PHYS_ZONES use
+// everywhere else. Without normalizing, every hrs[z] lookup here misses
+// case-sensitively, so Studio utilization silently reads 0% despite real
+// scheduled hours, and "Bookings by zone" loses its color coding.
+const ZONE_DISPLAY={podcast:'Podcast', photography:'Photography', culinary:'Culinary', 'multi-zone':'Multi-Zone'};
+function normZone(z){ return ZONE_DISPLAY[(z||'').trim().toLowerCase()] || (z||'—'); }
+function bookedByZone(r){
+  const hrs={}, cnt={};
+  const add=(z,h)=>{ hrs[z]=(hrs[z]||0)+h; cnt[z]=(cnt[z]||0)+1; };
+  SESSIONS.forEach(s=>{
+    const z=normZone(s.zone), dur=durH(s);
+    if(s.date){ if(inRange(s.date,r)) add(z,dur); }
+    else if(s.days&&s.days.length){ const wds=s.days.map(x=>x.toLowerCase().slice(0,3));
+      eachDate(r,d=>{ if(wds.includes(DOW[d.getDay()])) add(z,dur); }); }
+  });
+  return {hrs,cnt};
+}
+
+function deltaHTML(cur, prev){
+  if(PERIOD==='all') return '';
+  if(!prev){ return cur>0?'<span class="d up">▲ new</span>':''; }
+  const pct=Math.round((cur-prev)/prev*100);
+  if(pct===0) return '<span class="d">▬ 0%</span>';
+  return `<span class="d ${pct>0?'up':'down'}">${pct>0?'▲':'▼'} ${Math.abs(pct)}%</span>`;
+}
+
+function render(){
+  const r=rangeFor(PERIOD,0), rp=rangeFor(PERIOD,1);
+  // "Sales", "Invoices" and "Average invoice value" all come from the SAME
+  // set — quotes paid in full (see buildSaleRecords) — since a quote isn't
+  // really an invoice until it's actually paid. Sales is the ex-GST total;
+  // invoice count/average use the GST-inclusive amount, matching what's
+  // actually billed on each invoice.
+  const curS=SALES.filter(x=>inRange(x.date,r));
+  const prevS=SALES.filter(x=>inRange(x.date,rp));
+  const sales=curS.reduce((s,x)=>s+x.net,0), pSales=prevS.reduce((s,x)=>s+x.net,0);
+  const cnt=curS.length, pCnt=prevS.length;
+  const avg=cnt?curS.reduce((s,x)=>s+x.gross,0)/cnt:0, pAvg=pCnt?prevS.reduce((s,x)=>s+x.gross,0)/pCnt:0;
+
+  const book=bookedByZone(r), pBook=bookedByZone(rp);
+  const hrsTotal=Object.values(book.hrs).reduce((a,b)=>a+b,0);
+  const pHrsTotal=Object.values(pBook.hrs).reduce((a,b)=>a+b,0);
+
+  // KPI cards
+  $('#kSales').textContent=money(sales);
+  $('#kSalesSub').innerHTML=deltaHTML(sales,pSales)+`<span>${curS.length} sale${curS.length===1?'':'s'}</span>`;
+  $('#kQuotes').textContent=cnt;
+  $('#kQuotesSub').innerHTML=deltaHTML(cnt,pCnt)+'<span>in period</span>';
+  $('#kAvg').textContent=money(avg);
+  $('#kAvgSub').innerHTML=deltaHTML(avg,pAvg)+'<span>per invoice</span>';
+  $('#kHours').textContent=hrsTotal? (Math.round(hrsTotal*10)/10)+' h' : '0 h';
+  $('#kHoursSub').innerHTML=deltaHTML(hrsTotal,pHrsTotal)+`<span>${Object.values(book.cnt).reduce((a,b)=>a+b,0)} session(s)</span>`;
+
+  renderTrend();
+  renderSalesZone(curS, book);
+  renderUtil(book, r);
+  renderTopCustomers(curS);
+  renderInvoices(curS);
+}
+
+function monthShort(ym){ const [y,m]=ym.split('-'); return new Date(y,m-1,1).toLocaleDateString('en-IN',{month:'short'}); }
+function renderTrend(){
+  const now=new Date(), months=[];
+  for(let i=11;i>=0;i--){ const d=new Date(now.getFullYear(),now.getMonth()-i,1); months.push(ymd(d.getFullYear(),d.getMonth(),1).slice(0,7)); }
+  const curM=ymd(now.getFullYear(),now.getMonth(),1).slice(0,7);
+  const vals=months.map(m=>SALES.filter(x=>x.date.slice(0,7)===m).reduce((s,x)=>s+x.net,0));
+  const max=Math.max(1,...vals);
+  $('#trend').innerHTML=months.map((m,i)=>`
+    <div class="mb${m===curM?' cur':''}" title="${esc(monthShort(m))} ${m.slice(0,4)}: ${money(vals[i])}">
+      <div class="mb-val">${vals[i]?compactINR(vals[i]):''}</div>
+      <div class="mb-bar" style="height:${Math.max(2,vals[i]/max*100)}%"></div>
+      <div class="mb-lbl">${esc(monthShort(m))}</div>
+    </div>`).join('');
+}
+
+function hbarsHTML(entries, fmt){
+  if(!entries.length) return '<div class="empty">No data in this period.</div>';
+  const max=Math.max(1,...entries.map(e=>e[1]));
+  return entries.map(([name,val])=>`
+    <div class="hbar">
+      <span class="nm"><span class="dot" style="background:${zColor(name)}"></span>${esc(name)}</span>
+      <span class="track"><span class="fill" style="width:${Math.max(2,val/max*100)}%;background:${zColor(name)}"></span></span>
+      <span class="amt">${fmt(val)}</span>
+    </div>`).join('');
+}
+// Sales and booked hours by zone used to be two separate panels — same
+// dimension (per zone), so merged into one: bar sized/colored by sales
+// value (the primary metric), with booked hours shown alongside each zone.
+function renderSalesZone(curS, book){
+  const salesBy={};
+  curS.forEach(x=>{ const z=x.zone||'—'; salesBy[z]=(salesBy[z]||0)+x.net; });
+  const zones=new Set([...Object.keys(salesBy), ...Object.keys(book.hrs)]);
+  const entries=[...zones].map(z=>({z, val:salesBy[z]||0, hrs:book.hrs[z]||0})).filter(e=>e.val>0||e.hrs>0).sort((a,b)=>b.val-a.val);
+  if(!entries.length){ $('#salesZone').innerHTML='<div class="empty">No data in this period.</div>'; return; }
+  const max=Math.max(1,...entries.map(e=>e.val));
+  $('#salesZone').innerHTML=entries.map(e=>`
+    <div class="hbar">
+      <span class="nm"><span class="dot" style="background:${zColor(e.z)}"></span>${esc(e.z)}${e.hrs?` <span style="color:var(--muted2);font-weight:400">· ${Math.round(e.hrs*10)/10}h</span>`:''}</span>
+      <span class="track"><span class="fill" style="width:${Math.max(2,e.val/max*100)}%;background:${zColor(e.z)}"></span></span>
+      <span class="amt">${money(e.val)}</span>
+    </div>`).join('');
+}
+function renderUtil(book, r){
+  const days=daysInRange(r);
+  const cap=OPHOURS*days; // per-zone available hours in the period
+  const el=$('#util');
+  if(!days){ el.innerHTML='<div class="empty">Utilization isn’t available for “All time”.</div>'; $('#capNote').textContent=''; return; }
+  $('#capNote').textContent=`≈ ${cap} h available per zone (${days} day${days===1?'':'s'})`;
+  el.innerHTML=PHYS_ZONES.map(z=>{
+    const h=book.hrs[z]||0; const pct=cap? Math.min(100, Math.round(h/cap*100)) : 0;
+    return `<div class="u"><div class="u-top"><span class="nm"><span class="dot" style="background:${zColor(z)}"></span>${z}</span><span class="pct">${pct}% · ${Math.round(h*10)/10} h</span></div>
+      <div class="track"><span class="fill" style="width:${pct}%"></span></div></div>`;
+  }).join('');
+}
+// ── Invoices — every fully-paid quote in the selected period, i.e. the
+// quote number doubles as the invoice number once payment is complete.
+// Client-side search filters what's already loaded (no extra fetch).
+let INVOICE_ROWS=[];
+function renderInvoices(curS){
+  INVOICE_ROWS=[...curS].sort((a,b)=> (b.date||'').localeCompare(a.date||''));
+  $('#invoicesCap').textContent = `${INVOICE_ROWS.length} quote${INVOICE_ROWS.length===1?'':'s'} paid in full — click an invoice number to open its quote`;
+  applyInvoiceFilter();
+}
+function applyInvoiceFilter(){
+  const q=($('#invSearch').value||'').trim().toLowerCase();
+  const rows = q ? INVOICE_ROWS.filter(x=> (x.cname||'').toLowerCase().includes(q) || (x.qno||'').toLowerCase().includes(q) || (x.invoiceNo||'').toLowerCase().includes(q)) : INVOICE_ROWS;
+  if(!rows.length){ $('#invoices').innerHTML='<tr><td colspan="5" class="empty">No invoices match.</td></tr>'; return; }
+  $('#invoices').innerHTML=rows.map(x=>`<tr>
+    <td><a href="quote.html?qno=${encodeURIComponent(x.qno)}" target="_blank" style="color:var(--accent-d);font-weight:700;text-decoration:none" title="Open ${esc(x.qno)}">${esc(x.invoiceNo||x.qno||'—')}</a></td>
+    <td>${esc(x.date||'—')}</td>
+    <td>${esc(x.cname||'—')}</td>
+    <td><span class="zpill" style="background:${zColor(x.zone)}22;color:${zColor(x.zone)}">${esc(x.zone||'—')}</span></td>
+    <td class="r">${money(x.gross)}</td></tr>`).join('');
+}
+$('#invSearch').addEventListener('input', applyInvoiceFilter);
+
+// ── Top customers — every fully-paid quote in the period, grouped by
+// customer (phone number when known, else the client name), ranked by
+// total invoiced value. Mirrors pipeline.html's phone-based booking
+// aggregation so the two pages agree on "who's a repeat customer".
+function renderTopCustomers(curS){
+  const by={};
+  curS.forEach(x=>{
+    const key = normPhone(x.cphone) || ('name:'+(x.cname||'—').trim().toLowerCase());
+    if(!by[key]) by[key]={ name:x.cname||'—', count:0, value:0 };
+    by[key].count++; by[key].value+=x.gross;
+  });
+  const entries=Object.values(by).sort((a,b)=>b.value-a.value).slice(0,10)
+    .map(c=>[`${c.name} · ${c.count} booking${c.count===1?'':'s'}`, c.value]);
+  $('#topCust').innerHTML = hbarsHTML(entries, money);
+}
+
+$('#period').addEventListener('change', e=>{ PERIOD=e.target.value; render(); });
+$('#opHours').addEventListener('input', e=>{ OPHOURS=Math.max(1,Math.min(24,parseInt(e.target.value)||12)); render(); });
+$('#logoutBtn').addEventListener('click', ()=>{ ['ryst_proxy_token','ryst_user_email','ryst_user_role'].forEach(k=>localStorage.removeItem(k)); window.location.href='login.html'; });
+
+load();
+</script>
+</body>
+</html>

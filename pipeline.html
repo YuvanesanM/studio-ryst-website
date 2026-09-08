@@ -1,0 +1,1133 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Leads &amp; Pipeline · Studio RYST</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#f3f4f1; --panel:#ffffff; --panel2:#f7f8f5;
+    --line:#e3e5e0; --accent:#3d9b69; --accent-d:#2f7d54; --accent-soft:#eaf4ee;
+    --ink:#1d211c; --muted:#5f655d; --muted2:#9aa097; --danger:#c0584b;
+    --s-new:#5b7db1; --s-contacted:#c8893d; --s-quoted:#8a6db1; --s-booked:#2f7d54; --s-lost:#c0584b;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:var(--bg);color:var(--ink);font-family:"Outfit",system-ui,sans-serif;-webkit-font-smoothing:antialiased;min-height:100%}
+  button,select,input,textarea{font-family:inherit}
+  button{cursor:pointer}
+  .wrap{max-width:1180px;margin:0 auto;padding:18px 16px 60px}
+
+  header.top{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:6px 2px 6px}
+  header.top img{height:38px;object-fit:contain}
+  header.top .ttl{font-weight:700;font-size:18px;letter-spacing:.2px}
+  header.top .ttl small{display:block;font-weight:500;font-size:11.5px;color:var(--muted2);letter-spacing:.4px}
+  header.top .spacer{flex:1}
+  .tbtn{background:var(--panel);border:1.5px solid var(--line);color:var(--muted);padding:8px 14px;border-radius:9px;font-size:12.5px;font-weight:600;transition:.15s}
+  .tbtn:hover{border-color:var(--accent);color:var(--accent-d)}
+  .redact{font-size:11px;color:var(--muted2);padding:2px 2px 16px}
+
+  .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px}
+  .kpi{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:15px 16px 14px;box-shadow:0 6px 18px rgba(40,50,40,.04)}
+  .kpi .lbl{font-size:11.5px;font-weight:600;color:var(--muted2);letter-spacing:.4px;text-transform:uppercase}
+  .kpi .val{font-size:24px;font-weight:700;margin-top:6px;letter-spacing:-.5px}
+  .kpi .sub{font-size:12px;color:var(--muted);margin-top:3px}
+  .kpi.hero{background:linear-gradient(135deg,var(--accent) 0%,var(--accent-d) 100%);border:none;color:#fff}
+  .kpi.hero .lbl,.kpi.hero .sub{color:#dff0e6}
+
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
+  .panel{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px 18px 18px;box-shadow:0 6px 18px rgba(40,50,40,.04)}
+  .panel h2{font-size:13px;font-weight:700;margin-bottom:3px}
+  .panel .cap{font-size:11.5px;color:var(--muted2);margin-bottom:14px}
+
+  .hbars{display:flex;flex-direction:column;gap:11px}
+  .hbar{display:grid;grid-template-columns:118px 1fr auto;align-items:center;gap:10px;font-size:12.5px}
+  .hbar .nm{color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:flex;align-items:center;gap:6px}
+  .dot{width:9px;height:9px;border-radius:3px;flex-shrink:0}
+  .hbar .track{height:11px;background:var(--panel2);border-radius:6px;overflow:hidden}
+  .hbar .fill{display:block;height:11px;border-radius:6px;min-width:2px}
+  .hbar .amt{font-weight:700;font-variant-numeric:tabular-nums;white-space:nowrap}
+
+  .months{display:flex;flex-direction:column;gap:12px}
+  .mrow{display:grid;grid-template-columns:62px 1fr 120px;align-items:center;gap:12px}
+  .mrow .mn{font-size:12.5px;font-weight:600}
+  .mrow .bar{position:relative;height:20px;background:var(--panel2);border-radius:6px;overflow:hidden}
+  .mrow .bar .val{position:absolute;left:0;top:0;bottom:0;background:linear-gradient(90deg,var(--accent),var(--accent-d));border-radius:6px;min-width:2px}
+  .mrow .bar .tgt{position:absolute;top:-3px;bottom:-3px;width:2px;background:var(--ink)}
+  .mrow .meta{font-size:11.5px;text-align:right;font-variant-numeric:tabular-nums;color:var(--muted)}
+  .mrow .meta b{color:var(--ink)}
+  .ach{font-weight:700;padding:1px 6px;border-radius:20px;font-size:10.5px}
+  .ach.hi{color:var(--s-booked);background:#e7f4ec}.ach.mid{color:var(--s-contacted);background:#fbf3e6}.ach.lo{color:var(--danger);background:#fbecea}
+
+  /* Leads grid */
+  .toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:10px}
+  .toolbar input,.toolbar select{padding:9px 11px;border:1.5px solid var(--line);border-radius:9px;background:var(--panel2);font-size:13px;color:var(--ink);outline:none}
+  .toolbar input:focus,.toolbar select:focus{border-color:var(--accent)}
+  .toolbar .search{flex:1;min-width:150px}
+
+  /* Filter bar — always visible (used to be a collapsed drawer) */
+  .filterbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:2px 0 14px}
+  .filterbar select{padding:8px 10px;border:1.5px solid var(--line);border-radius:9px;background:var(--panel2);font-size:12.5px;color:var(--ink);outline:none}
+  .filterbar select:focus{border-color:var(--accent)}
+  .stage-pills{display:flex;gap:6px;flex-wrap:wrap}
+  .stage-pill{border:1.5px solid var(--line);background:var(--panel);color:var(--muted);padding:6px 12px;border-radius:20px;font-size:12px;font-weight:600;transition:.15s}
+  .stage-pill:hover{border-color:var(--accent)}
+  .stage-pill.on{color:#fff;border-color:transparent}
+  .clearf{font-size:12px;color:var(--muted2);font-weight:600;background:none;border:none;text-decoration:underline;padding:4px 2px}
+  .clearf:hover{color:var(--danger)}
+  /* Sortable column headers */
+  th.sortable{cursor:pointer;user-select:none}
+  th.sortable:hover{color:var(--accent-d)}
+  th.sortable .arrow{opacity:.4;margin-left:3px}
+  th.sortable.active .arrow{opacity:1;color:var(--accent-d)}
+  /* Inline row actions */
+  .stage-sel{font-size:10.5px;font-weight:700;padding:3px 20px 3px 9px;border-radius:12px;white-space:nowrap;color:#fff;border:none;-webkit-appearance:none;appearance:none;background-repeat:no-repeat;background-position:right 7px center;background-size:9px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='white' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");cursor:pointer}
+  .phone-actions{display:flex;align-items:center;gap:6px}
+  .wa-link{color:#3d9b69;text-decoration:none;font-size:14px;line-height:1;opacity:.75}
+  .wa-link:hover{opacity:1}
+  .fu-cell{display:flex;align-items:center;gap:5px}
+  .snooze-btn{background:none;border:1px solid var(--line);color:var(--muted2);font-size:10px;font-weight:700;padding:2px 6px;border-radius:8px;line-height:1.4;white-space:nowrap}
+  .snooze-btn:hover{border-color:var(--accent);color:var(--accent-d)}
+  .pay-dot{display:inline-block;width:7px;height:7px;border-radius:50%;margin-left:6px;vertical-align:middle}
+
+  /* Analytics tucked behind a single collapsed toggle — collapsed by default */
+  .insights{margin-top:14px}
+  .insights>summary{cursor:pointer;list-style:none;display:flex;align-items:center;gap:8px;padding:13px 18px;background:var(--panel);border:1px solid var(--line);border-radius:14px;font-size:13.5px;font-weight:700;color:var(--ink);box-shadow:0 6px 18px rgba(40,50,40,.04)}
+  .insights>summary::-webkit-details-marker{display:none}
+  .insights>summary::before{content:'▸';color:var(--muted2);font-size:12px;transition:transform .15s}
+  .insights[open]>summary::before{transform:rotate(90deg)}
+  .insights>summary:hover{border-color:var(--accent)}
+  .insights .ins-hint{font-weight:500;color:var(--muted2);font-size:12px}
+  .insights-body{margin-top:12px}
+  .btn{border:none;border-radius:9px;padding:10px 16px;font-size:13.5px;font-weight:600;transition:.15s;display:inline-flex;align-items:center;gap:6px}
+  .btn.primary{background:var(--accent);color:#fff}.btn.primary:hover{background:var(--accent-d)}
+  .btn.ghost{background:var(--panel);border:1.5px solid var(--line);color:var(--ink)}.btn.ghost:hover{border-color:var(--accent);color:var(--accent-d)}
+  .btn:disabled{opacity:.5;cursor:not-allowed}
+  table{width:100%;border-collapse:collapse;font-size:13px;min-width:760px}
+  th{text-align:left;font-size:10.5px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--muted2);padding:9px 10px;border-bottom:1px solid var(--line);white-space:nowrap}
+  td{padding:9px 10px;border-bottom:1px solid var(--panel2);vertical-align:middle}
+  tr:last-child td{border-bottom:none}
+  tbody tr{cursor:pointer}
+  tbody tr:hover td{background:var(--panel2)}
+  /* Customer view */
+  .cv-head{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+  .cv-card{border:1px solid var(--line);border-radius:11px;padding:13px 15px;background:var(--panel2)}
+  .cv-card h4{font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--accent-d);margin-bottom:9px}
+  .cv-facts{display:grid;grid-template-columns:1fr 1fr;gap:8px 14px;font-size:13px}
+  .cv-facts .k{color:var(--muted2);font-size:11.5px}
+  .cv-facts .v{color:var(--ink);font-weight:600}
+  .cv-line{display:flex;justify-content:space-between;font-size:13.5px;padding:2px 0}
+  .cv-line .amt{font-weight:700;font-variant-numeric:tabular-nums}
+  .cv-time{display:flex;flex-direction:column;gap:0}
+  .cv-step{display:grid;grid-template-columns:16px 1fr auto;align-items:center;gap:10px;padding:6px 0;font-size:13px}
+  .cv-step .d{width:11px;height:11px;border-radius:50%;background:var(--accent);justify-self:center}
+  .cv-step.muted .d{background:var(--line)}
+  .cv-step .dt{color:var(--muted2);font-size:12px}
+  td.r{text-align:right;font-weight:700;font-variant-numeric:tabular-nums;white-space:nowrap}
+  .lead-nm{font-weight:600}
+  .lead-sub{font-size:11.5px;color:var(--muted2)}
+  a.tel{color:var(--accent-d);text-decoration:none;font-variant-numeric:tabular-nums;white-space:nowrap}
+  .zpill{font-size:10.5px;font-weight:700;padding:2px 8px;border-radius:10px;white-space:nowrap}
+  .stpill{font-size:10.5px;font-weight:700;padding:2px 9px;border-radius:12px;white-space:nowrap;color:#fff}
+  .rowbtn{background:none;border:none;color:var(--muted2);padding:5px;border-radius:6px;line-height:0}
+  .rowbtn:hover{color:var(--accent-d);background:var(--accent-soft)}
+  .rowbtn.del:hover{color:var(--danger);background:#fbecea}
+  .empty{padding:34px 12px;text-align:center;color:var(--muted2);font-size:13px}
+
+  /* Modal */
+  .overlay{position:fixed;inset:0;background:rgba(29,33,28,.5);backdrop-filter:blur(2px);display:none;align-items:center;justify-content:center;padding:18px;z-index:50}
+  .overlay.show{display:flex}
+  .modal{background:var(--panel);border-radius:16px;width:min(620px,100%);max-height:92vh;overflow-y:auto;box-shadow:0 24px 70px rgba(20,30,20,.28)}
+  .modal h3{font-size:16px;font-weight:700;padding:20px 22px 0}
+  .mbody{padding:14px 22px 20px;display:flex;flex-direction:column;gap:12px}
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .field{display:flex;flex-direction:column;gap:5px}
+  .field label{font-size:11.5px;font-weight:600;color:var(--muted)}
+  .field input,.field select,.field textarea{padding:10px 11px;border:1px solid var(--line);border-radius:9px;background:var(--panel2);font-size:14px;color:var(--ink);outline:none;width:100%}
+  .field input:focus,.field select:focus,.field textarea:focus{border-color:var(--accent)}
+  .field textarea{resize:vertical;min-height:46px}
+  .bookbox{border:1px dashed var(--line);border-radius:11px;padding:12px 14px;background:var(--panel2)}
+  .bookbox .bh{font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--accent-d);margin-bottom:10px}
+  .merr{color:var(--danger);font-size:12.5px;min-height:15px}
+  .mfoot{display:flex;gap:10px;justify-content:space-between;align-items:center;margin-top:2px}
+  .mfoot .right{display:flex;gap:10px}
+
+  #toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(20px);background:var(--ink);color:#fff;padding:12px 20px;border-radius:11px;font-size:13.5px;opacity:0;pointer-events:none;transition:.25s;z-index:80}
+  #toast.show{opacity:1;transform:translateX(-50%) translateY(0)}#toast.err{background:var(--danger)}
+  #loader{position:fixed;inset:0;background:rgba(243,244,241,.9);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;z-index:90;color:var(--muted);text-align:center;padding:24px}
+  #loader.hide{display:none}
+  .spin{width:34px;height:34px;border:3px solid var(--line);border-top-color:var(--accent);border-radius:50%;animation:sp 1s linear infinite}
+  @keyframes sp{to{transform:rotate(360deg)}}
+  .setup{max-width:440px;font-size:13.5px;line-height:1.6}
+  .setup code{background:var(--panel2);border:1px solid var(--line);border-radius:5px;padding:1px 5px;font-size:12px}
+
+  @media(max-width:820px){ .kpis{grid-template-columns:1fr 1fr} .grid{grid-template-columns:1fr} }
+  @media(max-width:520px){ .kpi .val{font-size:20px} .two{grid-template-columns:1fr} }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <img id="logo" alt="RYST" src="" />
+    <div class="ttl">Leads &amp; Pipeline<small>Studio RYST · CRM</small></div>
+    <div class="spacer"></div>
+    <button class="tbtn" onclick="window.location.href='report.html'">📊 Growth</button>
+    <button class="tbtn" onclick="window.location.href='login.html'">🗓 Schedule</button>
+    <button class="tbtn" onclick="window.location.href='login.html'">⌂ Home</button>
+    <button class="tbtn" id="logoutBtn">⎋ Log out</button>
+  </header>
+  <div class="redact" id="redact">🔒 Customer contact details are stored in a private repo — never public.</div>
+
+  <div class="kpis">
+    <div class="kpi hero"><div class="lbl">Total leads</div><div class="val" id="kTotal">—</div><div class="sub" id="kTotalSub"></div></div>
+    <div class="kpi"><div class="lbl">Converted</div><div class="val" id="kWon">—</div><div class="sub" id="kWonSub"></div></div>
+    <div class="kpi"><div class="lbl">Open pipeline</div><div class="val" id="kOpen">—</div><div class="sub" id="kOpenSub"></div></div>
+    <div class="kpi"><div class="lbl">Revenue collected</div><div class="val" id="kRev">—</div><div class="sub" id="kRevSub"></div></div>
+  </div>
+
+  <div class="panel">
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:4px">
+      <h2 style="margin:0">Leads</h2>
+      <div style="display:flex;gap:8px">
+        <button class="btn ghost" id="importBtn" style="display:none">⤓ Import</button>
+        <button class="btn primary" id="addBtn">＋ Add lead</button>
+      </div>
+    </div>
+    <input type="file" id="importFile" accept=".json,application/json" hidden>
+    <div class="cap" id="leadsCap">Capture, track and convert enquiries</div>
+    <div class="toolbar">
+      <input class="search" id="search" placeholder="Search name, phone, invoice…" />
+      <select id="fSort" title="Sort by">
+        <option value="priority">Sort: Needs attention</option>
+        <option value="newest">Sort: Newest first</option>
+        <option value="value">Sort: Highest value</option>
+        <option value="followup">Sort: Follow-up date</option>
+        <option value="stage">Sort: Stage</option>
+        <option value="name">Sort: Name A–Z</option>
+      </select>
+      <button class="btn ghost" id="dueChip" style="padding:9px 13px">⏰ Follow-ups due</button>
+      <button class="btn ghost" id="owedChip" style="padding:9px 13px">💰 Payment due</button>
+      <button class="btn ghost" id="staleChip" style="padding:9px 13px">🕸 Stale</button>
+    </div>
+    <div class="filterbar">
+      <div class="stage-pills" id="stagePills"></div>
+      <select id="fSource"><option value="All">All sources</option></select>
+      <select id="fZone"><option value="All">All zones</option></select>
+      <button class="clearf" id="clearFilters" style="display:none">Clear filters</button>
+    </div>
+    <div style="overflow-x:auto"><table>
+      <thead><tr>
+        <th class="sortable" data-sort="enquiry">Enquiry <span class="arrow">↕</span></th>
+        <th class="sortable" data-sort="name">Lead <span class="arrow">↕</span></th>
+        <th>Phone</th>
+        <th class="sortable" data-sort="stage">Stage <span class="arrow">↕</span></th>
+        <th class="sortable" data-sort="followup">Follow-up <span class="arrow">↕</span></th>
+        <th class="sortable" style="text-align:right" data-sort="value">Value <span class="arrow">↕</span></th>
+        <th style="width:60px"></th>
+      </tr></thead>
+      <tbody id="leads"></tbody>
+    </table></div>
+  </div>
+
+  <details class="insights">
+    <summary>📊 Pipeline insights <span class="ins-hint">— stage breakdown, sources, monthly vs target</span></summary>
+    <div class="insights-body">
+      <div class="grid">
+        <div class="panel"><h2>Pipeline by stage</h2><div class="cap">All leads</div><div class="hbars" id="stages"></div></div>
+        <div class="panel"><h2>Lead sources</h2><div class="cap">Where leads come from</div><div class="hbars" id="sources"></div></div>
+      </div>
+      <div class="panel" style="margin-top:14px">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:10px">
+          <h2 style="margin:0">Monthly booked vs target</h2>
+          <button class="btn ghost" id="editTargets" style="display:none;padding:7px 12px;font-size:12.5px">✎ Edit targets</button>
+        </div>
+        <div class="cap">Revenue collected by month against target · <span style="border-left:2px solid var(--ink);padding-left:5px">target</span></div>
+        <div class="months" id="months"></div>
+      </div>
+    </div>
+  </details>
+</div>
+
+<!-- Lead modal -->
+<div class="overlay" id="leadOverlay">
+  <div class="modal">
+    <h3 id="leadTitle">Add lead</h3>
+    <div class="mbody">
+      <div class="two">
+        <div class="field"><label>Company / Name</label><input id="fCompany" placeholder="Company or name" /></div>
+        <div class="field"><label>Contact person</label><input id="fContact" placeholder="Contact name" /></div>
+      </div>
+      <div class="two">
+        <div class="field"><label>Phone</label><input id="fPhone" inputmode="tel" placeholder="10-digit mobile" /></div>
+        <div class="field"><label>Source</label><select id="fSrc"></select></div>
+      </div>
+      <div class="two">
+        <div class="field"><label>Zone</label><select id="fZoneM"></select></div>
+        <div class="field"><label>Duration</label><input id="fDuration" placeholder="e.g. 2 hrs" /></div>
+      </div>
+      <div class="two">
+        <div class="field"><label>Stage</label><select id="fStageM"></select></div>
+        <div class="field"><label>Follow-up date</label><input id="fFollow" type="date" /></div>
+      </div>
+      <div class="two">
+        <div class="field"><label>Quote estimate (₹)</label><input id="fEstimate" inputmode="decimal" placeholder="0" /></div>
+        <div class="field"><label>Enquiry date</label><input id="fEnq" type="date" /></div>
+      </div>
+      <div class="field"><label>Add-ons / notes</label><textarea id="fNotes" placeholder="Requirements, add-ons, notes…"></textarea></div>
+      <div class="bookbox" id="bookBox" style="display:none">
+        <div class="bh">Booking details</div>
+
+        <!-- QUOTED: this lead has a linked quote — payment + scheduling now
+             live there; show a read-only summary instead of duplicate fields. -->
+        <div id="bookBoxQuoted" style="display:none">
+          <div style="padding:13px 15px;border:1px solid var(--line);border-radius:11px;background:var(--panel2)">
+            <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:9px">
+              <span style="font-size:11px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--muted2)">Quote <span id="bQuoteNo"></span></span>
+              <span id="bQuoteStatusBadge" style="font-size:10.5px;font-weight:700;padding:2px 9px;border-radius:12px"></span>
+            </div>
+            <div id="bQuoteSummary" style="font-size:13px;color:var(--ink);line-height:1.7"></div>
+          </div>
+          <a id="bOpenQuote" href="#" target="_blank" style="display:inline-block;margin-top:10px;font-size:12.5px;font-weight:700;color:var(--accent-d);text-decoration:none">Open quote to manage payment &amp; schedule →</a>
+        </div>
+
+        <!-- MANUAL: legacy leads booked before quotes drove scheduling. Kept
+             so existing data stays viewable/editable; not offered for new ones. -->
+        <div id="bookBoxManual">
+          <p style="font-size:12px;color:var(--muted);line-height:1.5;margin:0 0 12px;padding:10px 12px;background:var(--panel2);border:1px dashed var(--line);border-radius:10px">
+            💡 New bookings should be scheduled from a quote — use <b>Raise quote →</b> below. This manual record is kept for bookings made before that.
+          </p>
+          <div class="two">
+            <div class="field"><label>Booking date</label><input id="bDate" type="date" /></div>
+            <div class="field"><label>Start time</label><input id="bStart" type="time" /></div>
+          </div>
+          <div class="two" style="margin-top:12px">
+            <div class="field"><label>Total inc. GST (₹)</label><input id="bTotal" inputmode="decimal" placeholder="0" /></div>
+            <div class="field"><label>Payment status <span style="font-weight:400;color:var(--muted2);text-transform:none;letter-spacing:0">(auto)</span></label><div id="bPayBadge" style="padding:10px 11px;border-radius:9px;border:1.5px solid var(--line);font-size:13px;font-weight:700;text-align:center">Pending</div></div>
+          </div>
+          <div style="margin-top:14px">
+            <label style="font-size:11.5px;font-weight:600;color:var(--muted);display:block;margin-bottom:7px">Payments received</label>
+            <div id="paymentsList" style="display:flex;flex-direction:column;gap:6px;margin-bottom:9px"></div>
+            <div style="display:grid;grid-template-columns:1fr 108px 1fr auto;gap:7px;align-items:center">
+              <input id="pmtDate" type="date" style="padding:8px 9px;border:1px solid var(--line);border-radius:8px;background:var(--panel2);font-size:13px;color:var(--ink)">
+              <input id="pmtAmount" inputmode="decimal" placeholder="Amount" style="padding:8px 9px;border:1px solid var(--line);border-radius:8px;background:var(--panel2);font-size:13px;color:var(--ink);width:100%">
+              <input id="pmtNote" placeholder="Note (optional)" style="padding:8px 9px;border:1px solid var(--line);border-radius:8px;background:var(--panel2);font-size:13px;color:var(--ink);width:100%">
+              <button class="btn ghost" id="pmtAdd" type="button" style="padding:8px 13px;font-size:12.5px;white-space:nowrap">+ Add</button>
+            </div>
+          </div>
+          <div id="bBalance" style="margin-top:12px;font-size:12.5px;font-weight:600"></div>
+        </div>
+
+        <div class="two" style="margin-top:12px">
+          <div class="field"><label>Invoice no.</label><input id="bInvoice" placeholder="—" /></div>
+          <div class="field"><label>Billing address</label><input id="bAddress" placeholder="Address" /></div>
+        </div>
+      </div>
+      <div class="merr" id="leadErr"></div>
+      <div class="mfoot">
+        <button class="btn ghost" id="leadDelete" style="color:var(--danger);border-color:#eec7c2;display:none">Delete</button>
+        <span style="flex:1"></span>
+        <div class="right">
+          <button class="btn ghost" id="leadCancel">Cancel</button>
+          <button class="btn ghost" id="leadQuote" style="border-color:var(--accent);color:var(--accent-d)">Raise quote →</button>
+          <button class="btn primary" id="leadSave">Save lead</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Customer view -->
+<div class="overlay" id="custOverlay">
+  <div class="modal" style="width:min(640px,100%)">
+    <h3 id="custTitle">Customer</h3>
+    <div class="mbody" id="custBody"></div>
+  </div>
+</div>
+
+<!-- Targets editor (admin) -->
+<div class="overlay" id="targetsOverlay">
+  <div class="modal" style="width:min(440px,100%)">
+    <h3>Monthly targets</h3>
+    <div class="mbody">
+      <p style="font-size:12.5px;color:var(--muted2);margin:-2px 0 4px">Revenue goal per month. Collected revenue is measured against these.</p>
+      <div id="targetsBody" style="display:flex;flex-direction:column;gap:8px;max-height:52vh;overflow-y:auto"></div>
+      <div class="merr" id="targetsErr"></div>
+      <div class="mfoot"><span style="flex:1"></span><div class="right">
+        <button class="btn ghost" id="targetsCancel">Cancel</button>
+        <button class="btn primary" id="targetsSave">Save targets</button>
+      </div></div>
+    </div>
+  </div>
+</div>
+
+<div id="loader"><div class="spin"></div><div id="loaderMsg">Loading leads…</div></div>
+<div id="toast"></div>
+
+<script>
+const PROXY_URL='https://ryst-109a-proxy.onrender.com/studio';
+const TOKEN=localStorage.getItem('ryst_proxy_token')||'';
+if(!TOKEN){ window.location.href='login.html'; }
+const $=s=>document.querySelector(s), $$=s=>document.querySelectorAll(s);
+const esc=s=>(s==null?'':String(s)).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const INR0=new Intl.NumberFormat('en-IN',{style:'currency',currency:'INR',maximumFractionDigits:0});
+const money=n=>INR0.format(Math.round(Number(n)||0));
+function compactINR(n){ n=Number(n)||0; const a=Math.abs(n);
+  if(a>=1e7)return '₹'+(n/1e7).toFixed(2)+'Cr'; if(a>=1e5)return '₹'+(n/1e5).toFixed(2)+'L';
+  if(a>=1e3)return '₹'+(n/1e3).toFixed(a>=1e4?0:1)+'k'; return '₹'+Math.round(n); }
+
+const STAGES=['New','Contacted','Quoted','Booked','Lost'];
+const STAGE_COLOR={New:'var(--s-new)',Contacted:'var(--s-contacted)',Quoted:'var(--s-quoted)',Booked:'var(--s-booked)',Lost:'var(--s-lost)'};
+const SOURCES=['Instagram','Google Search','Google Maps','Referral','Walk-in','Website','Booking','Other'];
+const ZONES=['Podcast','Photography','Culinary','Multi-Zone'];
+const ZONE_COLOR={Podcast:'#3d9b69',Photography:'#c8893d',Culinary:'#c0584b','Multi-Zone':'#5b7db1'};
+const zColor=z=>ZONE_COLOR[z]||'var(--muted2)';
+
+let DOC={version:1,targets:[],leads:[]};
+let TARGETS=[];
+let FILTER={q:'',stage:'All',source:'All',zone:'All',due:false,owed:false,stale:false,sort:'priority'};
+function myRole(){
+  try{ let p=(TOKEN.split('.')[0]||'').replace(/-/g,'+').replace(/_/g,'/'); p+='='.repeat((4-p.length%4)%4);
+    const d=JSON.parse(atob(p)); if(d&&d.role) return d.role; }catch(e){}
+  return localStorage.getItem('ryst_user_role')||'coordinator';
+}
+const IS_ADMIN = myRole()==='admin';
+
+(function(){ try{const s=JSON.parse(localStorage.getItem('ryst_quote_settings')||'null'); if(s&&s.logo){$('#logo').src=s.logo;return;}}catch(e){}
+  const l=localStorage.getItem('ryst_logo'); if(l)$('#logo').src=l; else $('#logo').style.display='none'; })();
+
+let toastT; function toast(m,e){const t=$('#toast');t.textContent=m;t.className='show'+(e?' err':'');clearTimeout(toastT);toastT=setTimeout(()=>t.className='',3200);}
+
+async function api(method, payload){
+  const ctrl=new AbortController();
+  const slow=setTimeout(()=>{$('#loaderMsg').textContent='Waking up the server… up to a minute.';},4000);
+  const abort=setTimeout(()=>ctrl.abort(),75000);
+  try{
+    const opts={method,headers:{'X-Token':TOKEN},signal:ctrl.signal};
+    if(payload){ opts.headers['Content-Type']='application/json'; opts.body=JSON.stringify(payload); }
+    const res=await fetch(PROXY_URL+'/leads',opts);
+    if(res.status===401){ localStorage.removeItem('ryst_proxy_token'); window.location.href='login.html'; throw new Error('Session expired'); }
+    const data=await res.json().catch(()=>({}));
+    if(!res.ok) throw new Error(data.error||('Error '+res.status));
+    return data;
+  } finally { clearTimeout(slow); clearTimeout(abort); }
+}
+
+async function load(){
+  $('#loader').className='';
+  try{
+    const d=await api('GET');
+    DOC={version:d.version||1, targets:Array.isArray(d.targets)?d.targets:[], leads:Array.isArray(d.leads)?d.leads:[]};
+    // Targets: prefer the admin-gated /targets store, fall back to migrated leads.targets.
+    try{ const tr=await fetch(PROXY_URL+'/targets',{headers:{'X-Token':TOKEN}});
+      if(tr.ok){ const td=await tr.json(); TARGETS=(Array.isArray(td.targets)&&td.targets.length)?td.targets:(DOC.targets||[]); }
+      else TARGETS=DOC.targets||[]; }catch(e){ TARGETS=DOC.targets||[]; }
+    // Quotes: fetched up front (not just on-demand via ensureLinks) so leads
+    // linked to a quote show correct totals/payments in the KPIs and the
+    // "Payment due" chip immediately, not only once that lead is opened.
+    try{ const qr=await fetch(PROXY_URL+'/quotes',{headers:{'X-Token':TOKEN}});
+      QUOTES_CACHE = qr.ok ? ((await qr.json()).quotes||[]) : []; }catch(e){ QUOTES_CACHE=[]; }
+    render();
+  }catch(e){ showSetup(e.message); }
+  finally{ $('#loader').className='hide'; }
+}
+function showSetup(msg){
+  $('#loader').className='';
+  $('#loader').innerHTML=`<div style="font-size:40px">🗄️</div>
+    <div style="font-size:17px;font-weight:700;color:var(--ink)">Lead store not reachable yet</div>
+    <div class="setup" style="color:var(--muted)">The private data repo isn’t set up yet, so leads can’t load.<br><br>
+      Create a private repo <code>ryst-studio-data</code> and give the proxy’s GitHub token access to it, then reload.<br><br>
+      <span style="color:var(--muted2);font-size:12px">(${esc(msg||'')})</span></div>
+    <button class="btn primary" onclick="location.reload()">Reload</button>`;
+}
+
+// ── Derived ──
+// A quote-linked lead's real value/payments live on the QUOTE, not the lead's
+// own (now vestigial) fields — that's the single source of truth going forward.
+const normPhone=p=>String(p||'').replace(/\D/g,'').slice(-10);
+function quoteFor(l){ return l.quoteNo ? (QUOTES_CACHE||[]).find(x=>x.qno===l.quoteNo) : null; }
+// All quotes belonging to this lead's customer, matched by phone number —
+// one lead can represent SEVERAL real bookings (repeat customers whose
+// duplicate lead records have been merged into one), so anything counting
+// "this lead's value/payments" needs every matching quote, not just the
+// single quoteNo link. Falls back to the linked quote alone (or none) for
+// leads with no phone number to match on.
+function quotesForLead(l){
+  const p=normPhone(l.phone);
+  const linked=quoteFor(l);
+  if(!p) return linked ? [linked] : [];
+  const matches=(QUOTES_CACHE||[]).filter(q=>normPhone(q.cphone)===p);
+  return matches.length ? matches : (linked ? [linked] : []);
+}
+function quotePaidAmount(q){ return Array.isArray(q.payments) ? q.payments.reduce((s,p)=>s+(Number(p.amount)||0),0) : 0; }
+function leadValue(l){
+  const qs=quotesForLead(l);
+  if(qs.length) return qs.reduce((s,q)=>s+quoteTotal(q),0);
+  return l.stage==='Booked' ? (Number(l.total)||0) : (parseFloat(l.quoteEstimate)||0);
+}
+function monthOf(dstr){
+  if(!dstr) return '';
+  let m;
+  if((m=/^(\d{4})-(\d{2})-\d{2}/.exec(dstr))) return new Date(+m[1],+m[2]-1,1).toLocaleString('en-IN',{month:'short'});
+  if((m=/^(\d{1,2})[\/-](\d{1,2})[\/-](\d{4})/.exec(dstr))) return new Date(+m[3],+m[2]-1,1).toLocaleString('en-IN',{month:'short'});
+  return '';
+}
+// ── Follow-ups ──
+function todayISO(){ return new Date().toISOString().slice(0,10); }
+// Short "created" label for a lead row — day+month normally, day+month+year
+// once it's from an earlier calendar year (leads accumulate for a while, and
+// a bare "3 Jan" reads as this year unless it isn't).
+function fmtCreated(ts){
+  if(!ts) return '';
+  const d=new Date(ts);
+  const opts={day:'numeric',month:'short'};
+  if(d.getFullYear()!==new Date().getFullYear()) opts.year='numeric';
+  return d.toLocaleDateString('en-IN',opts);
+}
+function followupISO(l){ const d=l.followup||''; let m;
+  if((m=/^(\d{4})-(\d{2})-(\d{2})/.exec(d))) return d.slice(0,10);
+  if((m=/^(\d{1,2})[\/-](\d{1,2})[\/-](\d{4})/.exec(d))) return `${m[3]}-${String(+m[2]).padStart(2,'0')}-${String(+m[1]).padStart(2,'0')}`;
+  return ''; }
+function isOpen(l){ return !['Booked','Lost'].includes(l.stage); }
+function followupDue(l){ const iso=followupISO(l); return isOpen(l) && !!iso && iso<=todayISO(); }
+function updateDueChip(){
+  const n=DOC.leads.filter(followupDue).length, c=$('#dueChip');
+  c.textContent='⏰ Follow-ups due'+(n?` (${n})`:'');
+  const on=FILTER.due;
+  c.style.background=on?'var(--accent)':''; c.style.color=on?'#fff':''; c.style.borderColor=on?'var(--accent)':(n?'var(--s-contacted)':'');
+}
+// ── Payments ──
+// Sum of payments across every quote matched to this lead's phone number
+// (see quotesForLead); falls back to the lead's own payments log, then the
+// old single "advance" number for leads saved before either existed.
+function paidTotal(l){
+  const qs=quotesForLead(l);
+  if(qs.length) return qs.reduce((s,q)=>s+quotePaidAmount(q),0);
+  if(Array.isArray(l.payments) && l.payments.length) return l.payments.reduce((s,p)=>s+(Number(p.amount)||0),0);
+  return Number(l.advance)||0;
+}
+function outstanding(l){
+  if(l.stage!=='Booked') return 0;
+  const qs=quotesForLead(l);
+  if(qs.length) return Math.max(0, qs.reduce((s,q)=>s+quoteTotal(q),0)-paidTotal(l));
+  const total=Number(l.total)||0;
+  if(l.paymentStatus==='Completed') return 0;
+  return Math.max(0, total-paidTotal(l));
+}
+function totalOutstanding(){ return DOC.leads.reduce((s,l)=>s+outstanding(l),0); }
+function paymentDue(l){ return outstanding(l)>0; }
+function updateOwedChip(){
+  const n=DOC.leads.filter(paymentDue).length, c=$('#owedChip');
+  c.textContent='💰 Payment due'+(n?` (${n})`:'');
+  const on=FILTER.owed;
+  c.style.background=on?'var(--accent)':''; c.style.color=on?'#fff':''; c.style.borderColor=on?'var(--accent)':(n?'var(--s-contacted)':'');
+}
+// Payment status is fully derived — no manual field to keep in sync.
+function computedPaymentStatus(total, paid){
+  if(total<=0) return 'Pending';
+  if(paid>=total) return 'Completed';
+  if(paid>0) return 'Partial';
+  return 'Pending';
+}
+// ── Stale leads (open, untouched for 14+ days) ──
+const STALE_MS = 14*24*3600*1000;
+function isStale(l){ return isOpen(l) && (Date.now()-(l.updatedAt||l.createdAt||0)) > STALE_MS; }
+function updateStaleChip(){
+  const n=DOC.leads.filter(isStale).length, c=$('#staleChip');
+  c.textContent='🕸 Stale'+(n?` (${n})`:'');
+  const on=FILTER.stale;
+  c.style.background=on?'var(--accent)':''; c.style.color=on?'#fff':''; c.style.borderColor=on?'var(--accent)':(n?'var(--s-contacted)':'');
+}
+
+function render(){
+  const leads=DOC.leads;
+  const total=leads.length;
+  const won=leads.filter(l=>l.stage==='Booked').length;
+  const lost=leads.filter(l=>l.stage==='Lost').length;
+  const open=leads.filter(l=>['New','Contacted','Quoted'].includes(l.stage)).length;
+  // Actual cash collected, not the full contracted value of each booking —
+  // a ₹50k quote with a ₹5k token advance contributes ₹5k here, not ₹50k.
+  const revenue=leads.filter(l=>l.stage==='Booked').reduce((s,l)=>s+paidTotal(l),0);
+  const conv=total? Math.round(won/total*100):0;
+  $('#kTotal').textContent=total; $('#kTotalSub').textContent=`${won} won · ${lost} lost`;
+  $('#kWon').textContent=won; $('#kWonSub').textContent=conv+'% conversion';
+  $('#kOpen').textContent=open; $('#kOpenSub').textContent='New / Contacted / Quoted';
+  $('#kRev').textContent=compactINR(revenue);
+  const owed=totalOutstanding();
+  $('#kRevSub').innerHTML = owed>0 ? `<span style="color:#fff;background:rgba(255,255,255,.18);padding:1px 7px;border-radius:20px;font-weight:700">${compactINR(owed)} outstanding</span>` : 'all collected';
+
+  // stage funnel
+  const byStage=STAGES.map(s=>[s,leads.filter(l=>l.stage===s).length]).filter(e=>e[1]>0);
+  $('#stages').innerHTML=hbars(byStage, s=>STAGE_COLOR[s]||'var(--muted2)', v=>v);
+  // sources
+  const srcMap={}; leads.forEach(l=>{const s=l.source||'Unknown'; srcMap[s]=(srcMap[s]||0)+1;});
+  const srcEntries=Object.entries(srcMap).sort((a,b)=>b[1]-a[1]);
+  const pal=['#3d9b69','#c8893d','#5b7db1','#c0584b','#8a6db1','#9aa097'];
+  $('#sources').innerHTML=hbars(srcEntries,(n)=>pal[srcEntries.findIndex(e=>e[0]===n)%pal.length],v=>v);
+
+  renderMonths();
+  buildFilterOptions();
+  renderLeads();
+  updateDueChip();
+  updateOwedChip();
+  updateStaleChip();
+  // Coordinators do day-to-day lead CRUD; targets and bulk import are admin-only.
+  $('#editTargets').style.display = IS_ADMIN ? '' : 'none';
+  $('#importBtn').style.display = IS_ADMIN ? '' : 'none';
+}
+
+// ── Import (admin) — seed / restore the lead store from a JSON file ──
+$('#importBtn').addEventListener('click',()=>$('#importFile').click());
+$('#importFile').addEventListener('change',async e=>{
+  const f=e.target.files[0]; e.target.value=''; if(!f) return;
+  let doc; try{ doc=JSON.parse(await f.text()); }catch(err){ toast('That file isn’t valid JSON',true); return; }
+  const leads=Array.isArray(doc.leads)?doc.leads:(Array.isArray(doc)?doc:null);
+  if(!leads){ toast('No “leads” found in the file',true); return; }
+  if(!confirm(`Import ${leads.length} lead(s)?\n\nThis REPLACES all ${DOC.leads.length} current lead(s).`)) return;
+  const next={ version:doc.version||1, targets:Array.isArray(doc.targets)?doc.targets:(DOC.targets||[]), leads };
+  $('#loaderMsg').textContent='Importing…'; $('#loader').className='';
+  try{
+    await api('PUT', next);
+    DOC=next;
+    if(Array.isArray(doc.targets) && doc.targets.length && !TARGETS.length) TARGETS=doc.targets;
+    render();
+    toast(`Imported ${leads.length} lead(s)`);
+  }catch(err){ toast(err.message||'Import failed',true); }
+  finally{ $('#loader').className='hide'; }
+});
+
+function hbars(entries,colorFn,fmt){
+  if(!entries.length) return '<div class="empty">No data yet.</div>';
+  const max=Math.max(1,...entries.map(e=>e[1]));
+  return entries.map(([n,v])=>`<div class="hbar"><span class="nm"><span class="dot" style="background:${colorFn(n)}"></span>${esc(n)}</span>
+    <span class="track"><span class="fill" style="width:${Math.max(2,v/max*100)}%;background:${colorFn(n)}"></span></span>
+    <span class="amt">${fmt(v)}</span></div>`).join('');
+}
+
+function renderMonths(){
+  // Collected revenue by month — quote-aware, and matches the "cash
+  // collected" definition the top KPI uses (paidTotal, not the full quoted
+  // value). Distributed PER BOOKING (per matched quote), not per lead — a
+  // lead can represent several real bookings across different months (see
+  // quotesForLead), so lumping its whole paidTotal() onto one date would
+  // both misattribute the month and double up if two leads shared a quote.
+  const actual={};
+  DOC.leads.filter(l=>l.stage==='Booked').forEach(l=>{
+    const qs=quotesForLead(l);
+    if(qs.length){
+      qs.forEach(q=>{
+        const m=monthOf(q.sessionDate||q.date||'');
+        if(m) actual[m]=(actual[m]||0)+quotePaidAmount(q);
+      });
+    } else {
+      const m=monthOf(l.bookingDate||l.targetDate);
+      if(m) actual[m]=(actual[m]||0)+paidTotal(l);
+    }
+  });
+  const rows=(TARGETS||[]).map(t=>({month:t.month, target:Number(t.target)||0, value:actual[t.month.slice(0,3)]||actual[t.month]||0}))
+    .filter(r=>r.target>0||r.value>0);
+  if(!rows.length){ $('#months').innerHTML='<div class="empty">No targets set'+(IS_ADMIN?' — use “Edit targets” above.':'.')+'</div>'; return; }
+  const max=Math.max(1,...rows.map(r=>Math.max(r.value,r.target)));
+  $('#months').innerHTML=rows.map(r=>{
+    const ach=r.target?Math.round(r.value/r.target*100):0; const cls=ach>=90?'hi':ach>=50?'mid':'lo';
+    return `<div class="mrow"><span class="mn">${esc(r.month.slice(0,3))}</span>
+      <span class="bar"><span class="val" style="width:${Math.min(100,r.value/max*100)}%"></span>${r.target?`<span class="tgt" style="left:${Math.min(100,r.target/max*100)}%"></span>`:''}</span>
+      <span class="meta"><b>${compactINR(r.value)}</b> / ${compactINR(r.target)} <span class="ach ${cls}">${ach}%</span></span></div>`;
+  }).join('');
+}
+
+function buildFilterOptions(){
+  const set=(sel,vals,cur)=>{ const e=$(sel); const keep=e.value; e.innerHTML=`<option value="All">${cur}</option>`+vals.map(v=>`<option${v===keep?' selected':''}>${esc(v)}</option>`).join(''); };
+  const srcs=[...new Set(DOC.leads.map(l=>l.source).filter(Boolean))];
+  set('#fSource',srcs,'All sources');
+  set('#fZone',ZONES,'All zones');
+  $('#stagePills').innerHTML = STAGES.map(s=>{
+    const n=DOC.leads.filter(l=>l.stage===s).length;
+    const on=FILTER.stage===s;
+    return `<button type="button" class="stage-pill${on?' on':''}" data-stage="${s}" style="${on?`background:${STAGE_COLOR[s]};border-color:${STAGE_COLOR[s]}`:''}">${s}${n?` (${n})`:''}</button>`;
+  }).join('');
+  updateClearFiltersVisibility();
+}
+function updateClearFiltersVisibility(){
+  const active = FILTER.q || FILTER.stage!=='All' || FILTER.source!=='All' || FILTER.zone!=='All' || FILTER.due || FILTER.owed || FILTER.stale;
+  $('#clearFilters').style.display = active ? '' : 'none';
+}
+
+function passFilter(l){
+  if(FILTER.due && !followupDue(l)) return false;
+  if(FILTER.owed && !paymentDue(l)) return false;
+  if(FILTER.stale && !isStale(l)) return false;
+  if(FILTER.stage!=='All'&&l.stage!==FILTER.stage) return false;
+  if(FILTER.source!=='All'&&l.source!==FILTER.source) return false;
+  if(FILTER.zone!=='All'&&l.zone!==FILTER.zone) return false;
+  const q=FILTER.q.trim().toLowerCase();
+  if(q){ const hay=[l.company,l.contact,l.phone,l.invoice,l.notes].map(x=>(x||'').toLowerCase()).join(' '); if(!hay.includes(q)) return false; }
+  return true;
+}
+// ── Sorting ──
+const STAGE_ORDER={New:0,Contacted:1,Quoted:2,Booked:3,Lost:4};
+function sortRows(rows){
+  const key=FILTER.sort||'priority';
+  const byName=(a,b)=>(a.company||a.contact||'').localeCompare(b.company||b.contact||'');
+  if(key==='name') return [...rows].sort(byName);
+  if(key==='value') return [...rows].sort((a,b)=>leadValue(b)-leadValue(a));
+  if(key==='newest') return [...rows].sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));
+  if(key==='stage') return [...rows].sort((a,b)=>(STAGE_ORDER[a.stage]??0)-(STAGE_ORDER[b.stage]??0) || byName(a,b));
+  if(key==='followup') return [...rows].sort((a,b)=>{
+    const fa=followupISO(a), fb=followupISO(b);
+    if(fa&&fb) return fa.localeCompare(fb);
+    return fa?-1:fb?1:0;
+  });
+  if(key==='enquiry') return [...rows].sort((a,b)=>{
+    const ea=a.enqDate||'', eb=b.enqDate||'';
+    if(ea&&eb) return eb.localeCompare(ea);   // newest enquiry first
+    return ea?-1:eb?1:0;
+  });
+  // 'priority' (default) — surfaces what actually needs attention today:
+  // overdue/due follow-ups first (most overdue at top), then open leads
+  // without a follow-up, then Booked, then Lost last.
+  const tISO=todayISO();
+  const bucket=l=>{
+    if(!isOpen(l)) return l.stage==='Booked'?2:3;
+    const fiso=followupISO(l);
+    return (fiso && fiso<=tISO) ? 0 : 1;
+  };
+  return [...rows].sort((a,b)=>{
+    const ba=bucket(a), bb=bucket(b);
+    if(ba!==bb) return ba-bb;
+    if(ba===0){ const fa=followupISO(a), fb=followupISO(b); if(fa!==fb) return fa.localeCompare(fb); }
+    return (b.updatedAt||b.createdAt||0)-(a.updatedAt||a.createdAt||0);
+  });
+}
+const HEADER_SORT_KEY={enquiry:'enquiry',name:'name',stage:'stage',followup:'followup',value:'value'};
+function updateSortHeaders(){
+  $('#fSort').value = FILTER.sort||'priority';
+  $$('th.sortable').forEach(th=>th.classList.toggle('active', HEADER_SORT_KEY[th.dataset.sort]===FILTER.sort));
+}
+function renderLeads(){
+  updateSortHeaders();
+  const rows=sortRows(DOC.leads.filter(passFilter));
+  $('#leadsCap').textContent=`${rows.length} of ${DOC.leads.length} lead${DOC.leads.length===1?'':'s'}`;
+  const tb=$('#leads');
+  if(!rows.length){ tb.innerHTML='<tr><td colspan="7" class="empty">No leads match. Click “＋ Add lead”.</td></tr>'; return; }
+  const tISO=todayISO();
+  const payDotColor={Completed:'var(--s-booked)',Partial:'var(--s-contacted)',Pending:'var(--s-lost)'};
+  tb.innerHTML=rows.map(l=>{
+    const val=leadValue(l);
+    const bookingCount=quotesForLead(l).length;
+    const fiso=followupISO(l);
+    const fStyle = (isOpen(l)&&fiso&&fiso<=tISO) ? (fiso<tISO?'color:var(--s-lost);font-weight:700':'color:var(--s-contacted);font-weight:700') : 'color:var(--muted2)';
+    const waHref = l.phone ? `https://wa.me/${(normPhone(l.phone).length===10?'91':'')}${normPhone(l.phone)}` : '';
+    // Payment status is derived from the aggregate paid/value (not the
+    // lead's own stale paymentStatus field), so it stays correct for a
+    // merged lead spanning several quotes/bookings.
+    const payStatus = l.stage==='Booked' ? computedPaymentStatus(val, paidTotal(l)) : '';
+    const payDot = (l.stage==='Booked' && val>0) ? `<span class="pay-dot" title="Payment: ${esc(payStatus)}" style="background:${payDotColor[payStatus]||'var(--muted2)'}"></span>` : '';
+    const bookingsBadge = bookingCount>1 ? `<span class="lead-sub" style="display:block">${bookingCount} bookings</span>` : '';
+    return `<tr data-id="${esc(l.id)}">
+      <td style="color:var(--muted2);font-size:11.5px">${esc(l.enqDate||'—')}</td>
+      <td><div class="lead-nm">${esc(l.company||l.contact||'—')}${isStale(l)?' <span title="Stale — 14+ days untouched">🕸</span>':''}</div><div class="lead-sub">${[l.contact&&l.company?esc(l.contact):'', l.zone?esc(l.zone):'', l.createdAt?`Added ${esc(fmtCreated(l.createdAt))}`:''].filter(Boolean).join(' · ')||'&nbsp;'}</div></td>
+      <td>${l.phone?`<div class="phone-actions"><a class="tel" href="tel:${esc(l.phone)}">${esc(l.phone)}</a><a class="wa-link" href="${waHref}" target="_blank" title="WhatsApp" onclick="event.stopPropagation()">💬</a></div>`:'<span class="lead-sub">—</span>'}</td>
+      <td><select class="stage-sel qstage" data-id="${esc(l.id)}" style="background-color:${STAGE_COLOR[l.stage]||'var(--muted2)'}">${STAGES.map(s=>`<option value="${s}"${s===(l.stage||'New')?' selected':''}>${s}</option>`).join('')}</select></td>
+      <td><div class="fu-cell"><span style="${fStyle};font-size:11.5px">${esc(l.followup||'—')}</span>${isOpen(l)?`<button type="button" class="snooze-btn qsnooze" data-id="${esc(l.id)}" title="Push follow-up out 2 days">+2d</button>`:''}</div></td>
+      <td class="r">${val?money(val):'—'}${payDot}${bookingsBadge}</td>
+      <td><button class="rowbtn edit" title="Edit">✎</button></td>
+    </tr>`;
+  }).join('');
+}
+$('#leads').addEventListener('click',e=>{
+  if(e.target.closest('.qstage')||e.target.closest('.qsnooze')||e.target.closest('.wa-link')) return;
+  const tr=e.target.closest('tr[data-id]'); if(!tr) return;
+  const l=DOC.leads.find(x=>x.id===tr.dataset.id); if(!l) return;
+  if(e.target.closest('.edit')) openLead(l); else openCustomer(l);
+});
+// Quick stage change, no modal — EXCEPT moving to Booked, which still needs
+// booking details (date/total/payment), so that one opens the edit modal
+// pre-set to the Booked stage instead of silently saving half-formed data.
+$('#leads').addEventListener('change',async e=>{
+  const sel=e.target.closest('.qstage'); if(!sel) return;
+  const l=DOC.leads.find(x=>x.id===sel.dataset.id); if(!l) return;
+  const next=sel.value;
+  if(next==='Booked' && l.stage!=='Booked'){ sel.value=l.stage||'New'; openLead(l); setTimeout(()=>{ $('#fStageM').value='Booked'; toggleBookBox(); },60); return; }
+  if(next===l.stage) return;
+  const rec={...l, stage:next, updatedAt:Date.now()};
+  await saveLeads(upsertLead(rec), `${rec.company||rec.contact||'Lead'} → ${next}`);
+});
+// Quick follow-up snooze (+2 days from today, or +2 from the existing date
+// if it's already in the future) — saves immediately, no modal.
+$('#leads').addEventListener('click',async e=>{
+  const btn=e.target.closest('.qsnooze'); if(!btn) return;
+  const l=DOC.leads.find(x=>x.id===btn.dataset.id); if(!l) return;
+  const base=followupISO(l); const tISO=todayISO();
+  const from=(base && base>tISO) ? base : tISO;
+  const d=new Date(from+'T00:00:00'); d.setDate(d.getDate()+2);
+  const rec={...l, followup:d.toISOString().slice(0,10), updatedAt:Date.now()};
+  await saveLeads(upsertLead(rec), 'Follow-up pushed +2 days');
+});
+
+// ── Unified customer view ──
+let QUOTES_CACHE=null, SCHED_CACHE=null;
+async function ensureLinks(){
+  if(QUOTES_CACHE===null){ try{ const r=await fetch(PROXY_URL+'/quotes',{headers:{'X-Token':TOKEN}}); QUOTES_CACHE=r.ok?((await r.json()).quotes||[]):[]; }catch(e){ QUOTES_CACHE=[]; } }
+  if(SCHED_CACHE===null){ try{ const r=await fetch(PROXY_URL+'/schedule',{headers:{'X-Token':TOKEN}}); SCHED_CACHE=r.ok?((await r.json()).sessions||[]):[]; }catch(e){ SCHED_CACHE=[]; } }
+}
+function quoteTotal(q){ const it=q.items||[]; const sub=it.reduce((s,x)=>s+(parseFloat(x.price)||0)*(parseFloat(x.qty)||0),0);
+  const gst=it.reduce((s,x)=>s+((parseFloat(x.price)||0)*(parseFloat(x.qty)||0))*(parseFloat(x.gst)||0)/100,0);
+  const disc=Math.min(parseFloat(q.discount)||0, Math.floor(sub*0.10)); return Math.round(sub-disc+gst); }
+function raiseQuoteForLead(l){
+  localStorage.setItem('ryst_quote_prefill', JSON.stringify({leadId:l.id,company:l.company,contact:l.contact,phone:l.phone,zone:l.zone,duration:l.duration,address:l.address,estimate:l.quoteEstimate}));
+  window.location.href='quote.html';
+}
+async function openCustomer(l){
+  $('#custTitle').textContent = l.company||l.contact||'Customer';
+  $('#custBody').innerHTML='<div class="empty">Loading…</div>';
+  $('#custOverlay').className='overlay show';
+  await ensureLinks();
+  const linked = l.quoteNo ? QUOTES_CACHE.find(q=>q.qno===l.quoteNo) : null;
+  // Every quote for this customer — matched by phone (reliable, and covers
+  // several real bookings under one merged lead), plus a name-match fallback
+  // for older data where a quote's phone was never filled in.
+  const nameKey=(l.company||l.contact||'').trim().toLowerCase();
+  const byPhone=quotesForLead(l);
+  const byName=nameKey ? QUOTES_CACHE.filter(q=>(q.cname||'').trim().toLowerCase()===nameKey) : [];
+  const seen=new Set(); const quotes=[];
+  [...byPhone, ...byName].forEach(q=>{ if(q && !seen.has(q.qno)){ seen.add(q.qno); quotes.push(q); } });
+  quotes.sort((a,b)=>(a.date||'').localeCompare(b.date||''));
+  const session = l.scheduleId ? SCHED_CACHE.find(s=>s.id===l.scheduleId) : null;
+
+  const fact=(k,v)=> v?`<div><div class="k">${esc(k)}</div><div class="v">${esc(v)}</div></div>`:'';
+  const quotesHtml = quotes.length ? quotes.map(q=>`<div class="cv-line"><span>${esc(q.qno)} · ${esc(q.zone||'')}${q.hours?(' · '+esc(q.hours)+'h'):''} <span style="color:var(--muted2);font-size:12px">${esc(q.date||'')}</span></span><span class="amt">${money(quoteTotal(q))}</span></div>`).join('') : '<div class="k" style="color:var(--muted2)">No quotes yet.</div>';
+  let bookingHtml;
+  if(l.stage==='Booked'){
+    // Total/payments are the sum across EVERY quote matched to this
+    // customer (see quotesForLead) — the single source of truth now, not
+    // the lead's own (vestigial) fields, and not just one linked quote.
+    const total=leadValue(l), out=outstanding(l), paid=total-out;
+    const bookingCount=quotes.length;
+    const schedLine = session
+      ? `<div class="cv-line"><span>🔗 ${esc(session.date||'')} · ${esc(session.start||'')}–${esc(session.end||'')} · ${esc(session.zone||'')}</span><a class="tel" href="login.html">Open schedule →</a></div>`
+      : `<div class="cv-line"><span>${esc(l.bookingDate||'')} · ${esc(l.zone||'')}</span><span style="color:var(--muted2);font-size:12px">not on schedule</span></div>`;
+    const money2=v=>money(v);
+    const paySource = quotes.length
+      ? quotes.flatMap(q=>Array.isArray(q.payments)?q.payments.map(p=>({...p, qno:q.qno})):[])
+      : (Array.isArray(l.payments)?l.payments:[]);
+    const pays=[...paySource].sort((a,b)=>(a.date||'').localeCompare(b.date||''));
+    const paysHtml = pays.length
+      ? `<div style="margin-top:8px;padding-top:8px;border-top:1px solid var(--line)">`+pays.map(p=>`<div class="cv-line" style="font-size:12px;color:var(--muted)"><span>${esc(p.date||'—')}${p.qno?' · '+esc(p.qno):''}${p.note?' · '+esc(p.note):''}</span><span>${money2(p.amount)}</span></div>`).join('')+`</div>`
+      : '';
+    bookingHtml = (bookingCount>1?`<div class="cv-line"><span class="k">Bookings</span><span>${bookingCount}</span></div>`:'')
+      + schedLine
+      + (total>0?`<div class="cv-line"><span class="k">Total</span><span class="amt">${money2(total)}</span></div>`:'')
+      + (total>0?`<div class="cv-line"><span class="k">Payment</span><span>${money2(paid)} paid${out>0?` · <b style="color:var(--s-lost)">${money2(out)} due</b>`:` · <b style="color:var(--s-booked)">settled</b>`}</span></div>`:'')
+      + (l.invoice?`<div class="cv-line"><span class="k">Invoice</span><span>${esc(l.invoice)}</span></div>`:'')
+      + paysHtml;
+  } else { bookingHtml = '<div class="k" style="color:var(--muted2)">Not booked.</div>'; }
+  const steps=[];
+  if(l.enqDate) steps.push(['Enquiry received', l.enqDate]);
+  if(linked) steps.push(['Quote '+linked.qno+' sent', linked.date||'']);
+  if(l.stage==='Booked') steps.push(['Booked', l.bookingDate||'']);
+  if(l.stage==='Lost') steps.push(['Marked lost','']);
+  const timeHtml = steps.length ? `<div class="cv-time">${steps.map(s=>`<div class="cv-step"><span class="d"></span><span>${esc(s[0])}</span><span class="dt">${esc(s[1]||'')}</span></div>`).join('')}</div>` : '<div class="k" style="color:var(--muted2)">No history yet.</div>';
+
+  $('#custBody').innerHTML=`
+    <div class="cv-head"><span class="stpill" style="background:${STAGE_COLOR[l.stage]||'var(--muted2)'}">${esc(l.stage||'New')}</span>${l.phone?`<a class="tel" href="tel:${esc(l.phone)}">${esc(l.phone)}</a>`:''}<span style="color:var(--muted2);font-size:12.5px">${esc(l.source||'')}</span></div>
+    <div class="cv-card"><h4>Lead</h4><div class="cv-facts">${fact('Contact',l.contact)}${fact('Zone',l.zone)}${fact('Duration',l.duration)}${fact('Follow-up',l.followup)}${fact('Estimate',l.quoteEstimate?money(l.quoteEstimate):'')}${fact('Enquiry date',l.enqDate)}${fact('Lead created',l.createdAt?fmtCreated(l.createdAt):'')}</div>${l.notes?`<div style="margin-top:10px;font-size:13px;color:var(--muted)">${esc(l.notes)}</div>`:''}</div>
+    <div class="cv-card"><h4>Quotes</h4>${quotesHtml}</div>
+    <div class="cv-card"><h4>Booking</h4>${bookingHtml}</div>
+    <div class="cv-card"><h4>Timeline</h4>${timeHtml}</div>
+    <div class="mfoot"><span style="flex:1"></span><div class="right">
+      <button class="btn ghost" id="cvClose">Close</button>
+      <button class="btn ghost" id="cvQuote" style="border-color:var(--accent);color:var(--accent-d)">Raise quote →</button>
+      <button class="btn primary" id="cvEdit">Edit lead</button>
+    </div></div>`;
+  $('#cvClose').onclick=()=>$('#custOverlay').className='overlay';
+  $('#cvEdit').onclick=()=>{ $('#custOverlay').className='overlay'; openLead(l); };
+  $('#cvQuote').onclick=()=>raiseQuoteForLead(l);
+}
+
+// ── Lead modal ──
+let editingId=null;
+function pcId(){ return 'L'+Date.now().toString(36)+Math.floor(Math.random()*1e4).toString(36); }
+function fillSelect(sel,vals,val){ sel.innerHTML=vals.map(v=>`<option${v===val?' selected':''}>${esc(v)}</option>`).join(''); }
+function toISO(d){ if(!d)return''; let m; if((m=/^(\d{1,2})[\/-](\d{1,2})[\/-](\d{4})/.exec(d))) return `${m[3]}-${String(+m[2]).padStart(2,'0')}-${String(+m[1]).padStart(2,'0')}`; if(/^\d{4}-\d{2}-\d{2}/.test(d)) return d.slice(0,10); return ''; }
+
+function defaultFollowupISO(){ const d=new Date(); d.setDate(d.getDate()+2); return d.toISOString().slice(0,10); }
+
+async function openLead(l){
+  editingId = l ? l.id : null;
+  $('#leadTitle').textContent = l ? 'Edit lead' : 'Add lead';
+  $('#fCompany').value=l?l.company||'':''; $('#fContact').value=l?l.contact||'':'';
+  $('#fPhone').value=l?l.phone||'':'';
+  fillSelect($('#fSrc'),SOURCES,l?l.source||'Instagram':'Instagram');
+  fillSelect($('#fZoneM'),['',...ZONES],l?l.zone||'':'');
+  $('#fDuration').value=l?l.duration||'':'';
+  fillSelect($('#fStageM'),STAGES,l?l.stage||'New':'New');
+  // A brand-new lead gets a follow-up default two days out — one less thing to set.
+  $('#fFollow').value = l ? toISO(l.followup) : defaultFollowupISO();
+  $('#fEnq').value=toISO(l?l.enqDate:'');
+  $('#fEstimate').value=l?l.quoteEstimate||'':''; $('#fNotes').value=l?l.notes||'':'';
+  // booking — manual/legacy fields (only shown when this lead has no linked quote)
+  $('#bDate').value=toISO(l?l.bookingDate:''); $('#bStart').value=l?l.bookingStart||'':''; $('#bTotal').value=l&&l.total!=null?l.total:'';
+  $('#bInvoice').value=l?l.invoice||'':''; $('#bAddress').value=l?l.address||'':'';
+  // Payments log — start from the lead's log, or migrate a legacy single "advance" into one entry.
+  paymentsDraft = (l && Array.isArray(l.payments) && l.payments.length) ? l.payments.map(p=>({...p}))
+    : (l && l.advance ? [{id:'legacy',date:l.bookingDate?toISO(l.bookingDate):todayISO(),amount:l.advance,note:'Advance'}] : []);
+  $('#pmtDate').value=todayISO(); $('#pmtAmount').value=''; $('#pmtNote').value='';
+  renderPayments();
+  toggleBookBox();
+  $('#leadDelete').style.display = l ? '' : 'none';
+  $('#leadErr').textContent='';
+  $('#leadOverlay').className='overlay show';
+  setTimeout(()=>$('#fCompany').focus(),50);
+
+  // If this lead is linked to a quote, pull its live payment/schedule status —
+  // the quote is the single source of truth going forward.
+  if(l && l.quoteNo){
+    await ensureLinks();
+    if(editingId===l.id) renderQuoteSummary(l);
+  }
+}
+function toggleBookBox(){
+  const isBooked=$('#fStageM').value==='Booked';
+  $('#bookBox').style.display = isBooked ? 'block':'none';
+  if(!isBooked) return;
+  // Repeat customer (same phone, already has an address on file) — reuse it.
+  if(!$('#bAddress').value.trim()){
+    const phone=normPhone($('#fPhone').value);
+    if(phone){
+      const match=DOC.leads.find(x=>x.id!==editingId && x.address && normPhone(x.phone)===phone);
+      if(match) $('#bAddress').value=match.address;
+    }
+  }
+  const lead = editingId ? DOC.leads.find(x=>x.id===editingId) : null;
+  const quoted = !!(lead && lead.quoteNo);
+  $('#bookBoxQuoted').style.display = quoted ? 'block' : 'none';
+  $('#bookBoxManual').style.display = quoted ? 'none' : 'block';
+  if(quoted) renderQuoteSummary(lead);
+  else updateBalance();
+}
+// Read-only booking summary pulled from the linked quote (Total/Paid/Balance,
+// Confirmed-on-payment status, and schedule state) — avoids a second,
+// divergeable copy of the same numbers living on the lead.
+function renderQuoteSummary(lead){
+  const badge=$('#bQuoteStatusBadge'); if(!badge) return;
+  $('#bQuoteNo').textContent = lead.quoteNo;
+  $('#bOpenQuote').href = 'quote.html?qno=' + encodeURIComponent(lead.quoteNo);
+  const q = (QUOTES_CACHE||[]).find(x=>x.qno===lead.quoteNo);
+  if(!q){
+    badge.textContent='—'; badge.style.background='var(--panel2)'; badge.style.color='var(--muted2)';
+    $('#bQuoteSummary').innerHTML='<span style="color:var(--muted2)">Quote details unavailable.</span>';
+    return;
+  }
+  const total=quoteTotal(q);
+  const paid=Array.isArray(q.payments) ? q.payments.reduce((s,p)=>s+(Number(p.amount)||0),0) : 0;
+  const status=q.status || (paid>0?'Confirmed':'Pending');
+  badge.textContent=status;
+  if(status==='Confirmed'){ badge.style.background='var(--accent-soft)'; badge.style.color='var(--accent-d)'; }
+  else { badge.style.background='#fbf3e6'; badge.style.color='var(--s-contacted)'; }
+  const bal=Math.max(0,total-paid);
+  const schedLine = q.scheduleId
+    ? `<div>🔗 Scheduled: ${esc(q.sessionDate||'')}${q.sessionStart?', '+esc(q.sessionStart):''}</div>`
+    : q.scheduleConflict
+    ? `<div style="color:var(--s-lost);font-weight:600">⚠ Schedule conflict — paid but not on the calendar, resolve in Quote Builder</div>`
+    : `<div style="color:var(--muted2)">Not yet on the schedule.</div>`;
+  const clientLine = q.clientStatus==='Accepted'
+    ? `<div style="color:var(--accent-d)">✅ Client accepted</div>`
+    : q.clientStatus==='Declined'
+    ? `<div style="color:var(--s-lost)">✋ Client declined</div>`
+    : q.sharedAt
+    ? `<div style="color:var(--muted2)">Awaiting client response.</div>`
+    : `<div style="color:var(--muted2)">Not yet shared with client.</div>`;
+  $('#bQuoteSummary').innerHTML = `<div>Total: <b>${money(total)}</b></div>
+    <div>Paid: <b>${money(paid)}</b>${bal>0?` · <span style="color:var(--s-lost)">${money(bal)} due</span>`:''}</div>
+    ${schedLine}
+    ${clientLine}`;
+}
+
+// ── Payments log (draft, scoped to the currently open lead) ──
+let paymentsDraft=[];
+function renderPayments(){
+  const box=$('#paymentsList');
+  if(!paymentsDraft.length){
+    box.innerHTML='<div style="font-size:12px;color:var(--muted2)">No payments recorded yet.</div>';
+  } else {
+    const sorted=[...paymentsDraft].sort((a,b)=>(a.date||'').localeCompare(b.date||''));
+    box.innerHTML=sorted.map(p=>{
+      const i=paymentsDraft.indexOf(p);
+      return `<div style="display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:12.5px;padding:7px 10px;background:var(--panel2);border-radius:8px">
+        <span>${esc(p.date||'—')}${p.note?' · '+esc(p.note):''}</span>
+        <span style="display:flex;align-items:center;gap:9px"><b>${money(p.amount)}</b><button type="button" data-i="${i}" class="pmt-del" title="Remove" style="background:none;border:none;color:var(--muted2);cursor:pointer;font-size:15px;line-height:1;padding:2px">×</button></span>
+      </div>`;
+    }).join('');
+    box.querySelectorAll('.pmt-del').forEach(btn=>btn.addEventListener('click',e=>{
+      paymentsDraft.splice(+e.currentTarget.dataset.i,1); renderPayments();
+    }));
+  }
+  updateBalance();
+}
+$('#pmtAdd').addEventListener('click',()=>{
+  const amt=parseFloat($('#pmtAmount').value)||0;
+  if(amt<=0){ $('#leadErr').textContent='Enter a payment amount.'; return; }
+  paymentsDraft.push({id:'p'+Date.now().toString(36)+Math.floor(Math.random()*1e4).toString(36), date:$('#pmtDate').value||todayISO(), amount:amt, note:$('#pmtNote').value.trim()});
+  $('#pmtAmount').value=''; $('#pmtNote').value=''; $('#leadErr').textContent='';
+  renderPayments();
+});
+
+function updateBalance(){
+  const el=$('#bBalance'); if(!el) return;
+  const total=parseFloat($('#bTotal').value)||0;
+  const paid = paymentsDraft.reduce((s,p)=>s+(Number(p.amount)||0),0);
+  const bal=Math.max(0,total-paid);
+  const status=computedPaymentStatus(total,paid);
+  const badge=$('#bPayBadge');
+  if(badge){
+    badge.textContent=status;
+    const colors={Completed:['var(--s-booked)','#cfe6d8','var(--accent-soft)'],Partial:['var(--s-contacted)','#f0dcb8','#fbf3e6'],Pending:['var(--muted2)','var(--line)','var(--panel2)']};
+    const [fg,bd,bg]=colors[status];
+    badge.style.color=fg; badge.style.borderColor=bd; badge.style.background=bg;
+  }
+  if(total<=0){ el.textContent=''; return; }
+  el.innerHTML = bal>0
+    ? `Balance due: <span style="color:var(--s-lost)">${money(bal)}</span> <span style="color:var(--muted2);font-weight:500">— paid ${money(paid)} of ${money(total)}</span>`
+    : `<span style="color:var(--s-booked)">Fully paid ✓</span>`;
+}
+$('#fStageM').addEventListener('change',toggleBookBox);
+$('#bTotal').addEventListener('input',updateBalance);
+$('#addBtn').onclick=()=>openLead(null);
+$('#leadCancel').onclick=()=>$('#leadOverlay').className='overlay';
+
+function collectLeadForm(){
+  const company=$('#fCompany').value.trim(), contact=$('#fContact').value.trim();
+  if(!company && !contact){ $('#leadErr').textContent='Enter a company or contact name.'; return null; }
+  const rec={
+    id: editingId||pcId(),
+    company, contact, name: company||contact,
+    phone:$('#fPhone').value.trim(), source:$('#fSrc').value, zone:$('#fZoneM').value,
+    duration:$('#fDuration').value.trim(), stage:$('#fStageM').value,
+    followup:$('#fFollow').value, enqDate:$('#fEnq').value,
+    quoteEstimate:$('#fEstimate').value.trim(), notes:$('#fNotes').value.trim(),
+    bookingDate:'',total:null,paymentStatus:'',invoice:'',address:'',
+    quoteNo:null, scheduleId:null,
+  };
+  // preserve existing links / booking on edit
+  const prev=DOC.leads.find(x=>x.id===editingId)||{};
+  rec.quoteNo=prev.quoteNo??null; rec.scheduleId=prev.scheduleId??null; rec.createdAt=prev.createdAt||Date.now();
+  rec.updatedAt=Date.now();   // drives the "Stale" filter — clears the moment she touches the lead
+  if(rec.stage==='Booked'){
+    rec.bookingDate=$('#bDate').value; rec.bookingStart=$('#bStart').value; rec.total=parseFloat($('#bTotal').value)||null;
+    rec.payments=paymentsDraft.map(p=>({...p}));
+    rec.paymentStatus=computedPaymentStatus(rec.total||0, rec.payments.reduce((s,p)=>s+(Number(p.amount)||0),0));
+    rec.invoice=$('#bInvoice').value.trim(); rec.address=$('#bAddress').value.trim();
+  } else { rec.bookingStart=prev.bookingStart||''; rec.payments=prev.payments||[]; }
+  return rec;
+}
+function upsertLead(rec){
+  const next=[...DOC.leads]; const idx=next.findIndex(x=>x.id===rec.id);
+  if(idx>=0) next[idx]=rec; else next.unshift(rec);
+  return next;
+}
+// New (not editing) + phone matches an existing lead → confirm before forking
+// a duplicate. Returns true to proceed with the save.
+function confirmNotDuplicate(rec){
+  if(editingId || !rec.phone) return true;
+  const phone=normPhone(rec.phone); if(!phone) return true;
+  const dup=DOC.leads.find(x=>normPhone(x.phone)===phone);
+  if(!dup) return true;
+  const proceed=confirm(`A lead for this phone number already exists:\n\n"${dup.company||dup.contact||'—'}" — stage: ${dup.stage||'New'}\n\nOK to add this as a new lead anyway.\nCancel to open the existing lead instead.`);
+  if(!proceed){ $('#leadOverlay').className='overlay'; openLead(dup); }
+  return proceed;
+}
+$('#leadSave').onclick=async()=>{
+  const rec=collectLeadForm(); if(!rec) return;
+  if(!confirmNotDuplicate(rec)) return;
+  await saveLeads(upsertLead(rec), editingId?'Lead updated':'Lead added');
+  $('#leadOverlay').className='overlay';
+};
+// Save the lead, hand its details to the Quote Builder, and go there.
+$('#leadQuote').onclick=async()=>{
+  const rec=collectLeadForm(); if(!rec) return;
+  await saveLeads(upsertLead(rec), null);
+  localStorage.setItem('ryst_quote_prefill', JSON.stringify({
+    leadId:rec.id, company:rec.company, contact:rec.contact, phone:rec.phone,
+    zone:rec.zone, duration:rec.duration, address:rec.address, estimate:rec.quoteEstimate
+  }));
+  window.location.href='quote.html';
+};
+
+// Scheduling now happens exclusively from a quote (Quote Builder → Add to
+// schedule) — see renderQuoteSummary() / the "Raise quote →" action above.
+$('#leadDelete').onclick=async()=>{
+  if(!editingId) return;
+  if(!confirm('Delete this lead? This cannot be undone.')) return;
+  await saveLeads(DOC.leads.filter(x=>x.id!==editingId),'Lead deleted');
+  $('#leadOverlay').className='overlay';
+};
+
+async function saveLeads(nextLeads, okMsg){
+  $('#loaderMsg').textContent='Saving…'; $('#loader').className='';
+  try{
+    const doc={version:DOC.version||1, targets:DOC.targets||[], leads:nextLeads};
+    const saved=await api('PUT', doc);
+    // re-read authoritative copy when the proxy returns the GitHub commit (not the doc)
+    DOC=doc; render();
+    if(okMsg) toast(okMsg);
+  }catch(e){ toast(e.message||'Save failed', true); }
+  finally{ $('#loader').className='hide'; }
+}
+
+$('#search').addEventListener('input',e=>{FILTER.q=e.target.value;renderLeads();updateClearFiltersVisibility();});
+$('#fSort').addEventListener('change',e=>{FILTER.sort=e.target.value;renderLeads();});
+$$('th.sortable').forEach(th=>th.addEventListener('click',()=>{
+  FILTER.sort = HEADER_SORT_KEY[th.dataset.sort] || 'priority';
+  renderLeads();
+}));
+$('#fSource').addEventListener('change',e=>{FILTER.source=e.target.value;renderLeads();updateClearFiltersVisibility();});
+$('#fZone').addEventListener('change',e=>{FILTER.zone=e.target.value;renderLeads();updateClearFiltersVisibility();});
+$('#dueChip').addEventListener('click',()=>{ FILTER.due=!FILTER.due; updateDueChip(); renderLeads(); updateClearFiltersVisibility(); });
+$('#owedChip').addEventListener('click',()=>{ FILTER.owed=!FILTER.owed; updateOwedChip(); renderLeads(); updateClearFiltersVisibility(); });
+$('#staleChip').addEventListener('click',()=>{ FILTER.stale=!FILTER.stale; updateStaleChip(); renderLeads(); updateClearFiltersVisibility(); });
+$('#stagePills').addEventListener('click',e=>{
+  const btn=e.target.closest('.stage-pill'); if(!btn) return;
+  const s=btn.dataset.stage;
+  FILTER.stage = FILTER.stage===s ? 'All' : s;
+  buildFilterOptions(); renderLeads();
+});
+$('#clearFilters').addEventListener('click',()=>{
+  FILTER={q:'',stage:'All',source:'All',zone:'All',due:false,owed:false,stale:false,sort:FILTER.sort};
+  $('#search').value=''; $('#fSource').value='All'; $('#fZone').value='All';
+  updateDueChip(); updateOwedChip(); updateStaleChip(); buildFilterOptions(); renderLeads();
+});
+
+// ── Targets editor (admin) ──
+const TARGET_MONTHS_DEFAULT=['May','June','July','August','September','October','November','December','January','February','March','April'];
+function openTargets(){
+  const months = TARGETS.length? TARGETS.map(t=>t.month) : TARGET_MONTHS_DEFAULT;
+  const cur={}; TARGETS.forEach(t=>cur[t.month]=t.target);
+  $('#targetsBody').innerHTML=months.map(m=>`<div style="display:grid;grid-template-columns:1fr 130px;align-items:center;gap:10px">
+    <span style="font-size:13px;color:var(--muted)">${esc(m)}</span>
+    <input class="tgt-inp" data-m="${esc(m)}" inputmode="decimal" placeholder="0" value="${cur[m]!=null?cur[m]:''}" style="padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:var(--panel2);font-size:14px;text-align:right;width:100%">
+  </div>`).join('');
+  $('#targetsErr').textContent=''; $('#targetsOverlay').className='overlay show';
+}
+$('#editTargets').addEventListener('click',openTargets);
+$('#targetsCancel').addEventListener('click',()=>$('#targetsOverlay').className='overlay');
+$('#targetsSave').addEventListener('click',async()=>{
+  const rows=[...document.querySelectorAll('.tgt-inp')].map(i=>({month:i.dataset.m, target:parseFloat(i.value)||0}));
+  $('#loaderMsg').textContent='Saving targets…'; $('#loader').className='';
+  try{
+    const res=await fetch(PROXY_URL+'/targets',{method:'PUT',headers:{'X-Token':TOKEN,'Content-Type':'application/json'},body:JSON.stringify({version:1,targets:rows})});
+    if(res.status===401){ localStorage.removeItem('ryst_proxy_token'); location.href='login.html'; return; }
+    else if(res.status===403){ toast('Admins only',true); }
+    else if(!res.ok){ toast('Save failed ('+res.status+')',true); }
+    else { TARGETS=rows; render(); toast('Targets saved'); $('#targetsOverlay').className='overlay'; }
+  }catch(e){ toast('Could not save targets',true); }
+  finally{ $('#loader').className='hide'; }
+});
+$('#logoutBtn').addEventListener('click',()=>{['ryst_proxy_token','ryst_user_email','ryst_user_role'].forEach(k=>localStorage.removeItem(k));window.location.href='login.html';});
+document.addEventListener('keydown',e=>{ if(e.key==='Escape') $$('.overlay').forEach(o=>o.className='overlay'); });
+
+load();
+</script>
+</body>
+</html>
