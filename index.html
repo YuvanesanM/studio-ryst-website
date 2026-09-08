@@ -120,6 +120,11 @@ button,input,select,textarea{font-family:inherit}
 .hero h1 em{font-style:italic;color:var(--accent-strong)}
 .hero p.lead{font-size:17px;color:var(--ink-muted);max-width:56ch;line-height:1.7;margin-bottom:30px}
 .hero .ctas{display:flex;gap:14px;flex-wrap:wrap}
+.reviews-badge{display:flex;align-items:center;gap:10px;margin-top:22px;font-size:13.5px;color:var(--ink-muted);text-decoration:none;width:fit-content}
+.reviews-badge:hover{color:var(--ink)}
+.rb-stars{display:flex;gap:1px;color:var(--accent-strong)}
+.rb-stars .dim{color:var(--line)}
+#rbRating{color:var(--ink);font-size:14.5px}
 .hero.small{padding:64px 0 56px}
 .hero.small h1{font-size:clamp(28px,4.2vw,42px)}
 
@@ -300,6 +305,10 @@ footer{border-top:1px solid var(--line);padding:64px 0 30px;margin-top:0}
     <a class="btn btn-brass" href="/booking/"><span>Book a Session</span></a>
     <a class="btn btn-outline" href="/packages/"><span>View Packages</span></a>
   </div>
+  <a class="reviews-badge" id="reviewsBadge" href="https://maps.app.goo.gl/7YeM8gav8mYPg42XA" target="_blank" rel="noopener" style="display:none">
+    <span class="rb-stars" id="rbStars"></span>
+    <b id="rbRating"></b><span id="rbCount"></span>
+  </a>
 </div></section>
 
 <section class="section"><div class="wrap">
@@ -402,5 +411,22 @@ footer{border-top:1px solid var(--line);padding:64px 0 30px;margin-top:0}
 
   </script>
 <script async src="https://www.instagram.com/embed.js"></script>
+<script>
+(function(){
+  var PROXY_URL = 'https://ryst-109a-proxy.onrender.com/studio';
+  fetch(PROXY_URL+'/public-reviews').then(function(r){ return r.ok ? r.json() : null; }).then(function(d){
+    if(!d || !d.rating) return;
+    var full = Math.round(d.rating);
+    var stars = '';
+    for(var i=0;i<5;i++){ stars += '<span'+(i<full?'':' class="dim"')+'><svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor"><path d="M12 2.5l2.9 6.6 7.1.7-5.4 4.7 1.6 7-6.2-3.8-6.2 3.8 1.6-7-5.4-4.7 7.1-.7z"/></svg></span>'; }
+    document.getElementById('rbStars').innerHTML = stars;
+    document.getElementById('rbRating').textContent = d.rating.toFixed(1);
+    document.getElementById('rbCount').textContent = ' · '+(d.reviewCount||0)+' Google reviews';
+    if(d.mapsUrl) document.getElementById('reviewsBadge').href = d.mapsUrl;
+    document.getElementById('reviewsBadge').style.display = 'flex';
+  }).catch(function(){});
+})();
+</script>
+
 </body>
 </html>

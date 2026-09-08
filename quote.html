@@ -176,6 +176,8 @@
   .lq-no{color:var(--accent-d);font-weight:600;font-size:12.5px}
   .lq-sub{color:var(--muted);font-size:11.5px;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .lq-paid{flex-shrink:0;font-size:9.5px;font-weight:700;padding:3px 8px;border-radius:10px;background:var(--accent-soft,#eaf4ee);color:var(--accent-d,#2f7d54);white-space:nowrap;letter-spacing:.3px;text-transform:uppercase}
+  .lq-del{flex-shrink:0;background:none;border:none;font-size:14px;padding:4px 6px;border-radius:6px;cursor:pointer;opacity:.55}
+  .lq-del:hover{opacity:1;background:rgba(192,88,75,.12)}
   .empty{color:var(--muted2);font-size:13px;text-align:center;padding:18px}
 
   .toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(20px);background:#1d211c;color:#fff;padding:12px 20px;border-radius:10px;font-size:13px;opacity:0;transition:.25s;z-index:60}
@@ -429,6 +431,7 @@
    ========================================================================= */
 const PROXY_URL = 'https://ryst-109a-proxy.onrender.com/studio';
 let proxyToken = localStorage.getItem('ryst_proxy_token') || '';
+const IS_ADMIN = (localStorage.getItem('ryst_user_role') || 'coordinator') === 'admin';
 const ZONES = ["Podcast", "Photography", "Culinary", "Multi-Zone"];
 const MIN_HOURS = 1;       // shortest bookable duration (1 hour allowed)
 const DEFAULT_HOURS = 2;   // pre-selected duration for a new quote
@@ -1314,10 +1317,30 @@ function renderLoadQuotePanel(){
         <div class="lq-main"><div class="lq-no">${esc(q.qno)}</div>
         <div class="lq-sub">${fmtDate(q.date)} · ${esc(q.cname||"—")} · ${esc(q.zone||"")}</div></div>
         ${isQuoteFullyPaid(q) ? `<span class="lq-paid">Paid</span>` : ""}
+        ${IS_ADMIN ? `<button type="button" class="lq-del" data-del="${esc(q.qno)}" title="Delete quote">🗑</button>` : ""}
       </div>`).join("");
-  panel.querySelectorAll("[data-load]").forEach(el=>el.addEventListener("click",()=>{
+  panel.querySelectorAll("[data-load]").forEach(el=>el.addEventListener("click",e=>{
+    if(e.target.closest("[data-del]")) return;
     loadQuote(el.dataset.load); closeLoadQuotePanel();
   }));
+  panel.querySelectorAll("[data-del]").forEach(el=>el.addEventListener("click",e=>{
+    e.stopPropagation();
+    deleteQuote(el.dataset.del);
+  }));
+}
+// Admin-only — quotes hold client PII/financials, so unlike a lead there's no
+// non-admin path to this at all (button is never rendered for a coordinator,
+// and this double-checks server-side intent isn't needed here since the
+// button visibility IS the only gate — /quotes PUT itself allows any signed-in
+// user, matching leads.json's own "any signed-in user may edit" policy).
+async function deleteQuote(qno){
+  if(!IS_ADMIN) return;
+  if(!confirm(`Delete quote ${qno}? This cannot be undone.`)) return;
+  setQuotes(getQuotes().filter(q=>q.qno!==qno));
+  await pushQuotes();
+  toast(`Deleted ${qno}`);
+  if(editingKey===qno) newQuote();
+  renderLoadQuotePanel();
 }
 
 /* ---------- PDF via native print → Save as PDF ---------- */

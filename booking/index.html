@@ -120,6 +120,11 @@ button,input,select,textarea{font-family:inherit}
 .hero h1 em{font-style:italic;color:var(--accent-strong)}
 .hero p.lead{font-size:17px;color:var(--ink-muted);max-width:56ch;line-height:1.7;margin-bottom:30px}
 .hero .ctas{display:flex;gap:14px;flex-wrap:wrap}
+.reviews-badge{display:flex;align-items:center;gap:10px;margin-top:22px;font-size:13.5px;color:var(--ink-muted);text-decoration:none;width:fit-content}
+.reviews-badge:hover{color:var(--ink)}
+.rb-stars{display:flex;gap:1px;color:var(--accent-strong)}
+.rb-stars .dim{color:var(--line)}
+#rbRating{color:var(--ink);font-size:14.5px}
 .hero.small{padding:64px 0 56px}
 .hero.small h1{font-size:clamp(28px,4.2vw,42px)}
 
@@ -307,8 +312,8 @@ footer{border-top:1px solid var(--line);padding:64px 0 30px;margin-top:0}
             <button type="button" class="zpill on" data-zone="Podcast">🎙️ Podcast</button>
             <button type="button" class="zpill" data-zone="Photography">📷 Photography</button>
             <button type="button" class="zpill" data-zone="Culinary">🍳 Culinary</button>
-            <button type="button" class="zpill" data-zone="Multi-Zone">🎬 Multi-Zone</button>
           </div>
+          <p style="margin-top:8px;font-size:12px;color:var(--ink-muted)">Need more than one zone for the same shoot? <a href="https://wa.me/917530011770" target="_blank" rel="noopener" style="color:var(--accent-strong);font-weight:600">Message us on WhatsApp</a> for a custom quote.</p>
         </div>
         <div class="two-col">
           <div class="field"><label>Date</label><input type="date" id="fDate"></div>
