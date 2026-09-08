@@ -30,7 +30,7 @@ img{max-width:100%;display:block}
 .nav{position:sticky;top:0;z-index:40;background:rgba(250,245,229,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
 .nav .inner{max-width:1120px;margin:0 auto;padding:12px 22px;display:flex;align-items:center;gap:18px}
 .brand{display:flex;align-items:center;gap:10px;text-decoration:none;flex-shrink:0}
-.brand img{height:44px;width:44px;object-fit:contain;border-radius:9px;background:#fff;box-shadow:0 0 0 1px var(--line);padding:3px}
+.brand img{height:176px;width:176px;object-fit:contain;border-radius:22px}
 .brand span{font-family:"Poppins",sans-serif;font-weight:600;font-size:17px;color:var(--ink)}
 .navlinks{display:flex;gap:26px;margin-left:auto}
 .navlinks a{text-decoration:none;font-size:14px;font-weight:600;color:var(--ink2);padding:6px 0;border-bottom:2px solid transparent;transition:.15s}
@@ -39,6 +39,7 @@ img{max-width:100%;display:block}
 .navlinks .nav-cta-m{display:none}
 .menu-btn{display:none;background:none;border:none;font-size:22px;color:var(--ink);cursor:pointer;padding:4px}
 @media(max-width:860px){
+  .brand img{height:44px;width:44px;border-radius:9px}
   .navlinks{position:fixed;inset:64px 0 0 0;background:var(--cream);flex-direction:column;gap:0;padding:10px 22px 24px;transform:translateY(-8px);opacity:0;pointer-events:none;transition:.18s;border-top:1px solid var(--line)}
   .navlinks.open{transform:translateY(0);opacity:1;pointer-events:auto}
   .navlinks a{padding:14px 0;border-bottom:1px solid var(--line);width:100%}
@@ -156,6 +157,13 @@ footer{background:var(--ink);color:#cfc4a8;padding:56px 0 26px;margin-top:70px}
 .foot-col h4{color:#fff;font-size:12.5px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;margin-bottom:14px}
 .foot-col a{display:block;font-size:13.5px;color:#cfc4a8;text-decoration:none;margin-bottom:10px}
 .foot-col a:hover{color:var(--gold)}
+.foot-ic{display:flex;align-items:center;gap:10px}
+.fi{width:22px;height:22px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0}
+.fi.ig{background:linear-gradient(45deg,#f9ce34,#ee2a7b,#6228d7)}
+.fi.wa{background:#25D366}
+.fi.gm{background:#fff}
+.fi.em,.fi.ph{background:#3a3122}
+
 .foot-bottom{border-top:1px solid #3a3122;padding-top:22px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;font-size:12px;color:#8d8267}
 @media(max-width:860px){.foot-grid{grid-template-columns:1fr 1fr}}
 @media(max-width:520px){.foot-grid{grid-template-columns:1fr}.foot-bottom{flex-direction:column}}
@@ -167,7 +175,7 @@ footer{background:var(--ink);color:#cfc4a8;padding:56px 0 26px;margin-top:70px}
 
 <header class="nav">
   <div class="inner">
-    <a class="brand" href="/"><img src="/assets/logo-300.png" alt="Studio RYST logo"><span>Studio RYST</span></a>
+    <a class="brand" href="/"><img src="/assets/logo-300.png" alt="Studio RYST"></a>
     <button class="menu-btn" id="menuBtn" aria-label="Menu">☰</button>
     <nav class="navlinks" id="navLinks">
       <a href="/">Home</a>
@@ -289,10 +297,11 @@ Address: 52 Ankur Plaza, Gopathy Narayana Road, T-Nagar, Chennai</p>
       </div>
       <div class="foot-col">
         <h4>Let's Connect!</h4>
-        <a href="https://instagram.com/studio.ryst" target="_blank" rel="noopener">Instagram — @studio.ryst</a>
-        <a href="https://wa.me/917530011770" target="_blank" rel="noopener">WhatsApp</a>
-        <a href="mailto:info@dreamour.in">info@dreamour.in</a>
-        <a href="tel:+917530011770">+91 75300 11770</a>
+        <a class="foot-ic" href="https://instagram.com/studio.ryst" target="_blank" rel="noopener"><span class="fi ig"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="#fff" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="6"/><circle cx="12" cy="12" r="4.2"/><circle cx="17.4" cy="6.6" r="1.15" fill="#fff" stroke="none"/></svg></span> Instagram — @studio.ryst</a>
+        <a class="foot-ic" href="https://wa.me/917530011770" target="_blank" rel="noopener"><span class="fi wa"><svg viewBox="0 0 32 32" width="13" height="13" fill="#fff"><path d="M16.004 3C9.377 3 4 8.373 4 15c0 2.31.652 4.47 1.78 6.307L4 29l7.86-1.746A11.94 11.94 0 0 0 16.004 27C22.63 27 28 21.627 28 15S22.63 3 16.004 3zm6.98 16.98c-.297.836-1.474 1.53-2.41 1.727-.64.135-1.474.243-4.286-.92-3.596-1.49-5.91-5.14-6.09-5.377-.176-.238-1.454-1.936-1.454-3.693 0-1.756.914-2.617 1.24-2.976.297-.325.65-.406.867-.406.217 0 .434.002.624.011.2.01.468-.076.732.56.297.72.998 2.486 1.084 2.666.087.18.144.39.03.628-.114.238-.172.386-.34.594-.17.207-.356.462-.508.62-.17.176-.348.368-.15.72.198.353.878 1.45 1.885 2.348 1.294 1.155 2.386 1.512 2.74 1.68.353.17.56.144.766-.086.207-.23.882-1.03 1.118-1.383.235-.353.47-.294.792-.176.325.117 2.06.972 2.414 1.148.353.176.588.264.674.412.087.148.087.856-.21 1.693z"/></svg></span> WhatsApp</a>
+        <a class="foot-ic" href="https://www.google.com/maps/search/?api=1&query=Ankur+Plaza+52+Gopathy+Narayana+Rd+T+Nagar+Chennai+600017" target="_blank" rel="noopener"><span class="fi gm"><svg viewBox="0 0 24 24" width="13" height="13"><path fill="#EA4335" d="M12 22s7-7.58 7-12A7 7 0 1 0 5 10c0 4.42 7 12 7 12z"/><circle cx="12" cy="10" r="2.6" fill="#fff"/></svg></span> Get Directions</a>
+        <a class="foot-ic" href="mailto:info@dreamour.in"><span class="fi em"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="#dca54a" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M3 6l9 7 9-7"/></svg></span> info@dreamour.in</a>
+        <a class="foot-ic" href="tel:+917530011770"><span class="fi ph"><svg viewBox="0 0 24 24" width="12" height="12" fill="#dca54a"><path d="M6.6 10.8c1.4 2.8 3.8 5.2 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.5.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1C10.6 21 3 13.4 3 4c0-.6.4-1 1-1h3.4c.6 0 1 .4 1 1 0 1.2.2 2.4.6 3.5.1.4 0 .8-.2 1L6.6 10.8z"/></svg></span> +91 75300 11770</a>
       </div>
     </div>
     <div class="foot-bottom">
