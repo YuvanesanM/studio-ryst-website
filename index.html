@@ -299,7 +299,14 @@ footer{border-top:1px solid var(--line);padding:64px 0 30px;margin-top:0}
 
 
 /* ---- hero: full-bleed photo/video ---- */
-.hero.hero-media{position:relative;padding:0;overflow:hidden;min-height:clamp(560px,92vh,900px);display:flex;align-items:center}
+/* padding-top reserves clearance under the absolutely-positioned overlay
+   nav so the vertically-centered hero content can never render behind it —
+   relying on centering math alone (no reserved space) was fragile: it only
+   happened to clear the nav before the logo was enlarged, and broke (on
+   both desktop and mobile) the moment the nav got taller. 260px clears the
+   desktop nav (~242px: 14+200px logo+14px margin+14px pad); the 860px
+   override below clears the shorter mobile nav (~92px) instead. */
+.hero.hero-media{position:relative;padding:0;padding-top:260px;overflow:hidden;min-height:clamp(560px,92vh,900px);display:flex;align-items:center}
 .hero-media-bg{position:absolute;inset:0;z-index:0;background:var(--surface-2)}
 .hero-photo,.hero-video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 35%}
 .hero-scrim{position:absolute;inset:0;z-index:1;
@@ -323,6 +330,16 @@ footer{border-top:1px solid var(--line);padding:64px 0 30px;margin-top:0}
 @keyframes heroKB{from{transform:scale(1)}to{transform:scale(1.06)}}
 .hero-media.kb-static .hero-photo{animation:heroKB 18s ease-out forwards}
 @media (max-width:600px){.hero.hero-media{min-height:clamp(480px,78vh,640px)}}
+/* Reserve top clearance under the absolutely-positioned overlay nav on
+   narrow screens — matches the nav's own mobile breakpoint (860px, where
+   the logo grows to 56px and the nav bar gets taller), not the hero's own
+   600px min-height breakpoint, since that's the actual trigger condition.
+   Padding goes on the flex CONTAINER, not .hero-inner: padding on the
+   centered flex item itself would only shift its content by half the
+   added amount (flex centering re-splits the extra space on both sides),
+   while padding on the container shifts the centered area by the full
+   amount. */
+@media (max-width:860px){.hero.hero-media{padding-top:100px}}
 @media (prefers-reduced-motion:reduce){.hero-media .hero-photo{animation:none}.scroll-cue svg{animation:none}}
 
 /* ---- trust/stats bar ----
