@@ -1,0 +1,327 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Reviews · Studio RYST</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#f3f4f1; --panel:#ffffff; --panel2:#f7f8f5;
+    --line:#e3e5e0; --accent:#3d9b69; --accent-d:#2f7d54; --accent-soft:#eaf4ee;
+    --ink:#1d211c; --muted:#5f655d; --muted2:#9aa097; --danger:#c0584b; --star:#e8ac2e;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:var(--bg);color:var(--ink);font-family:"Outfit",system-ui,sans-serif;-webkit-font-smoothing:antialiased;min-height:100%}
+  button,select,input{font-family:inherit}
+  button{cursor:pointer}
+  .wrap{max-width:1100px;margin:0 auto;padding:18px 16px 60px}
+
+  header.top{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:6px 2px 6px}
+  header.top img{height:38px;object-fit:contain}
+  header.top .ttl{font-weight:700;font-size:18px;letter-spacing:.2px}
+  header.top .ttl small{display:block;font-weight:500;font-size:11.5px;color:var(--muted2);letter-spacing:.4px}
+  header.top .spacer{flex:1}
+  .tbtn{background:var(--panel);border:1.5px solid var(--line);color:var(--muted);padding:8px 14px;border-radius:9px;font-size:12.5px;font-weight:600;transition:.15s}
+  .tbtn:hover{border-color:var(--accent);color:var(--accent-d)}
+
+  .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px}
+  .kpi{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:15px 16px 14px;box-shadow:0 6px 18px rgba(40,50,40,.04)}
+  .kpi .lbl{font-size:11.5px;font-weight:600;color:var(--muted2);letter-spacing:.4px;text-transform:uppercase}
+  .kpi .val{font-size:24px;font-weight:700;margin-top:6px;letter-spacing:-.5px}
+  .kpi .sub{font-size:12px;color:var(--muted);margin-top:3px}
+  .kpi.hero{background:linear-gradient(135deg,var(--accent) 0%,var(--accent-d) 100%);border:none;color:#fff}
+  .kpi.hero .lbl,.kpi.hero .sub{color:#dff0e6}
+
+  .panel{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px 18px 18px;box-shadow:0 6px 18px rgba(40,50,40,.04)}
+  .panel h2{font-size:13px;font-weight:700;margin-bottom:3px}
+  .panel .cap{font-size:11.5px;color:var(--muted2);margin-bottom:14px}
+
+  .toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:10px}
+  .toolbar input,.toolbar select{padding:9px 11px;border:1.5px solid var(--line);border-radius:9px;background:var(--panel2);font-size:13px;color:var(--ink);outline:none}
+  .toolbar input:focus,.toolbar select:focus{border-color:var(--accent)}
+  .toolbar .search{flex:1;min-width:150px}
+
+  .filterbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:2px 0 14px}
+  .rating-pills{display:flex;gap:6px;flex-wrap:wrap}
+  .rpill{border:1.5px solid var(--line);background:var(--panel);color:var(--muted);padding:6px 12px;border-radius:20px;font-size:12px;font-weight:600;transition:.15s}
+  .rpill:hover{border-color:var(--accent)}
+  .rpill.on{background:var(--accent);border-color:var(--accent);color:#fff}
+
+  table{width:100%;border-collapse:collapse;font-size:13px;min-width:680px}
+  th{text-align:left;font-size:10.5px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--muted2);padding:9px 10px;border-bottom:1px solid var(--line);white-space:nowrap}
+  td{padding:9px 10px;border-bottom:1px solid var(--panel2);vertical-align:middle}
+  tr:last-child td{border-bottom:none}
+  tbody tr{cursor:pointer}
+  tbody tr:hover td{background:var(--panel2)}
+  .lead-nm{font-weight:600}
+  .zpill{font-size:10.5px;font-weight:700;padding:1px 8px;border-radius:10px;white-space:nowrap;display:inline-block;margin-top:3px}
+  .stars{color:var(--star);letter-spacing:1px;white-space:nowrap}
+  .fb-comment{max-width:260px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--muted)}
+  .stpill{font-size:10.5px;font-weight:700;padding:2px 9px;border-radius:12px;white-space:nowrap;color:#fff}
+  .stpill.reviewed{background:var(--accent-d)}
+  .stpill.awaiting{background:#c8893d}
+  .stpill.notreq{background:var(--muted2)}
+  .btn{border:none;border-radius:9px;padding:8px 13px;font-size:12.5px;font-weight:600;transition:.15s;white-space:nowrap}
+  .btn.ghost{background:var(--panel);border:1.5px solid var(--line);color:var(--ink)}.btn.ghost:hover{border-color:var(--accent);color:var(--accent-d)}
+  .btn:disabled{opacity:.45;cursor:not-allowed}
+  .rowbtn{background:none;border:none;color:var(--muted2);padding:5px;border-radius:6px;line-height:0;font-size:15px}
+  .rowbtn:hover{color:var(--accent-d);background:var(--accent-soft)}
+  .empty{padding:34px 12px;text-align:center;color:var(--muted2);font-size:13px}
+
+  #toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(20px);background:var(--ink);color:#fff;padding:12px 20px;border-radius:11px;font-size:13.5px;opacity:0;pointer-events:none;transition:.25s;z-index:80}
+  #toast.show{opacity:1;transform:translateX(-50%) translateY(0)}#toast.err{background:var(--danger)}
+  #loader{position:fixed;inset:0;background:rgba(243,244,241,.9);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;z-index:90;color:var(--muted);text-align:center;padding:24px}
+  #loader.hide{display:none}
+  .spin{width:34px;height:34px;border:3px solid var(--line);border-top-color:var(--accent);border-radius:50%;animation:sp 1s linear infinite}
+  @keyframes sp{to{transform:rotate(360deg)}}
+
+  @media(max-width:820px){ .kpis{grid-template-columns:1fr 1fr} .fb-comment{max-width:140px} }
+  @media(max-width:520px){ .kpi .val{font-size:20px} }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <img id="logo" alt="RYST" src="" />
+    <div class="ttl">Reviews<small>Studio RYST · Feedback &amp; Google reviews</small></div>
+    <div class="spacer"></div>
+    <button class="tbtn" onclick="window.location.href='login.html'">⌂ Home</button>
+    <button class="tbtn" id="logoutBtn">⎋ Log out</button>
+  </header>
+
+  <div class="kpis">
+    <div class="kpi hero"><div class="lbl">Reviews collected</div><div class="val" id="kCount">—</div><div class="sub" id="kCountSub"></div></div>
+    <div class="kpi"><div class="lbl">Average rating</div><div class="val" id="kAvg">—</div><div class="sub" id="kAvgSub"></div></div>
+    <div class="kpi"><div class="lbl">5★ reviews</div><div class="val" id="kFive">—</div><div class="sub">Ready to ask for a Google review</div></div>
+    <div class="kpi"><div class="lbl">Awaiting response</div><div class="val" id="kAwaiting">—</div><div class="sub" id="kAwaitingSub"></div></div>
+  </div>
+
+  <div class="panel">
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:4px">
+      <h2 style="margin:0">All sessions</h2>
+    </div>
+    <div class="cap">Feedback collected after each session — tap a row to open its quote, or resend the request.</div>
+    <div class="toolbar">
+      <input class="search" id="search" placeholder="Search client name, quote no…" />
+      <select id="fSort" title="Sort by">
+        <option value="attention">Sort: Needs attention</option>
+        <option value="newest">Sort: Newest first</option>
+        <option value="rating-asc">Sort: Lowest rating first</option>
+        <option value="rating-desc">Sort: Highest rating first</option>
+      </select>
+    </div>
+    <div class="filterbar">
+      <div class="rating-pills" id="ratingPills"></div>
+    </div>
+    <div style="overflow-x:auto"><table>
+      <thead><tr>
+        <th>Session</th>
+        <th>Client</th>
+        <th>Rating</th>
+        <th>Feedback</th>
+        <th>Status</th>
+        <th style="width:100px"></th>
+      </tr></thead>
+      <tbody id="rows"></tbody>
+    </table></div>
+    <div class="empty" id="empty" style="display:none">No sessions match this filter yet.</div>
+  </div>
+</div>
+<div id="loader"><div class="spin"></div><div id="loaderMsg">Loading reviews…</div></div>
+<div id="toast"></div>
+<script>
+const PROXY_URL='https://ryst-109a-proxy.onrender.com/studio';
+const TOKEN=localStorage.getItem('ryst_proxy_token')||'';
+if(!TOKEN){ window.location.href='login.html'; }
+const $=s=>document.querySelector(s), $$=s=>document.querySelectorAll(s);
+const esc=s=>(s==null?'':String(s)).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const ZONE_COLOR={Podcast:'#3d9b69',Photography:'#c8893d',Culinary:'#c0584b','Multi-Zone':'#5b7db1'};
+const zColor=z=>ZONE_COLOR[z]||'var(--muted2)';
+
+(function(){ try{const s=JSON.parse(localStorage.getItem('ryst_quote_settings')||'null'); if(s&&s.logo){$('#logo').src=s.logo;return;}}catch(e){}
+  const l=localStorage.getItem('ryst_logo'); if(l)$('#logo').src=l; else $('#logo').style.display='none'; })();
+
+let toastT; function toast(m,e){const t=$('#toast');t.textContent=m;t.className='show'+(e?' err':'');clearTimeout(toastT);toastT=setTimeout(()=>t.className='',3200);}
+function fmtDate(iso){ if(!iso) return '—'; const [y,m,d]=iso.split('-'); return `${d}/${m}/${y}`; }
+function normPhone(raw){ let d=(raw||'').replace(/\D/g,''); if(d.length>10) d=d.slice(-10); return d.length===10?d:''; }
+function fillTpl(tpl, vars){ return (tpl||'').replace(/\{(\w+)\}/g, (m,k)=> vars[k]!=null?vars[k]:m); }
+function truncate(s,n){ return s.length>n ? s.slice(0,n-1)+'…' : s; }
+
+let QUOTES=[];
+let TEMPLATES={feedbackTemplate:'',googleReviewUrl:''};
+let FILTER={q:'',rating:'All',sort:'attention'};
+
+const RATING_FILTERS=[
+  {v:'All',label:'All'},
+  {v:'5',label:'★5'},
+  {v:'4',label:'★4'},
+  {v:'low',label:'★1–3'},
+  {v:'awaiting',label:'Awaiting response'},
+  {v:'notreq',label:'Not requested yet'},
+];
+
+async function load(){
+  $('#loader').className='';
+  try{
+    const [qr,tr] = await Promise.all([
+      fetch(PROXY_URL+'/quotes',{headers:{'X-Token':TOKEN}}),
+      fetch(PROXY_URL+'/templates',{headers:{'X-Token':TOKEN}})
+    ]);
+    if(qr.status===401||tr.status===401){ localStorage.removeItem('ryst_proxy_token'); window.location.href='login.html'; return; }
+    const qd = qr.ok ? await qr.json() : {quotes:[]};
+    QUOTES = Array.isArray(qd.quotes) ? qd.quotes : [];
+    if(tr.ok){ const td=await tr.json(); TEMPLATES={feedbackTemplate:td.feedbackTemplate||'', googleReviewUrl:td.googleReviewUrl||''}; }
+    renderPills();
+    render();
+  }catch(e){ toast('Could not load reviews','err'); }
+  finally{ $('#loader').className='hide'; }
+}
+
+function paidTotal(q){ return (q.payments||[]).reduce((s,p)=>s+(Number(p.amount)||0),0); }
+
+// A quote counts once its session has actually happened AND it has an
+// actual payment recorded (an unpaid/Pending quote never really happened,
+// so there's nothing to give feedback on) — or feedback is already in
+// flight/collected for it, kept visible regardless so history never
+// disappears if its payment record is later edited.
+function sessions(){
+  const today = new Date().toISOString().slice(0,10);
+  return QUOTES.filter(q=> q.sessionDate && (q.feedbackSentAt || (q.feedback&&q.feedback.rating) || (q.sessionDate<=today && paidTotal(q)>0)));
+}
+function statusOf(q){
+  if(q.feedback && q.feedback.rating) return 'reviewed';
+  if(q.feedbackSentAt) return 'awaiting';
+  return 'notreq';
+}
+
+function renderPills(){
+  $('#ratingPills').innerHTML = RATING_FILTERS.map(r=>
+    `<button type="button" class="rpill${FILTER.rating===r.v?' on':''}" data-v="${r.v}">${r.label}</button>`).join('');
+  $$('#ratingPills .rpill').forEach(b=>b.addEventListener('click', ()=>{ FILTER.rating=b.dataset.v; renderPills(); render(); }));
+}
+
+function renderKPIs(list){
+  const reviewed = list.filter(q=>statusOf(q)==='reviewed');
+  const awaiting = list.filter(q=>statusOf(q)==='awaiting');
+  const five = reviewed.filter(q=>q.feedback.rating===5);
+  const avg = reviewed.length ? (reviewed.reduce((s,q)=>s+q.feedback.rating,0)/reviewed.length) : 0;
+  const requested = list.filter(q=>q.feedbackSentAt).length;
+  $('#kCount').textContent = reviewed.length;
+  $('#kCountSub').textContent = list.length ? `of ${list.length} sessions` : '';
+  $('#kAvg').textContent = reviewed.length ? avg.toFixed(1)+' ★' : '—';
+  $('#kAvgSub').textContent = reviewed.length ? `across ${reviewed.length} review${reviewed.length===1?'':'s'}` : 'No reviews yet';
+  $('#kFive').textContent = five.length;
+  $('#kAwaiting').textContent = awaiting.length;
+  $('#kAwaitingSub').textContent = requested ? `${reviewed.length} of ${requested} requests answered` : 'None sent yet';
+}
+
+function filtered(){
+  const all = sessions();
+  let list = all.filter(q=>{
+    if(FILTER.q){
+      const hay = ((q.cname||'')+' '+(q.qno||'')).toLowerCase();
+      if(!hay.includes(FILTER.q)) return false;
+    }
+    const st = statusOf(q);
+    if(FILTER.rating==='5') return st==='reviewed' && q.feedback.rating===5;
+    if(FILTER.rating==='4') return st==='reviewed' && q.feedback.rating===4;
+    if(FILTER.rating==='low') return st==='reviewed' && q.feedback.rating<=3;
+    if(FILTER.rating==='awaiting') return st==='awaiting';
+    if(FILTER.rating==='notreq') return st==='notreq';
+    return true;
+  });
+  const order={notreq:0,awaiting:1,reviewed:2};
+  if(FILTER.sort==='attention'){
+    list.sort((a,b)=> order[statusOf(a)]-order[statusOf(b)] || (b.sessionDate||'').localeCompare(a.sessionDate||''));
+  } else if(FILTER.sort==='newest'){
+    list.sort((a,b)=> (b.sessionDate||'').localeCompare(a.sessionDate||''));
+  } else if(FILTER.sort==='rating-asc'){
+    list.sort((a,b)=> (a.feedback?a.feedback.rating:99)-(b.feedback?b.feedback.rating:99));
+  } else if(FILTER.sort==='rating-desc'){
+    list.sort((a,b)=> (b.feedback?b.feedback.rating:-1)-(a.feedback?a.feedback.rating:-1));
+  }
+  return {all, list};
+}
+
+function statusPill(st){
+  if(st==='reviewed') return `<span class="stpill reviewed">Reviewed</span>`;
+  if(st==='awaiting') return `<span class="stpill awaiting">Awaiting</span>`;
+  return `<span class="stpill notreq">Not requested</span>`;
+}
+
+function rowHTML(q){
+  const st = statusOf(q);
+  const stars = st==='reviewed' ? '★'.repeat(q.feedback.rating)+'☆'.repeat(5-q.feedback.rating) : '—';
+  const comment = st==='reviewed' ? (q.feedback.comment||'') : '';
+  const phone = normPhone(q.cphone);
+  let action;
+  if(st==='reviewed'){
+    action = comment
+      ? `<button type="button" class="rowbtn copy-btn" data-qno="${esc(q.qno)}" title="Copy feedback text">📋</button>`
+      : '';
+  } else {
+    const label = st==='awaiting' ? 'Resend' : 'Request';
+    action = `<button type="button" class="btn ghost send-btn" data-qno="${esc(q.qno)}" ${phone?'':'disabled title="No phone number on file"'}>${label}</button>`;
+  }
+  return `<tr data-qno="${esc(q.qno)}">
+    <td>${esc(fmtDate(q.sessionDate))}<br><span class="zpill" style="background:${zColor(q.zone)}22;color:${zColor(q.zone)}">${esc(q.zone||'—')}</span></td>
+    <td class="lead-nm">${esc(q.cname||q.qno)}</td>
+    <td class="stars">${stars}</td>
+    <td class="fb-comment" title="${esc(comment)}">${comment?esc(truncate(comment,90)):'<span style="color:var(--muted2)">—</span>'}</td>
+    <td>${statusPill(st)}</td>
+    <td>${action}</td>
+  </tr>`;
+}
+
+function render(){
+  FILTER.q = $('#search').value.trim().toLowerCase();
+  const {all, list} = filtered();
+  renderKPIs(all);
+  $('#rows').innerHTML = list.map(rowHTML).join('');
+  $('#empty').style.display = list.length ? 'none' : 'block';
+  $$('#rows tr').forEach(tr=>tr.addEventListener('click', e=>{
+    if(e.target.closest('button')) return;
+    window.location.href = 'quote.html?qno='+encodeURIComponent(tr.dataset.qno);
+  }));
+  $$('.send-btn').forEach(b=>b.addEventListener('click', e=>{ e.stopPropagation(); sendRequest(b.dataset.qno); }));
+  $$('.copy-btn').forEach(b=>b.addEventListener('click', e=>{ e.stopPropagation(); copyFeedback(b.dataset.qno); }));
+}
+
+async function sendRequest(qno){
+  const q = QUOTES.find(x=>x.qno===qno); if(!q) return;
+  const phone = normPhone(q.cphone); if(!phone) return;
+  if(paidTotal(q)<=0){ toast('Record a payment first — feedback requests are only for paid quotes/invoices','err'); return; }
+  const link = "https://book.ryst.in/feedback.html?t="+encodeURIComponent(q.shareToken||'');
+  const vars = { name:q.cname||'', date:fmtDate(q.sessionDate), zone:q.zone||'', link };
+  const msg = fillTpl(TEMPLATES.feedbackTemplate, vars) || `Hi ${vars.name||'there'}! We'd love your feedback: ${link}`;
+  window.open(`https://wa.me/91${phone}?text=`+encodeURIComponent(msg), "_blank");
+  toast('Opening WhatsApp…');
+  q.feedbackSentAt = new Date().toISOString();
+  render();
+  // Full-array overwrite, same pattern used everywhere else this app writes
+  // quotes back (login.html's WA reminders, quote.html's pushQuotes).
+  try{
+    await fetch(PROXY_URL+'/quotes', {
+      method:'PUT', headers:{'X-Token':TOKEN,'Content-Type':'application/json'},
+      body: JSON.stringify({version:1, quotes: QUOTES})
+    });
+  }catch(e){ toast('Sent, but could not save the "sent" status — it may ask again next visit','err'); }
+}
+
+async function copyFeedback(qno){
+  const q = QUOTES.find(x=>x.qno===qno); if(!q || !q.feedback) return;
+  try{ await navigator.clipboard.writeText(q.feedback.comment||''); toast('Feedback copied'); }
+  catch(e){ toast('Could not copy — select the text manually','err'); }
+}
+
+$('#search').addEventListener('input', render);
+$('#fSort').addEventListener('change', e=>{ FILTER.sort=e.target.value; render(); });
+$('#logoutBtn').addEventListener('click', ()=>{ ['ryst_proxy_token','ryst_user_email','ryst_user_role'].forEach(k=>localStorage.removeItem(k)); window.location.href='login.html'; });
+
+load();
+</script>
+</body>
+</html>
