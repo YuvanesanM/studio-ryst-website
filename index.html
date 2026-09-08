@@ -5,10 +5,26 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Studio RYST — Chennai's 3-in-1 Content Production Studio</title>
 <meta name="description" content="Podcast, photography and culinary content studio in T-Nagar, Chennai. Book by the hour with instant confirmation.">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://studio.ryst.in/">
+<meta name="theme-color" content="#f8a61f">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Studio RYST">
+<meta property="og:title" content="Studio RYST — Chennai's 3-in-1 Content Production Studio">
+<meta property="og:description" content="Podcast, photography and culinary content studio in T-Nagar, Chennai. Book by the hour with instant confirmation.">
+<meta property="og:url" content="https://studio.ryst.in/">
+<meta property="og:image" content="https://studio.ryst.in/assets/logo-300.png">
+<meta property="og:locale" content="en_IN">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Studio RYST — Chennai's 3-in-1 Content Production Studio">
+<meta name="twitter:description" content="Podcast, photography and culinary content studio in T-Nagar, Chennai. Book by the hour with instant confirmation.">
+<meta name="twitter:image" content="https://studio.ryst.in/assets/logo-300.png">
 <link rel="icon" href="/assets/logo-300.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..600;1,9..144,400..600&family=Space+Mono:wght@400;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "LocalBusiness", "@id": "https://studio.ryst.in/#business", "name": "Studio RYST", "alternateName": "Studio RYST - Podcast, Photography & Kitchen Content Studio", "description": "Chennai's first-of-its-kind 3-in-1 content production studio — Podcast, Photography and Culinary zones, available by the hour in T-Nagar.", "url": "https://studio.ryst.in/", "image": "https://studio.ryst.in/assets/logo-300.png", "logo": "https://studio.ryst.in/assets/logo-300.png", "telephone": "+91-75300-11770", "priceRange": "₹₹", "address": {"@type": "PostalAddress", "streetAddress": "52, Ankur Plaza, Gopathy Narayana Rd", "addressLocality": "T Nagar, Chennai", "addressRegion": "Tamil Nadu", "postalCode": "600017", "addressCountry": "IN"}, "geo": {"@type": "GeoCoordinates", "latitude": 13.0441808, "longitude": 80.2392505}, "hasMap": "https://maps.app.goo.gl/PmPDiPyLWbVhLFef7", "sameAs": ["https://instagram.com/studio.ryst"], "areaServed": {"@type": "City", "name": "Chennai"}}</script>
+
 <style>
 
 :root{
@@ -163,6 +179,16 @@ button,input,select,textarea{font-family:inherit}
 .price-note{border:1px dashed var(--line);border-radius:4px;padding:22px 24px;margin-top:28px;font-size:13.5px;color:var(--ink-muted);line-height:1.7}
 .price-note b{color:var(--ink)}
 .price-note ul{margin:10px 0 0 18px}
+
+/* ---- FAQ ---- */
+.faq-list{border-top:1px solid var(--line)}
+.faq-item{border-bottom:1px solid var(--line);padding:18px 0}
+.faq-item summary{cursor:pointer;font-weight:600;font-size:15.5px;list-style:none;display:flex;align-items:center;justify-content:space-between;gap:16px}
+.faq-item summary::-webkit-details-marker{display:none}
+.faq-item summary::after{content:'+';font-family:"Space Mono",monospace;font-size:18px;color:var(--accent-strong);flex-shrink:0;transition:transform .2s}
+.faq-item[open] summary::after{transform:rotate(45deg)}
+.faq-item p{margin-top:12px;font-size:14px;color:var(--ink-muted);line-height:1.7;max-width:68ch}
+.faq-item p a{color:var(--accent-strong);font-weight:600}
 
 /* ---- booking ---- */
 .booking-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:1px;background:var(--line);border:1px solid var(--line);border-radius:4px;overflow:hidden}
