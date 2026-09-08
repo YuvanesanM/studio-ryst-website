@@ -4,7 +4,7 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Book Now · Studio RYST</title>
-<meta name="description" content="Book your Studio RYST session online — pick a zone, date and duration, see your price instantly, and pay to confirm.">
+<meta name="description" content="Request your Studio RYST session online — pick a zone, date and duration, and send your booking straight to us on WhatsApp.">
 <link rel="icon" href="/assets/logo-300.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -158,9 +158,6 @@ button,input,select,textarea{font-family:inherit}
 .hour-pick{display:flex;gap:8px}
 .hpill{flex:1;border:1.5px solid var(--line);background:var(--surface-2);color:var(--ink-muted);padding:10px 0;border-radius:3px;font-family:"Space Mono",monospace;font-size:13px;font-weight:700;cursor:pointer;text-align:center;transition:.15s}
 .hpill.on{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
-.price-preview{background:var(--surface-2);border:1px solid var(--line);border-radius:3px;padding:20px 22px;margin-bottom:22px}
-.price-preview .row{display:flex;justify-content:space-between;font-family:"Space Mono",monospace;font-size:13px;color:var(--ink-muted);padding:5px 0}
-.price-preview .row.tot{color:var(--ink);font-weight:700;font-size:16px;border-top:1px solid var(--line);margin-top:6px;padding-top:12px}
 .bk-err{color:var(--danger);font-size:13px;min-height:18px;margin-top:4px}
 .bk-steps .info-row{display:flex;gap:14px;padding:15px 0;border-bottom:1px solid var(--line)}
 .bk-steps .info-row:last-child{border-bottom:none}
@@ -233,58 +230,62 @@ footer{border-top:1px solid var(--line);padding:64px 0 30px;margin-top:0}
 
 <section class="hero small"><div class="wrap inner">
   <div class="eyebrow">Book Now</div>
-  <h1>Reserve your session.</h1>
-  <p class="lead">Pick a zone, date and duration — your price is calculated
-    instantly from our live rate card, and you pay online to confirm.</p>
+  <h1>Request your session.</h1>
+  <p class="lead">Pick a zone, date and duration and we'll create your
+    booking — then send it to us on WhatsApp with one tap and we'll confirm
+    your slot and share a payment link.</p>
 </div></section>
 
 <section class="section"><div class="wrap">
   <div class="booking-grid">
     <div class="bk-panel">
-      <div class="field">
-        <label>Zone</label>
-        <div class="zone-pick" id="zonePick">
-          <button type="button" class="zpill on" data-zone="Podcast">🎙️ Podcast</button>
-          <button type="button" class="zpill" data-zone="Photography">📷 Photography</button>
-          <button type="button" class="zpill" data-zone="Culinary">🍳 Culinary</button>
-          <button type="button" class="zpill" data-zone="Multi-Zone">🎬 Multi-Zone</button>
+      <div id="bookForm">
+        <div class="field">
+          <label>Zone</label>
+          <div class="zone-pick" id="zonePick">
+            <button type="button" class="zpill on" data-zone="Podcast">🎙️ Podcast</button>
+            <button type="button" class="zpill" data-zone="Photography">📷 Photography</button>
+            <button type="button" class="zpill" data-zone="Culinary">🍳 Culinary</button>
+            <button type="button" class="zpill" data-zone="Multi-Zone">🎬 Multi-Zone</button>
+          </div>
         </div>
-      </div>
-      <div class="two-col">
-        <div class="field"><label>Date</label><input type="date" id="fDate"></div>
-        <div class="field"><label>Start time</label><input type="time" id="fStart" value="11:00"></div>
-      </div>
-      <div class="field">
-        <label>Duration</label>
-        <div class="hour-pick" id="hourPick">
-          <button type="button" class="hpill" data-h="2">2 HR</button>
-          <button type="button" class="hpill on" data-h="4">4 HR</button>
-          <button type="button" class="hpill" data-h="8">8 HR</button>
+        <div class="two-col">
+          <div class="field"><label>Date</label><input type="date" id="fDate"></div>
+          <div class="field"><label>Start time</label><input type="time" id="fStart" value="11:00"></div>
         </div>
-      </div>
-      <div class="avail-note" id="availNote"></div>
+        <div class="field">
+          <label>Duration</label>
+          <div class="hour-pick" id="hourPick">
+            <button type="button" class="hpill" data-h="2">2 HR</button>
+            <button type="button" class="hpill on" data-h="4">4 HR</button>
+            <button type="button" class="hpill" data-h="8">8 HR</button>
+          </div>
+        </div>
+        <div class="avail-note" id="availNote"></div>
 
-      <div class="two-col">
-        <div class="field"><label>Your name</label><input type="text" id="fName" placeholder="Full name" maxlength="120"></div>
-        <div class="field"><label>Phone</label><input type="tel" id="fPhone" placeholder="10-digit mobile" maxlength="10" inputmode="numeric"></div>
-      </div>
-      <div class="field"><label>Email <span style="text-transform:none;letter-spacing:0">(optional)</span></label><input type="email" id="fEmail" placeholder="you@email.com"></div>
+        <div class="two-col">
+          <div class="field"><label>Your name</label><input type="text" id="fName" placeholder="Full name" maxlength="120"></div>
+          <div class="field"><label>Phone</label><input type="tel" id="fPhone" placeholder="10-digit mobile" maxlength="10" inputmode="numeric"></div>
+        </div>
 
-      <div class="price-preview">
-        <div class="row"><span id="pvZone">PODCAST · 4 HR</span><span id="pvRate">—</span></div>
-        <div class="row tot"><span>Total (incl. GST)</span><span id="pvTotal">—</span></div>
+        <button type="button" class="btn btn-brass" id="bookBtn" style="width:100%" disabled><span id="bookBtnT">Request Booking</span></button>
+        <div class="bk-err" id="bkErr"></div>
+        <p style="margin-top:16px;font-size:12.5px;color:var(--ink-muted);line-height:1.6">See <a href="/packages/" style="color:var(--accent-strong);font-weight:600">Packages</a> for current pricing before you request — your exact total is confirmed with your quote.</p>
       </div>
 
-      <button type="button" class="btn btn-brass" id="bookBtn" style="width:100%" disabled><span id="bookBtnT">Continue to payment</span></button>
-      <div class="bk-err" id="bkErr"></div>
+      <div id="bookDone" style="display:none">
+        <h3 style="font-size:19px;margin-bottom:10px">Your booking request is ready ✓</h3>
+        <p style="font-size:14px;color:var(--ink-muted);line-height:1.7;margin-bottom:22px">Quote <b class="mono" id="doneQno" style="color:var(--ink)"></b> has been created. Tap below to send it to Studio RYST on WhatsApp — we'll confirm your slot and reply with a payment link.</p>
+        <a class="btn btn-wa" id="waSendBtn" href="#" target="_blank" rel="noopener" style="width:100%"><span><svg viewBox="0 0 32 32" width="15" height="15" fill="currentColor"><path d="M16.004 3C9.377 3 4 8.373 4 15c0 2.31.652 4.47 1.78 6.307L4 29l7.86-1.746A11.94 11.94 0 0 0 16.004 27C22.63 27 28 21.627 28 15S22.63 3 16.004 3zm6.98 16.98c-.297.836-1.474 1.53-2.41 1.727-.64.135-1.474.243-4.286-.92-3.596-1.49-5.91-5.14-6.09-5.377-.176-.238-1.454-1.936-1.454-3.693 0-1.756.914-2.617 1.24-2.976.297-.325.65-.406.867-.406.217 0 .434.002.624.011.2.01.468-.076.732.56.297.72.998 2.486 1.084 2.666.087.18.144.39.03.628-.114.238-.172.386-.34.594-.17.207-.356.462-.508.62-.17.176-.348.368-.15.72.198.353.878 1.45 1.885 2.348 1.294 1.155 2.386 1.512 2.74 1.68.353.17.56.144.766-.086.207-.23.882-1.03 1.118-1.383.235-.353.47-.294.792-.176.325.117 2.06.972 2.414 1.148.353.176.588.264.674.412.087.148.087.856-.21 1.693z"/></svg> &nbsp;Send via WhatsApp</span></a>
+      </div>
     </div>
 
     <div class="bk-panel bk-steps">
       <h3 style="margin-bottom:16px;font-size:19px">How booking works</h3>
       <div class="info-row"><div class="ico">01</div><div class="v">Pick your zone, date, duration &amp; hours</div></div>
-      <div class="info-row"><div class="ico">02</div><div class="v">See your exact price, calculated live</div></div>
-      <div class="info-row"><div class="ico">03</div><div class="v">Pay 100% online to confirm instantly</div></div>
-      <div class="info-row"><div class="ico">✓</div><div class="v">Show up and create — setup &amp; wrap-up are on us</div></div>
+      <div class="info-row"><div class="ico">02</div><div class="v">We create your booking request instantly</div></div>
+      <div class="info-row"><div class="ico">03</div><div class="v">Send it to us on WhatsApp — one tap</div></div>
+      <div class="info-row"><div class="ico">✓</div><div class="v">We confirm your slot and share a payment link</div></div>
       <p style="margin-top:22px;font-size:13px;color:var(--ink-muted);line-height:1.7">Prefer to talk it through first? <a href="https://wa.me/917530011770?text=Hi!%20I%27d%20like%20to%20book%20a%20session%20at%20Studio%20RYST" target="_blank" rel="noopener" style="color:var(--accent-strong);font-weight:600">Message us on WhatsApp →</a></p>
     </div>
   </div>
@@ -339,10 +340,15 @@ footer{border-top:1px solid var(--line);padding:64px 0 30px;margin-top:0}
 <script>
 (function(){
   var PROXY_URL = 'https://ryst-109a-proxy.onrender.com/studio';
-  var state = { zone:'Podcast', hours:4, rateCard:[], busy:[] };
+  var state = { zone:'Podcast', hours:4, busy:[] };
 
   var $ = function(s){ return document.querySelector(s); };
   var money = function(n){ return '₹'+Math.round(n).toLocaleString('en-IN'); };
+  function fmtDate(iso){ var p=iso.split('-'); return p[2]+'/'+p[1]+'/'+p[0]; }
+  function fmtTime12(hhmm){
+    var p=hhmm.split(':'); var h=parseInt(p[0],10); var ap=h>=12?'PM':'AM'; var h12=h%12||12;
+    return h12+':'+p[1]+' '+ap;
+  }
 
   // Default date = tomorrow, min = today
   var dateInp = $('#fDate');
@@ -350,35 +356,6 @@ footer{border-top:1px solid var(--line);padding:64px 0 30px;margin-top:0}
   function iso(d){ return d.toISOString().slice(0,10); }
   dateInp.min = iso(today);
   dateInp.value = iso(tomorrow);
-
-  function zoneOfDesc(desc){
-    var d=(desc||'').toLowerCase();
-    var zones=['Podcast','Photography','Culinary','Multi-Zone'].sort(function(a,b){return b.length-a.length;});
-    for(var i=0;i<zones.length;i++){ if(d.indexOf(zones[i].toLowerCase())>-1) return zones[i]; }
-    return null;
-  }
-  function isStudioHourly(desc){ return /studio/i.test(desc||'') && !!zoneOfDesc(desc); }
-
-  function computePrice(){
-    var card = state.rateCard.find(function(c){ return isStudioHourly(c.desc) && zoneOfDesc(c.desc)===state.zone; });
-    if(!card || !card.rate) return null;
-    var disc = 0;
-    if(state.hours>=8 && card.disc8!=null) disc = parseFloat(card.disc8)||0;
-    else if(state.hours>=4 && card.disc4!=null) disc = parseFloat(card.disc4)||0;
-    var perHour = Math.round(card.rate*(1-disc/100));
-    var sub = perHour*state.hours;
-    var gst = sub*((card.gst!=null?card.gst:18)/100);
-    return { sub:sub, gst:gst, total:sub+gst };
-  }
-
-  function renderPrice(){
-    $('#pvZone').textContent = state.zone.toUpperCase()+' · '+state.hours+' HR';
-    var p = computePrice();
-    if(!p){ $('#pvRate').textContent='—'; $('#pvTotal').textContent='—'; $('#bookBtn').disabled=true; return; }
-    $('#pvRate').textContent = money(p.sub)+' + GST';
-    $('#pvTotal').textContent = money(p.total);
-    validate();
-  }
 
   function renderAvail(){
     var note = $('#availNote');
@@ -395,21 +372,20 @@ footer{border-top:1px solid var(--line);padding:64px 0 30px;margin-top:0}
   function validate(){
     var ok = $('#fName').value.trim().length>0
       && $('#fPhone').value.replace(/\D/g,'').length===10
-      && dateInp.value && $('#fStart').value
-      && computePrice();
+      && dateInp.value && $('#fStart').value;
     $('#bookBtn').disabled = !ok;
   }
 
   document.querySelectorAll('#zonePick .zpill').forEach(function(b){
     b.addEventListener('click', function(){
       document.querySelectorAll('#zonePick .zpill').forEach(function(x){ x.classList.remove('on'); });
-      b.classList.add('on'); state.zone=b.dataset.zone; renderPrice(); renderAvail();
+      b.classList.add('on'); state.zone=b.dataset.zone; renderAvail();
     });
   });
   document.querySelectorAll('#hourPick .hpill').forEach(function(b){
     b.addEventListener('click', function(){
       document.querySelectorAll('#hourPick .hpill').forEach(function(x){ x.classList.remove('on'); });
-      b.classList.add('on'); state.hours=parseInt(b.dataset.h,10); renderPrice();
+      b.classList.add('on'); state.hours=parseInt(b.dataset.h,10);
     });
   });
   dateInp.addEventListener('change', renderAvail);
@@ -418,30 +394,38 @@ footer{border-top:1px solid var(--line);padding:64px 0 30px;margin-top:0}
 
   $('#bookBtn').addEventListener('click', function(){
     var btn = $('#bookBtn'), btnT = $('#bookBtnT'), err = $('#bkErr');
-    err.textContent=''; btn.disabled=true; btnT.textContent='Booking…';
+    var name = $('#fName').value.trim(), phone = $('#fPhone').value.trim();
+    err.textContent=''; btn.disabled=true; btnT.textContent='Requesting…';
     fetch(PROXY_URL+'/public-booking', {
       method:'POST', headers:{'Content-Type':'application/json'},
       body: JSON.stringify({
-        name: $('#fName').value.trim(), phone: $('#fPhone').value.trim(), email: $('#fEmail').value.trim(),
+        name: name, phone: phone,
         zone: state.zone, sessionDate: dateInp.value, sessionStart: $('#fStart').value, hours: state.hours
       })
     }).then(function(r){ return r.json().then(function(d){ return {ok:r.ok, d:d}; }); })
       .then(function(res){
-        if(!res.ok){ err.textContent = res.d.error || 'Could not book — please try again.'; btn.disabled=false; btnT.textContent='Continue to payment'; return; }
-        window.location.href = '/quote/?t='+encodeURIComponent(res.d.shareToken);
+        if(!res.ok){ err.textContent = res.d.error || 'Could not create your booking — please try again.'; btn.disabled=false; btnT.textContent='Request Booking'; return; }
+        var msg = 'Hi! I\'d like to request a booking at Studio RYST:\n\n'
+          + 'Zone: '+state.zone+'\n'
+          + 'Date: '+fmtDate(dateInp.value)+'\n'
+          + 'Time: '+fmtTime12($('#fStart').value)+'\n'
+          + 'Duration: '+state.hours+' hour'+(state.hours===1?'':'s')+'\n'
+          + 'Name: '+name+'\n'
+          + 'Phone: '+phone+'\n'
+          + 'Quote Ref: '+res.d.qno+'\n'
+          + 'Estimated Total: '+money(res.d.price)+'\n\n'
+          + 'Please confirm my slot!';
+        $('#doneQno').textContent = res.d.qno;
+        $('#waSendBtn').href = 'https://wa.me/917530011770?text='+encodeURIComponent(msg);
+        $('#bookForm').style.display='none';
+        $('#bookDone').style.display='block';
       })
-      .catch(function(){ err.textContent='Network error — please try again.'; btn.disabled=false; btnT.textContent='Continue to payment'; });
+      .catch(function(){ err.textContent='Network error — please try again.'; btn.disabled=false; btnT.textContent='Request Booking'; });
   });
-
-  fetch(PROXY_URL+'/public-rates').then(function(r){ return r.json(); }).then(function(d){
-    state.rateCard = Array.isArray(d.rateCard) ? d.rateCard : []; renderPrice();
-  }).catch(function(){ renderPrice(); });
 
   fetch(PROXY_URL+'/public-availability').then(function(r){ return r.json(); }).then(function(d){
     state.busy = Array.isArray(d.busy) ? d.busy : []; renderAvail();
   }).catch(function(){});
-
-  renderPrice();
 })();
 </script>
 
