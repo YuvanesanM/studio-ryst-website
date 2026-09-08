@@ -54,7 +54,14 @@ button,input,select,textarea{font-family:inherit}
 @media (max-width:720px){.rail{display:none}}
 
 /* ---- nav ---- */
-.nav{position:sticky;top:0;z-index:50;background:color-mix(in srgb, var(--bg) 92%, transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.nav{position:sticky;top:0;z-index:50;background:var(--bg);border-bottom:1px solid var(--line)}
+@media (min-width:861px){
+  /* backdrop-filter on .nav would make it a containing block for the mobile
+     menu's position:fixed overlay (clipping it to the header's own height
+     instead of the viewport) — only safe to use above the breakpoint where
+     that overlay exists. */
+  .nav{background:color-mix(in srgb, var(--bg) 92%, transparent);backdrop-filter:blur(10px)}
+}
 .nav .inner{max-width:1080px;margin:0 auto;padding:14px 24px;display:flex;align-items:center;gap:20px}
 .brand{display:flex;align-items:center;flex-shrink:0;text-decoration:none}
 .brand img{height:176px;width:176px;object-fit:contain;border-radius:22px;background:var(--paper)}
@@ -70,8 +77,8 @@ button,input,select,textarea{font-family:inherit}
   .navlinks{position:fixed;inset:66px 0 0 0;background:var(--bg);flex-direction:column;align-items:flex-start;gap:0;padding:8px 24px 24px;transform:translateY(-8px);opacity:0;pointer-events:none;transition:.18s;border-top:1px solid var(--line)}
   .navlinks.open{transform:translateY(0);opacity:1;pointer-events:auto}
   .navlinks a{padding:14px 0;border-bottom:1px solid var(--line);width:100%}
-  .menu-btn{display:block}
-  .nav-cta{display:none}
+  .menu-btn{display:block;margin-left:auto}
+  .nav .nav-cta{display:none}
   .navlinks .nav-cta-m{display:inline-flex;margin-top:16px}
 }
 
