@@ -515,7 +515,7 @@ footer{border-top:1px solid var(--line);padding:64px 0 30px;margin-top:0}
           + (gst ? 'GST No.: '+gst+'\n' : '')
           + (addr ? 'Billing Address: '+addr+'\n' : '')
           + 'Quote Ref: '+res.d.qno+'\n'
-          + 'Estimated Total (incl. GST): '+money(res.d.price)+'\n\n'
+          + 'Estimated Total (taxes as applicable): '+money(res.d.price)+'\n\n'
           + 'Please confirm my slot!';
         $('#doneQno').textContent = res.d.qno;
         $('#waSendBtn').href = 'https://wa.me/917530011770?text='+encodeURIComponent(msg);
