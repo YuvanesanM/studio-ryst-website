@@ -1,0 +1,13 @@
+User-agent: *
+Allow: /
+Disallow: /quote/
+Disallow: /feedback/
+Disallow: /login.html
+Disallow: /pipeline.html
+Disallow: /quote.html
+Disallow: /settings.html
+Disallow: /report.html
+Disallow: /reviews.html
+Disallow: /enquiry-import.html
+
+Sitemap: https://studio.ryst.in/sitemap.xml
