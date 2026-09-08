@@ -339,7 +339,16 @@ footer{border-top:1px solid var(--line);padding:64px 0 30px;margin-top:0}
    added amount (flex centering re-splits the extra space on both sides),
    while padding on the container shifts the centered area by the full
    amount. */
-@media (max-width:860px){.hero.hero-media{padding-top:100px}}
+@media (max-width:860px){.hero.hero-media{padding-top:100px;padding-bottom:36px}}
+/* The scroll cue is pinned to the hero's bottom edge — fine on desktop
+   where the 900px-tall hero has ~200px of slack below the content block,
+   but on mobile the hero's height is content-driven (min-height is a
+   floor, not a cap) and the live reviews badge is the last thing to
+   render, so a long lead paragraph + badge can grow right into the cue's
+   fixed spot. Rather than chase a pixel value that only holds for today's
+   copy length, just drop the cue below 700px — it's a decorative nicety,
+   not something mobile visitors need telling to scroll. */
+@media (max-width:700px){.scroll-cue{display:none}}
 @media (prefers-reduced-motion:reduce){.hero-media .hero-photo{animation:none}.scroll-cue svg{animation:none}}
 
 /* ---- trust/stats bar ----
