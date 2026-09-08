@@ -152,6 +152,16 @@ button,input,select,textarea{font-family:inherit}
 .section-head{max-width:640px;margin-bottom:44px}
 .section-head h2{font-size:clamp(24px,3.2vw,34px);margin:12px 0 12px}
 .section-head p{color:var(--ink-muted);font-size:15.5px;line-height:1.7}
+/* These desktop paddings (64/56px hero, 76px section) stack to well over
+   130px of pure whitespace between the hero text and the next section's
+   content — barely noticeable on a wide screen but disproportionate on a
+   narrow one, where there's so much less content per screen. Tighten the
+   vertical rhythm on every interior page (.hero.small is used by Studio,
+   Packages, Booking, Contact, the legal pages and 404) below this width. */
+@media (max-width:600px){
+  .hero.small{padding:40px 0 28px}
+  .section{padding:44px 0}
+}
 
 /* ---- zone cards ----
    Each zone gets its own accent lifted from the RYST wordmark (photography
@@ -320,8 +330,8 @@ footer{border-top:1px solid var(--line);padding:64px 0 30px;margin-top:0}
 <section class="hero small"><div class="wrap inner">
   <div class="eyebrow">Packages</div>
   <h1>Simple, hourly pricing.</h1>
-  <p class="lead">Every package includes equipment and EB charges, with GST and
-    other taxes applicable as per prevailing rates. 100% advance confirms your booking.</p>
+  <p class="lead">Transparent rates for every zone, by the hour — equipment
+    and EB charges included, so you know exactly what you're booking.</p>
 </div></section>
 
 <section class="section"><div class="wrap">
