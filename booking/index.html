@@ -149,8 +149,10 @@ button,input,select,textarea{font-family:inherit}
 .bk-panel{background:var(--surface);padding:32px}
 .field{display:flex;flex-direction:column;gap:7px;margin-bottom:20px}
 .field label{font-family:"Space Mono",monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-muted)}
-.field input,.field select{background:var(--surface-2);border:1px solid var(--line);color:var(--ink);border-radius:3px;padding:12px 13px;font-size:14.5px;outline:none;width:100%}
-.field input:focus,.field select:focus{border-color:var(--accent)}
+.field input,.field select,.field textarea{background:var(--surface-2);border:1px solid var(--line);color:var(--ink);border-radius:3px;padding:12px 13px;font-size:14.5px;outline:none;width:100%;font-family:inherit}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--accent)}
+.field textarea{resize:vertical;min-height:64px;line-height:1.5}
+.field .opt{font-weight:400;color:var(--ink-muted);text-transform:none;letter-spacing:0;font-family:"Inter",sans-serif}
 .two-col{display:grid;grid-template-columns:1fr 1fr;gap:16px}
 .zone-pick{display:flex;gap:8px;flex-wrap:wrap}
 .zpill{border:1.5px solid var(--line);background:var(--surface-2);color:var(--ink-muted);padding:9px 15px;border-radius:20px;font-size:12.5px;font-weight:600;cursor:pointer;transition:.15s}
@@ -255,17 +257,18 @@ footer{border-top:1px solid var(--line);padding:64px 0 30px;margin-top:0}
         </div>
         <div class="field">
           <label>Duration</label>
-          <div class="hour-pick" id="hourPick">
-            <button type="button" class="hpill" data-h="2">2 HR</button>
-            <button type="button" class="hpill on" data-h="4">4 HR</button>
-            <button type="button" class="hpill" data-h="8">8 HR</button>
-          </div>
+          <select id="fHours"></select>
+          <div class="min-note" id="minNote" style="display:none;font-size:12px;color:var(--ink-muted)">Culinary sessions book in 4-hour minimum blocks.</div>
         </div>
         <div class="avail-note" id="availNote"></div>
 
         <div class="two-col">
           <div class="field"><label>Your name</label><input type="text" id="fName" placeholder="Full name" maxlength="120"></div>
           <div class="field"><label>Phone</label><input type="tel" id="fPhone" placeholder="10-digit mobile" maxlength="10" inputmode="numeric"></div>
+        </div>
+        <div class="two-col">
+          <div class="field"><label>GST No. <span class="opt">(optional)</span></label><input type="text" id="fGst" placeholder="22AAAAA0000A1Z5" maxlength="20" style="text-transform:uppercase"></div>
+          <div class="field"><label>Billing address <span class="opt">(optional)</span></label><textarea id="fAddr" placeholder="Chennai, India" maxlength="300" rows="1"></textarea></div>
         </div>
 
         <button type="button" class="btn btn-brass" id="bookBtn" style="width:100%" disabled><span id="bookBtnT">Request Booking</span></button>
@@ -340,6 +343,7 @@ footer{border-top:1px solid var(--line);padding:64px 0 30px;margin-top:0}
 <script>
 (function(){
   var PROXY_URL = 'https://ryst-109a-proxy.onrender.com/studio';
+  var MIN_HOURS = { Culinary: 4 };
   var state = { zone:'Podcast', hours:4, busy:[] };
 
   var $ = function(s){ return document.querySelector(s); };
@@ -348,6 +352,17 @@ footer{border-top:1px solid var(--line);padding:64px 0 30px;margin-top:0}
   function fmtTime12(hhmm){
     var p=hhmm.split(':'); var h=parseInt(p[0],10); var ap=h>=12?'PM':'AM'; var h12=h%12||12;
     return h12+':'+p[1]+' '+ap;
+  }
+  function minHoursFor(zone){ return MIN_HOURS[zone] || 2; }
+
+  function populateHours(){
+    var sel = $('#fHours'); var min = minHoursFor(state.zone);
+    if(state.hours < min) state.hours = min;
+    var prev = state.hours, html = '';
+    for(var h=min; h<=8; h++){ html += '<option value="'+h+'"'+(h===prev?' selected':'')+'>'+h+' hour'+(h===1?'':'s')+'</option>'; }
+    sel.innerHTML = html;
+    sel.value = String(state.hours);
+    $('#minNote').style.display = (state.zone==='Culinary') ? 'block' : 'none';
   }
 
   // Default date = tomorrow, min = today
@@ -379,27 +394,25 @@ footer{border-top:1px solid var(--line);padding:64px 0 30px;margin-top:0}
   document.querySelectorAll('#zonePick .zpill').forEach(function(b){
     b.addEventListener('click', function(){
       document.querySelectorAll('#zonePick .zpill').forEach(function(x){ x.classList.remove('on'); });
-      b.classList.add('on'); state.zone=b.dataset.zone; renderAvail();
+      b.classList.add('on'); state.zone=b.dataset.zone; populateHours(); renderAvail();
     });
   });
-  document.querySelectorAll('#hourPick .hpill').forEach(function(b){
-    b.addEventListener('click', function(){
-      document.querySelectorAll('#hourPick .hpill').forEach(function(x){ x.classList.remove('on'); });
-      b.classList.add('on'); state.hours=parseInt(b.dataset.h,10);
-    });
-  });
+  $('#fHours').addEventListener('change', function(e){ state.hours = parseInt(e.target.value,10); });
+  populateHours();
   dateInp.addEventListener('change', renderAvail);
   ['fName','fPhone','fStart'].forEach(function(id){ $('#'+id).addEventListener('input', validate); });
   $('#fPhone').addEventListener('input', function(e){ e.target.value = e.target.value.replace(/\D/g,'').slice(0,10); });
+  $('#fGst').addEventListener('input', function(e){ e.target.value = e.target.value.toUpperCase(); });
 
   $('#bookBtn').addEventListener('click', function(){
     var btn = $('#bookBtn'), btnT = $('#bookBtnT'), err = $('#bkErr');
     var name = $('#fName').value.trim(), phone = $('#fPhone').value.trim();
+    var gst = $('#fGst').value.trim(), addr = $('#fAddr').value.trim();
     err.textContent=''; btn.disabled=true; btnT.textContent='Requesting…';
     fetch(PROXY_URL+'/public-booking', {
       method:'POST', headers:{'Content-Type':'application/json'},
       body: JSON.stringify({
-        name: name, phone: phone,
+        name: name, phone: phone, cgst: gst, caddr: addr,
         zone: state.zone, sessionDate: dateInp.value, sessionStart: $('#fStart').value, hours: state.hours
       })
     }).then(function(r){ return r.json().then(function(d){ return {ok:r.ok, d:d}; }); })
@@ -412,6 +425,8 @@ footer{border-top:1px solid var(--line);padding:64px 0 30px;margin-top:0}
           + 'Duration: '+state.hours+' hour'+(state.hours===1?'':'s')+'\n'
           + 'Name: '+name+'\n'
           + 'Phone: '+phone+'\n'
+          + (gst ? 'GST No.: '+gst+'\n' : '')
+          + (addr ? 'Billing Address: '+addr+'\n' : '')
           + 'Quote Ref: '+res.d.qno+'\n'
           + 'Estimated Total: '+money(res.d.price)+'\n\n'
           + 'Please confirm my slot!';
