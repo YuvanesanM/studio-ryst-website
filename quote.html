@@ -492,6 +492,12 @@ function loadSettings(){
     const s = Object.assign({}, DEFAULT_SETTINGS, JSON.parse(localStorage.getItem(K_SET)||"{}"));
     if(!Array.isArray(s.rateCard) || !s.rateCard.length) s.rateCard = DEFAULT_SETTINGS.rateCard.map(x=>({...x}));
     normalizeRateCard(s.rateCard);
+    // A previously-saved settings.html write can carry an explicit blank
+    // logo/qr (its own defaults used to be empty strings) — that would
+    // override DEFAULT_SETTINGS' real ones via Object.assign above. Never
+    // let a blank stored value blank out the studio's real logo/QR.
+    if(!s.logo) s.logo = DEFAULT_SETTINGS.logo;
+    if(!s.qr) s.qr = DEFAULT_SETTINGS.qr;
     return s;
   }catch(e){ return JSON.parse(JSON.stringify(DEFAULT_SETTINGS)); }
 }
