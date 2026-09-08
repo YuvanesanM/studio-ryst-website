@@ -365,9 +365,9 @@ async function sendWaReminder(qno, kind){
   if(kind==='welcome'){
     msg = fillWaTemplate(WA_TEMPLATES.welcomeTemplate, vars) || `Hi ${vars.name||'there'}! Looking forward to your session at Studio RYST.`;
   } else {
-    // book.ryst.in is the dedicated client-facing domain feedback.html is
-    // deployed on (see quote.html's sendTemplatedWa) — never signage.ryst.in.
-    const link = "https://book.ryst.in/feedback.html?t="+encodeURIComponent(q.shareToken||'');
+    // Feedback lives at /feedback/ on this same domain (formerly a
+    // separate book.ryst.in — folded in so guests never leave studio.ryst.in).
+    const link = "https://studio.ryst.in/feedback/?t="+encodeURIComponent(q.shareToken||'');
     msg = fillWaTemplate(WA_TEMPLATES.feedbackTemplate, {...vars, link}) || `Hi ${vars.name||'there'}! We'd love your feedback: ${link}`;
   }
   window.open(`https://wa.me/91${phone}?text=`+encodeURIComponent(msg), "_blank");

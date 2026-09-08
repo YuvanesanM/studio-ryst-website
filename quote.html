@@ -551,10 +551,9 @@ async function sendTemplatedWa(kind){
     await saveQuote(true);
     const q = collect();
     const vars = { name:q.cname||'', date:fmtDate(q.sessionDate||q.date||''), zone:q.zone||'' };
-    // book.ryst.in is the dedicated client-facing domain (see shareQuote's
-    // link above) — feedback.html is deployed there (not on studio.ryst.in,
-    // this tool's own domain) so guests never land on the staff tool.
-    const link = "https://book.ryst.in/feedback.html?t="+encodeURIComponent(curShareToken);
+    // Feedback lives at /feedback/ — a separate path on this same domain
+    // from the staff tools, but no longer a separate book.ryst.in domain.
+    const link = "https://studio.ryst.in/feedback/?t="+encodeURIComponent(curShareToken);
     msg = fillTemplate(TEMPLATES.feedbackTemplate, {...vars, link}) || `Hi ${vars.name||'there'}! We'd love your feedback: ${link}`;
   }
   window.open(`https://wa.me/91${phone}?text=`+encodeURIComponent(msg), "_blank");
@@ -1256,9 +1255,10 @@ async function shareQuote(){
     curSharedAt = curSharedAt || Date.now();   // mark as actually shared, persisted by the save below
     await saveQuote(true);
     const q=collect();
-    // book.ryst.in is a dedicated client-facing domain (separate from this
-    // internal staff tool's own domain), so the link needs no further hiding.
-    const link = "https://book.ryst.in/?t="+encodeURIComponent(curShareToken);
+    // The client-facing quote/payment page lives at /quote/ — a separate
+    // path on this same domain from the staff tools, but no longer a
+    // separate book.ryst.in domain, so the link needs no further hiding.
+    const link = "https://studio.ryst.in/quote/?t="+encodeURIComponent(curShareToken);
     const msg = `Hi${q.cname?" "+q.cname:""}! Here's your quote from Studio RYST (${q.qno}). `
       + `Please review and accept or decline here: ${link}`;
     const waUrl = `https://wa.me/91${phone}?text=` + encodeURIComponent(msg);

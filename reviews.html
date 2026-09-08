@@ -294,7 +294,7 @@ async function sendRequest(qno){
   const q = QUOTES.find(x=>x.qno===qno); if(!q) return;
   const phone = normPhone(q.cphone); if(!phone) return;
   if(paidTotal(q)<=0){ toast('Record a payment first — feedback requests are only for paid quotes/invoices','err'); return; }
-  const link = "https://book.ryst.in/feedback.html?t="+encodeURIComponent(q.shareToken||'');
+  const link = "https://studio.ryst.in/feedback/?t="+encodeURIComponent(q.shareToken||'');
   const vars = { name:q.cname||'', date:fmtDate(q.sessionDate), zone:q.zone||'', link };
   const msg = fillTpl(TEMPLATES.feedbackTemplate, vars) || `Hi ${vars.name||'there'}! We'd love your feedback: ${link}`;
   window.open(`https://wa.me/91${phone}?text=`+encodeURIComponent(msg), "_blank");
