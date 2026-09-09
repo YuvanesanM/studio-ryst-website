@@ -193,6 +193,18 @@ button,input,select,textarea{font-family:inherit}
 .zone-card.culinary .more{border-bottom-color:var(--zone-culinary)}
 @media (max-width:820px){.zones{grid-template-columns:1fr}}
 
+/* ---- zone cards: real photos (shared — used by Home and Studio) ---- */
+.zone-card.has-media{padding:0;display:flex;flex-direction:column;transition:background .25s ease,transform .25s ease}
+.zone-card.has-media:hover{transform:translateY(-4px)}
+.zone-card-media{position:relative;aspect-ratio:4/3;overflow:hidden;background:var(--surface-2)}
+.zone-card-media img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .5s cubic-bezier(.2,.8,.2,1)}
+.zone-card.has-media:hover .zone-card-media img{transform:scale(1.06)}
+.zone-card-tag-chip{position:absolute;left:14px;bottom:14px;color:#fff;font-family:"Space Mono",monospace;font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;padding:6px 12px;border-radius:20px;backdrop-filter:blur(4px);background:rgba(23,19,16,.72)}
+.zone-card.photo .zone-card-tag-chip{background:color-mix(in srgb, var(--zone-photo-strong) 82%, black)}
+.zone-card.podcast .zone-card-tag-chip{background:color-mix(in srgb, var(--zone-podcast-strong) 82%, black)}
+.zone-card.culinary .zone-card-tag-chip{background:color-mix(in srgb, var(--zone-culinary-strong) 82%, black)}
+.zone-card-body{padding:24px 26px 28px}
+
 /* ---- why / principles list ---- */
 .plist{border-top:1px solid var(--line)}
 .prow{display:grid;grid-template-columns:64px 1fr;gap:24px;padding:26px 0;border-bottom:1px solid var(--line)}
@@ -336,21 +348,27 @@ footer{border-top:1px solid var(--line);padding:64px 0 30px;margin-top:0}
 
 <section class="section"><div class="wrap">
   <div class="zones">
-    <div class="zone-card photo"><span class="tag">Light. Frame. Capture.</span><h3>Photography Studio</h3>
+    <div class="zone-card photo has-media">
+      <div class="zone-card-media"><img src="/assets/photos/zone-photography.jpg" alt="Photography zone at Studio RYST — green screen and softbox lighting" width="1200" height="900" loading="lazy" onerror="this.style.display='none'"><span class="zone-card-tag-chip">Photography</span></div>
+      <div class="zone-card-body"><span class="tag">Light. Frame. Capture.</span><h3>Photography Studio</h3>
       <p>Continuous LED lighting with a green screen available for
         chroma-key work.</p>
       <ul><li>Product shoots &amp; e-commerce</li><li>Editorial &amp; portrait sessions</li><li>Headshots</li><li>Green screen available</li><li>Bring your own camera, or add cinematography</li></ul>
-      <a class="more" href="/packages/">See pricing →</a></div>
-    <div class="zone-card podcast"><span class="tag">Speak. Record. Inspire.</span><h3>Podcast Studio</h3>
+      <a class="more" href="/packages/">See pricing →</a></div></div>
+    <div class="zone-card podcast has-media">
+      <div class="zone-card-media"><img src="/assets/photos/zone-podcast.jpg" alt="Podcast zone at Studio RYST — sofa seating and mic stands" width="1200" height="900" loading="lazy" onerror="this.style.display='none'"><span class="zone-card-tag-chip">Podcast</span></div>
+      <div class="zone-card-body"><span class="tag">Speak. Record. Inspire.</span><h3>Podcast Studio</h3>
       <p>Acoustically treated for broadcast-quality sound, with a comfortable
         sofa setup and ambient, camera-ready lighting.</p>
       <ul><li>Broadcast-grade microphones</li><li>Ambient, camera-ready lighting</li><li>Comfortable sofa seating</li><li>Bring your own camera, or add cinematography</li></ul>
-      <a class="more" href="/packages/">See pricing →</a></div>
-    <div class="zone-card culinary"><span class="tag">Cook. Style. Shoot.</span><h3>Culinary Studio</h3>
+      <a class="more" href="/packages/">See pricing →</a></div></div>
+    <div class="zone-card culinary has-media">
+      <div class="zone-card-media"><img src="/assets/photos/zone-culinary.jpg" alt="Culinary zone at Studio RYST — kitchen countertop and shelving" width="1200" height="900" loading="lazy" onerror="this.style.display='none'"><span class="zone-card-tag-chip">Culinary</span></div>
+      <div class="zone-card-body"><span class="tag">Cook. Style. Shoot.</span><h3>Culinary Studio</h3>
       <p>A premium kitchen built to be filmed in, with styling-friendly
         counters and light for that perfect shot.</p>
       <ul><li>Full working kitchen</li><li>Styling-friendly counters &amp; light</li><li>Recipe videos &amp; food photography</li><li>Bring your own camera, or add cinematography</li></ul>
-      <a class="more" href="/packages/">See pricing →</a></div>
+      <a class="more" href="/packages/">See pricing →</a></div></div>
   </div>
 </div></section>
 
