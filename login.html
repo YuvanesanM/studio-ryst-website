@@ -95,6 +95,12 @@
   .hcal-day-item.to-quote:hover{background:var(--accent-soft);border-radius:6px}
   .sched-item.to-quote:hover{border-color:var(--accent)}
   .hcal-chip-more{font-size:9px;font-weight:700;color:var(--muted2);padding-left:1px}
+  /* Unpaid-quote follow-up overlay — dashed border + amber tint keeps these
+     visually distinct from the solid confirmed-session chips above them. */
+  .hcal-chip.unpaid{background:rgba(214,158,46,.15);color:#a97a1a;border:1px dashed rgba(214,158,46,.55)}
+  .hcal-chip-more.unpaid-more{color:#a97a1a}
+  .hcal-toggle{display:flex;align-items:center;gap:7px;font-size:12px;font-weight:600;color:var(--muted);margin-bottom:10px;cursor:pointer;user-select:none}
+  .hcal-toggle input{accent-color:#d69e2e;cursor:pointer;width:14px;height:14px}
   .hcal-legend{display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin-top:12px;padding-top:12px;border-top:1px solid var(--line);font-size:11px;color:var(--muted2)}
   .hcal-legend span{display:inline-flex;align-items:center;gap:5px}
   .hcal-legend-dot{width:9px;height:9px;border-radius:3px;display:inline-block;flex-shrink:0}
@@ -194,6 +200,7 @@
         </div>
         <button class="hcal-today-btn" id="hcalTodayBtn" type="button">Today</button>
       </div>
+      <label class="hcal-toggle"><input type="checkbox" id="hcalUnpaidToggle"> Show unpaid quotes (follow-up)</label>
       <div class="hcal-grid" id="homeCalGrid"></div>
       <!-- Colors hardcoded here to match HOME_ZONE_COLORS below (static
            markup, not worth generating for 3 fixed zones) — keep in sync. -->
@@ -202,6 +209,7 @@
         <span><i class="hcal-legend-dot" style="background:#c8893d"></i>Photography</span>
         <span><i class="hcal-legend-dot" style="background:#c0584b"></i>Culinary</span>
         <span>↻ recurring</span>
+        <span>💰 unpaid quote</span>
       </div>
       <div class="hcal-day" id="homeCalDay"></div>
     </div>
@@ -322,7 +330,36 @@ async function loadWaReminders(){
     const d = await qRes.json();
     WA_QUOTES = Array.isArray(d.quotes) ? d.quotes : [];
     renderWaReminders();
+    // WA_QUOTES doubles as the data source for the calendar's "unpaid quotes"
+    // overlay below — it loads in parallel with loadHomeCalendar(), so give
+    // the grid a chance to pick it up once it lands (a no-op if the toggle
+    // is off, or the grid hasn't rendered yet).
+    if(showUnpaidQuotes) renderHomeCalendar();
   }catch(e){}
+}
+
+// ── Unpaid-quote follow-up overlay ───────────────────────────────────────
+// Optional (off by default, remembered per-browser): ticking "Show unpaid
+// quotes" overlays quotes that have a session date but aren't fully paid —
+// same subtotal/discount/GST math and "fully paid" definition quote.html's
+// own "Paid" badge uses, kept in sync with the server's GLOBAL_MAX_DISCOUNT_PCT
+// — so staff can spot upcoming sessions that still need a payment follow-up,
+// whether or not they've already been Confirmed and synced to the schedule.
+let showUnpaidQuotes = localStorage.getItem('ryst_show_unpaid_cal')==='1';
+function lineTotal(it){ return (parseFloat(it.price)||0)*(parseFloat(it.qty)||0); }
+function lineGst(it){ return lineTotal(it)*(parseFloat(it.gst)||0)/100; }
+function quoteGrandTotal(q){
+  const items=q.items||[];
+  const sub=items.reduce((s,it)=>s+lineTotal(it),0);
+  const gst=items.reduce((s,it)=>s+lineGst(it),0);
+  const maxDisc=Math.floor(sub*0.50); // global ceiling — matches the server's GLOBAL_MAX_DISCOUNT_PCT
+  const discount=Math.min(parseFloat(q.discount)||0, maxDisc);
+  return Math.round(sub+gst-discount);
+}
+function quotePaidTotal(q){ return (q.payments||[]).reduce((s,p)=>s+(Number(p.amount)||0),0); }
+function isQuoteFullyPaid(q){ const tot=quoteGrandTotal(q); return tot>0 && quotePaidTotal(q)>=tot; }
+function unpaidQuotesOnDate(iso){
+  return WA_QUOTES.filter(q=>q.sessionDate===iso && !isQuoteFullyPaid(q));
 }
 
 function renderWaReminders(){
@@ -512,9 +549,27 @@ function renderHomeCalendar(){
       return `<div class="hcal-chip${href?' to-quote':''}"${click} style="background:${hexToRgba(color,.15)};color:${color}" title="${esc(tip)}">${HOME_ZONE_EMOJI[zone]||'•'} ${rec}${esc(s.name||'Unnamed')}</div>`;
     }).join('');
     const more = list.length>3 ? `<div class="hcal-chip-more">+${list.length-3} more</div>` : '';
+    // Unpaid-quote follow-up overlay, opt-in via the checkbox above the grid.
+    // Deliberately not deduped against `list` above — a Confirmed session
+    // that's only partially paid should show both its schedule chip AND its
+    // balance-due chip, since both facts matter for follow-up.
+    let unpaidHtml = '';
+    if(showUnpaidQuotes){
+      const unpaid = unpaidQuotesOnDate(iso);
+      if(unpaid.length){
+        const shown = unpaid.slice(0,2).map(q=>{
+          const bal = quoteGrandTotal(q) - quotePaidTotal(q);
+          const href = 'quote.html?qno='+encodeURIComponent(q.qno);
+          const tip = (q.cname||q.qno)+' · ₹'+bal.toLocaleString('en-IN')+' due · open quote';
+          return `<div class="hcal-chip unpaid to-quote" onclick="event.stopPropagation();location.href='${href}'" title="${esc(tip)}">💰 ${esc(q.cname||q.qno)}</div>`;
+        }).join('');
+        const moreUnpaid = unpaid.length>2 ? `<div class="hcal-chip-more unpaid-more">+${unpaid.length-2} due</div>` : '';
+        unpaidHtml = shown+moreUnpaid;
+      }
+    }
     html += `<button type="button" class="hcal-cell${inMonth?'':' other'}${iso===todayIso?' today':''}${iso===calSelectedISO?' sel':''}" data-iso="${iso}">
       <span class="hcal-daynum">${cell.getDate()}</span>
-      <span class="hcal-chips">${chips}${more}</span>
+      <span class="hcal-chips">${chips}${more}${unpaidHtml}</span>
     </button>`;
   }
   grid.innerHTML = html;
@@ -530,13 +585,25 @@ function renderHomeDay(){
   const d = new Date(calSelectedISO+'T00:00:00');
   const list = sessionsOnDate(d);
   const label = d.toLocaleDateString('en-IN', {weekday:'short', day:'numeric', month:'short'});
-  box.innerHTML = `<div class="hcal-day-title">${esc(label)}<a class="hcal-day-add" href="javascript:void(0)" onclick="goToNewBooking('${calSelectedISO}')">+ New booking</a></div>` + (list.length
+  const sessionsHtml = list.length
     ? list.map(s=>{
         const href = quoteHref(s);
         const openAttr = href ? ` onclick="location.href='${href}'" title="Open quote ${esc(s.quoteNo)} to edit"` : '';
         return `<div class="hcal-day-item${href?' to-quote':''}"${openAttr}><span class="hcal-day-dot" style="background:${HOME_ZONE_COLORS[s.zone]||'var(--muted2)'}"></span><b>${esc(s.name||'Unnamed')}</b>${todayBadge(s)}<span class="hcal-day-time">${esc(fmt12(s.start))}${s.end?' – '+esc(fmt12(s.end)):''}</span></div>`;
       }).join('')
-    : `<div class="hcal-day-empty">No sessions.</div>`);
+    : `<div class="hcal-day-empty">No sessions.</div>`;
+  let unpaidHtml = '';
+  if(showUnpaidQuotes){
+    const unpaid = unpaidQuotesOnDate(calSelectedISO);
+    if(unpaid.length){
+      unpaidHtml = unpaid.map(q=>{
+        const bal = quoteGrandTotal(q) - quotePaidTotal(q);
+        const href = 'quote.html?qno='+encodeURIComponent(q.qno);
+        return `<div class="hcal-day-item to-quote" onclick="location.href='${href}'" title="Open quote ${esc(q.qno)} to edit"><span class="hcal-day-dot" style="background:#d69e2e"></span><b>💰 ${esc(q.cname||q.qno)}</b><span class="hcal-day-time">₹${bal.toLocaleString('en-IN')} due</span></div>`;
+      }).join('');
+    }
+  }
+  box.innerHTML = `<div class="hcal-day-title">${esc(label)}<a class="hcal-day-add" href="javascript:void(0)" onclick="goToNewBooking('${calSelectedISO}')">+ New booking</a></div>` + sessionsHtml + unpaidHtml;
 }
 
 // "All Scheduled Sessions" — Upcoming (grouped by date) · Recurring weekly ·
@@ -604,6 +671,13 @@ document.getElementById('hcalNext').addEventListener('click', ()=>{ calCursor.se
 document.getElementById('hcalTodayBtn').addEventListener('click', ()=>{
   calCursor = new Date(); calCursor.setDate(1); calCursor.setHours(0,0,0,0);
   calSelectedISO = calYmd(new Date());
+  renderHomeCalendar();
+});
+const hcalUnpaidToggleEl = document.getElementById('hcalUnpaidToggle');
+hcalUnpaidToggleEl.checked = showUnpaidQuotes;
+hcalUnpaidToggleEl.addEventListener('change', ()=>{
+  showUnpaidQuotes = hcalUnpaidToggleEl.checked;
+  localStorage.setItem('ryst_show_unpaid_cal', showUnpaidQuotes ? '1' : '0');
   renderHomeCalendar();
 });
 
