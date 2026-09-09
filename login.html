@@ -359,7 +359,10 @@ function quoteGrandTotal(q){
 function quotePaidTotal(q){ return (q.payments||[]).reduce((s,p)=>s+(Number(p.amount)||0),0); }
 function isQuoteFullyPaid(q){ const tot=quoteGrandTotal(q); return tot>0 && quotePaidTotal(q)>=tot; }
 function unpaidQuotesOnDate(iso){
-  return WA_QUOTES.filter(q=>q.sessionDate===iso && !isQuoteFullyPaid(q));
+  // A customer-Declined quote (see quote/index.html's Accept/Decline flow)
+  // has nothing left to follow up on — surfacing it here would read as a
+  // live booking still owed money.
+  return WA_QUOTES.filter(q=>q.sessionDate===iso && q.clientStatus!=='Declined' && !isQuoteFullyPaid(q));
 }
 
 function renderWaReminders(){
