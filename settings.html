@@ -160,6 +160,15 @@
     <div class="rc-foot">
       <button class="btn primary" id="setSave">Save settings</button>
     </div>
+
+    <div style="margin-top:26px;padding-top:18px;border-top:1px solid var(--line)">
+      <div style="font-size:13px;font-weight:700;color:var(--ink);margin-bottom:6px">Google Calendar sync</div>
+      <p class="sd" style="margin-bottom:12px">New bookings sync to the shared Google Calendar automatically on every save. Run this once to backfill bookings saved before that was turned on — safe to run again any time, already-synced bookings are skipped.</p>
+      <div class="rc-foot">
+        <button class="btn" type="button" id="calResyncBtn">Sync all bookings to Calendar</button>
+        <span id="calResyncStatus" style="font-size:12.5px;color:var(--muted2);align-self:center"></span>
+      </div>
+    </div>
   </div>
 
   <!-- WhatsApp Templates pane -->
@@ -563,6 +572,7 @@ function bindSettings(){
   });
   document.getElementById("rcSave").addEventListener("click",saveRateCard);
   document.getElementById("setSave").addEventListener("click",saveSettings);
+  document.getElementById("calResyncBtn").addEventListener("click",calResync);
   document.getElementById("logoFile").addEventListener("change",e=>pickImage(e,"logo","#logoPrev"));
   document.getElementById("qrFile").addEventListener("change",e=>pickImage(e,"qr","#qrPrev"));
   document.getElementById("userAdd").addEventListener("click",addUser);
@@ -637,6 +647,26 @@ async function saveUsers(){
   }
   usersDraft=users.map(u=>({...u})); renderUsers();
   btn.disabled=false; btn.textContent="Save user access";
+}
+
+/* ---------- CALENDAR RESYNC ---------- */
+async function calResync(){
+  if(!proxyToken) return;
+  const btn=document.getElementById("calResyncBtn"), status=document.getElementById("calResyncStatus");
+  btn.disabled=true; btn.textContent="Syncing…"; status.textContent="";
+  try{
+    const res=await fetch(PROXY_URL+'/calendar-resync',{method:'POST',headers:{'X-Token':proxyToken}});
+    if(res.status===401){ localStorage.removeItem('ryst_proxy_token'); window.location.href='login.html'; return; }
+    const d=await res.json().catch(()=>({}));
+    if(res.status===403){ status.textContent="Admins only."; }
+    else if(res.status===503){ status.textContent="Not configured — "+(d.error||"check the server's calendar env vars"); }
+    else if(!res.ok){ status.textContent="Sync failed: "+(d.error||("HTTP "+res.status)); }
+    else{
+      status.textContent=`✓ ${d.inserted} added, ${d.updated} updated, ${d.deleted} removed, ${d.unchanged} already up to date`+(d.failed?`, ${d.failed} failed (see server logs)`:"");
+      toast("Calendar sync complete");
+    }
+  }catch(e){ status.textContent="Cloud unreachable"; }
+  btn.disabled=false; btn.textContent="Sync all bookings to Calendar";
 }
 
 /* ---------- TOAST ---------- */
