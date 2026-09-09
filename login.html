@@ -557,13 +557,13 @@ function renderHomeCalendar(){
     if(showUnpaidQuotes){
       const unpaid = unpaidQuotesOnDate(iso);
       if(unpaid.length){
-        const shown = unpaid.slice(0,2).map(q=>{
+        const shown = unpaid.slice(0,5).map(q=>{
           const bal = quoteGrandTotal(q) - quotePaidTotal(q);
           const href = 'quote.html?qno='+encodeURIComponent(q.qno);
           const tip = (q.cname||q.qno)+' · ₹'+bal.toLocaleString('en-IN')+' due · open quote';
           return `<div class="hcal-chip unpaid to-quote" onclick="event.stopPropagation();location.href='${href}'" title="${esc(tip)}">💰 ${esc(q.cname||q.qno)}</div>`;
         }).join('');
-        const moreUnpaid = unpaid.length>2 ? `<div class="hcal-chip-more unpaid-more">+${unpaid.length-2} due</div>` : '';
+        const moreUnpaid = unpaid.length>5 ? `<div class="hcal-chip-more unpaid-more">+${unpaid.length-5} due</div>` : '';
         unpaidHtml = shown+moreUnpaid;
       }
     }
