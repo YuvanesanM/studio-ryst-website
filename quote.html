@@ -1119,13 +1119,14 @@ function render(){
 
   const sub=items.reduce((s,it)=>s+lineTotal(it),0);
   const gst=items.reduce((s,it)=>s+lineGst(it),0);
-  const maxDisc=Math.floor(sub*0.10);
+  const discPct=IS_ADMIN?50:10;
+  const maxDisc=Math.floor(sub*discPct/100);
   const discInp=$("#discountInp");
   discInp.placeholder=`Max ${money(maxDisc)}`;
   discInp.max=String(maxDisc);
   const rawDisc=parseFloat(discInp.value)||0;
   const discount=Math.min(rawDisc,maxDisc);
-  if(rawDisc>maxDisc){ discInp.value=String(maxDisc); discInp.classList.add("warn"); setTimeout(()=>discInp.classList.remove("warn"),600); toast("Discount capped at 10% of pre-tax value"); }
+  if(rawDisc>maxDisc){ discInp.value=String(maxDisc); discInp.classList.add("warn"); setTimeout(()=>discInp.classList.remove("warn"),600); toast(`Discount capped at ${discPct}% of pre-tax value`); }
   const tot=sub+gst-discount;
   const rates=[...new Set(active.filter(it=>lineTotal(it)>0).map(it=>parseFloat(it.gst)||0))];
   const gstLbl = rates.length===1 ? `GST (${rates[0]}%)` : "GST";
@@ -1288,7 +1289,11 @@ function quoteGrandTotal(q){
   const items=q.items||[];
   const sub=items.reduce((s,it)=>s+lineTotal(it),0);
   const gst=items.reduce((s,it)=>s+lineGst(it),0);
-  const maxDisc=Math.floor(sub*0.10);
+  // 30% is the global ceiling (matches the server's GLOBAL_MAX_DISCOUNT_PCT)
+  // — this just reads back an already-saved discount for a paid-total check,
+  // not gating a new one, so it uses the universal max rather than a
+  // per-editor role check.
+  const maxDisc=Math.floor(sub*0.50);
   const discount=Math.min(parseFloat(q.discount)||0, maxDisc);
   return Math.round(sub+gst-discount);
 }
