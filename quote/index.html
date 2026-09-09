@@ -675,6 +675,18 @@ async function downloadPdf(){
   try{
     if(typeof html2pdf==='undefined') throw new Error('PDF generator failed to load — check your connection and retry');
     if(!CURRENT_QUOTE) throw new Error('Quote not loaded yet');
+    // Re-fetch before generating — CURRENT_QUOTE is whatever was loaded when
+    // the page first opened, which can be stale if the quote was edited or
+    // paid since (e.g. a tab left open across a staff update). Best-effort:
+    // on failure, fall through and generate from the last-known copy rather
+    // than blocking the download outright.
+    try{
+      const freshRes = await fetch(PROXY_URL+'/quote-view?token='+encodeURIComponent(token));
+      if(freshRes.ok){
+        CURRENT_QUOTE = await freshRes.json();
+        renderQuote(CURRENT_QUOTE);
+      }
+    }catch(e){}
     try{ await document.fonts.ready; }catch(e){}
     buildPdfDoc(CURRENT_QUOTE);
     // Let the browser actually paint the now-visible #pdfDoc before capture —
