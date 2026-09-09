@@ -177,6 +177,7 @@
   .lq-sub{color:var(--muted);font-size:11.5px;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .lq-amt{flex-shrink:0;font-size:12.5px;font-weight:700;color:var(--ink)}
   .lq-paid{flex-shrink:0;font-size:9.5px;font-weight:700;padding:3px 8px;border-radius:10px;background:var(--accent-soft,#eaf4ee);color:var(--accent-d,#2f7d54);white-space:nowrap;letter-spacing:.3px;text-transform:uppercase}
+  .lq-partial{flex-shrink:0;font-size:9.5px;font-weight:700;padding:3px 8px;border-radius:10px;background:#fbeed4;color:#a06b1a;white-space:nowrap;letter-spacing:.3px;text-transform:uppercase}
   .lq-del{flex-shrink:0;background:none;border:none;font-size:14px;padding:4px 6px;border-radius:6px;cursor:pointer;opacity:.55}
   .lq-del:hover{opacity:1;background:rgba(192,88,75,.12)}
   .empty{color:var(--muted2);font-size:13px;text-align:center;padding:18px}
@@ -1325,7 +1326,7 @@ function renderLoadQuotePanel(){
         <div class="lq-main"><div class="lq-no">${esc(q.qno)}</div>
         <div class="lq-sub">${fmtDate(q.date)} · ${esc(q.cname||"—")} · ${esc(q.zone||"")}</div></div>
         <div class="lq-amt">${money(quoteGrandTotal(q))}</div>
-        ${isQuoteFullyPaid(q) ? `<span class="lq-paid">Paid</span>` : ""}
+        ${isQuoteFullyPaid(q) ? `<span class="lq-paid">Paid</span>` : quotePaidTotal(q)>0 ? `<span class="lq-partial">Partial</span>` : ""}
         ${IS_ADMIN ? `<button type="button" class="lq-del" data-del="${esc(q.qno)}" title="Delete quote">🗑</button>` : ""}
       </div>`).join("");
   panel.querySelectorAll("[data-load]").forEach(el=>el.addEventListener("click",e=>{
