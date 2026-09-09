@@ -344,6 +344,7 @@
           </div>
           <div class="grand"><span>Total Inc. of GST</span><b id="mTot">₹0</b></div>
         </div>
+        <button class="btn primary" type="button" id="btnSaveBottom" style="width:100%;justify-content:center;margin-top:12px">Save</button>
         <p class="hint">Prices, SAC codes and GST are pulled from the Rate Card when you pick a service. You can still override the price or quantity per line.</p>
       </div>
 
@@ -943,6 +944,7 @@ function bind(){
   $("#hdrLogo").addEventListener("click", ()=>{ window.location.href='login.html'; });
   $("#btnNew").addEventListener("click", ()=>{ if(confirm("Start a new blank quote?")) newQuote(); });
   $("#btnSave").addEventListener("click", ()=>saveQuote());
+  $("#btnSaveBottom").addEventListener("click", ()=>saveQuote());
   $("#btnShareHdr").addEventListener("click", shareQuote);
   $("#btnWelcomeWa").addEventListener("click", ()=>sendTemplatedWa('welcome'));
   $("#btnFeedbackWa").addEventListener("click", ()=>sendTemplatedWa('feedback'));
