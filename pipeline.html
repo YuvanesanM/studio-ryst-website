@@ -775,7 +775,7 @@ async function ensureLinks(){
 }
 function quoteTotal(q){ const it=q.items||[]; const sub=it.reduce((s,x)=>s+(parseFloat(x.price)||0)*(parseFloat(x.qty)||0),0);
   const gst=it.reduce((s,x)=>s+((parseFloat(x.price)||0)*(parseFloat(x.qty)||0))*(parseFloat(x.gst)||0)/100,0);
-  const disc=Math.min(parseFloat(q.discount)||0, Math.floor(sub*0.30)); return Math.round(sub-disc+gst); }
+  const disc=Math.min(parseFloat(q.discount)||0, Math.floor(sub*0.50)); return Math.round(sub-disc+gst); }
 function raiseQuoteForLead(l){
   localStorage.setItem('ryst_quote_prefill', JSON.stringify({leadId:l.id,company:l.company,contact:l.contact,phone:l.phone,zone:l.zone,duration:l.duration,address:l.address,estimate:l.quoteEstimate}));
   window.location.href='quote.html';

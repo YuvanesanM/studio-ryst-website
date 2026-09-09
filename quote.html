@@ -1119,7 +1119,7 @@ function render(){
 
   const sub=items.reduce((s,it)=>s+lineTotal(it),0);
   const gst=items.reduce((s,it)=>s+lineGst(it),0);
-  const discPct=IS_ADMIN?30:10;
+  const discPct=IS_ADMIN?50:10;
   const maxDisc=Math.floor(sub*discPct/100);
   const discInp=$("#discountInp");
   discInp.placeholder=`Max ${money(maxDisc)}`;
@@ -1293,7 +1293,7 @@ function quoteGrandTotal(q){
   // — this just reads back an already-saved discount for a paid-total check,
   // not gating a new one, so it uses the universal max rather than a
   // per-editor role check.
-  const maxDisc=Math.floor(sub*0.30);
+  const maxDisc=Math.floor(sub*0.50);
   const discount=Math.min(parseFloat(q.discount)||0, maxDisc);
   return Math.round(sub+gst-discount);
 }
