@@ -240,7 +240,7 @@ async function load(){
 // ── Quote money helpers (mirror quote.html) ──
 function qSub(q){ return (q.items||[]).reduce((s,it)=>s+(parseFloat(it.price)||0)*(parseFloat(it.qty)||0),0); }
 function qGst(q){ return (q.items||[]).reduce((s,it)=>s+((parseFloat(it.price)||0)*(parseFloat(it.qty)||0))*(parseFloat(it.gst)||0)/100,0); }
-function qNet(q){ const sub=qSub(q); const disc=Math.min(parseFloat(q.discount)||0, Math.floor(sub*0.10)); return sub-disc; }
+function qNet(q){ const sub=qSub(q); const disc=Math.min(parseFloat(q.discount)||0, Math.floor(sub*0.30)); return sub-disc; }
 function qGrandTotal(q){ return Math.round(qNet(q)+qGst(q)); }
 function qDate(q){ return (q.date || (q.savedAt? new Date(q.savedAt).toISOString().slice(0,10):'')) || ''; }
 function qMonth(q){ return qDate(q).slice(0,7); }
