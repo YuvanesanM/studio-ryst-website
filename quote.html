@@ -1122,7 +1122,7 @@ function render(){
 
   const sub=items.reduce((s,it)=>s+lineTotal(it),0);
   const gst=items.reduce((s,it)=>s+lineGst(it),0);
-  const discPct=IS_ADMIN?50:10;
+  const discPct=50; // flat cap for every role — matches the server's GLOBAL_MAX_DISCOUNT_PCT
   const maxDisc=Math.floor(sub*discPct/100);
   const discInp=$("#discountInp");
   discInp.placeholder=`Max ${money(maxDisc)}`;
@@ -1292,7 +1292,7 @@ function quoteGrandTotal(q){
   const items=q.items||[];
   const sub=items.reduce((s,it)=>s+lineTotal(it),0);
   const gst=items.reduce((s,it)=>s+lineGst(it),0);
-  // 30% is the global ceiling (matches the server's GLOBAL_MAX_DISCOUNT_PCT)
+  // 50% is the global ceiling (matches the server's GLOBAL_MAX_DISCOUNT_PCT)
   // — this just reads back an already-saved discount for a paid-total check,
   // not gating a new one, so it uses the universal max rather than a
   // per-editor role check.
