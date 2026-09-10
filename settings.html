@@ -662,7 +662,7 @@ async function calResync(){
     else if(res.status===503){ status.textContent="Not configured — "+(d.error||"check the server's calendar env vars"); }
     else if(!res.ok){ status.textContent="Sync failed: "+(d.error||("HTTP "+res.status)); }
     else{
-      status.textContent=`✓ ${d.inserted} added, ${d.updated} updated, ${d.deleted} removed, ${d.unchanged} already up to date`+(d.failed?`, ${d.failed} failed (see server logs)`:"");
+      status.textContent=`✓ ${d.inserted} added, ${d.updated} updated, ${d.deleted} removed, ${d.unchanged} already up to date`+(d.failed?`, ${d.failed} failed: ${(d.failedQnos||[]).join(', ')}`:"");
       toast("Calendar sync complete");
     }
   }catch(e){ status.textContent="Cloud unreachable"; }
