@@ -186,17 +186,19 @@
   <div id="paneUsers" hidden>
     <p class="sd">Map each Google login to a role. <b>Admins</b> can change settings, the rate card and targets. <b>Coordinators</b> use the tools but can’t change those. mailyuvanesh@gmail.com is always an admin and can’t be locked out.</p>
     <div class="rc-table-wrap">
-      <table class="rc-table" style="min-width:520px">
+      <table class="rc-table" style="min-width:720px">
         <thead><tr>
           <th>Google email</th>
-          <th style="width:170px">Name</th>
+          <th style="width:150px">Name</th>
           <th class="c" style="width:150px">Role</th>
+          <th style="width:190px">Telegram</th>
           <th style="width:36px"></th>
         </tr></thead>
         <tbody id="usersBody"></tbody>
       </table>
     </div>
     <button class="rc-add" id="userAdd">+ Add user</button>
+    <p class="sd" style="margin:14px 0 0">To link Telegram: have that person open the bot and send it any message (e.g. <code>/start</code>) — they'll show up in the dropdown above within a few seconds. <button type="button" id="telegramRefreshBtn" style="border:none;background:none;color:var(--accent-d);font-weight:600;font-size:inherit;cursor:pointer;padding:0;text-decoration:underline">Refresh list</button></p>
     <div class="rc-foot">
       <button class="btn primary" id="usersSave">Save user access</button>
     </div>
@@ -576,6 +578,7 @@ function bindSettings(){
   document.getElementById("logoFile").addEventListener("change",e=>pickImage(e,"logo","#logoPrev"));
   document.getElementById("qrFile").addEventListener("change",e=>pickImage(e,"qr","#qrPrev"));
   document.getElementById("userAdd").addEventListener("click",addUser);
+  document.getElementById("telegramRefreshBtn").addEventListener("click",async()=>{ await loadTelegramStarters(); renderUsers(); toast("Telegram list refreshed"); });
   document.getElementById("usersSave").addEventListener("click",saveUsers);
   document.getElementById("tplSave").addEventListener("click",saveTemplates);
 }
@@ -583,6 +586,10 @@ function bindSettings(){
 /* ---------- USER ACCESS ---------- */
 const SUPER_ADMIN_EMAIL = 'mailyuvanesh@gmail.com';
 let usersDraft = [];
+// chatId -> {username, firstName, lastName, lastSeenAt} — everyone who has
+// ever messaged the bot, fed into the Telegram dropdown below so nobody
+// ever has to type/paste a raw numeric chat id.
+let TELEGRAM_STARTERS = {};
 async function loadUsers(){
   usersDraft = [
     {email:'mailyuvanesh@gmail.com', name:'Yuvanesh', role:'admin'},
@@ -594,11 +601,32 @@ async function loadUsers(){
       if(res.ok){
         const d=await res.json();
         if(Array.isArray(d.users)&&d.users.length)
-          usersDraft=d.users.map(u=>({email:(u.email||'').toLowerCase(),name:u.name||'',role:u.role==='admin'?'admin':'coordinator'}));
+          usersDraft=d.users.map(u=>({email:(u.email||'').toLowerCase(),name:u.name||'',role:u.role==='admin'?'admin':'coordinator',telegramChatId:u.telegramChatId||''}));
       }
     }catch(e){}
   }
+  await loadTelegramStarters();
   renderUsers();
+}
+async function loadTelegramStarters(){
+  if(!proxyToken) return;
+  try{
+    const res=await fetch(PROXY_URL+'/telegram-starters',{headers:{'X-Token':proxyToken}});
+    if(res.ok){ const d=await res.json(); TELEGRAM_STARTERS=d.starters||{}; }
+  }catch(e){}
+}
+function telegramLabel(chatId, info){
+  if(info && info.username) return '@'+info.username;
+  if(info) return [info.firstName,info.lastName].filter(Boolean).join(' ')||('chat '+chatId);
+  return 'chat '+chatId; // was linked earlier but no longer in the starters list
+}
+function telegramOptionsHtml(currentId){
+  const cur=currentId||'';
+  const known=Object.keys(TELEGRAM_STARTERS);
+  let html=`<option value="">— none —</option>`;
+  known.forEach(id=>{ html+=`<option value="${esc(id)}"${cur===id?' selected':''}>${esc(telegramLabel(id,TELEGRAM_STARTERS[id]))}</option>`; });
+  if(cur && !known.includes(cur)) html+=`<option value="${esc(cur)}" selected>${esc(telegramLabel(cur))}</option>`;
+  return html;
 }
 function renderUsers(){
   const body=document.getElementById("usersBody"); body.innerHTML="";
@@ -612,6 +640,7 @@ function renderUsers(){
             <option value="admin"${u.role==='admin'?' selected':''}>Admin</option>
             <option value="coordinator"${u.role!=='admin'?' selected':''}>Coordinator</option>
           </select></td>
+      <td><select class="t" data-i="${i}" data-k="telegramChatId">${telegramOptionsHtml(u.telegramChatId)}</select></td>
       <td>${isSuper?'<span title="Always an admin" style="color:var(--muted2)">🔒</span>':`<button class="rc-del" data-del="${i}" title="Remove">×</button>`}</td>`;
     body.appendChild(tr);
   });
@@ -625,11 +654,11 @@ function renderUsers(){
     usersDraft.splice(+e.target.dataset.del,1); renderUsers();
   }));
 }
-function addUser(){ usersDraft.push({email:"",name:"",role:"coordinator"}); renderUsers(); }
+function addUser(){ usersDraft.push({email:"",name:"",role:"coordinator",telegramChatId:""}); renderUsers(); }
 async function saveUsers(){
   const btn=document.getElementById("usersSave"); btn.disabled=true; btn.textContent="Saving…";
   let users=usersDraft
-    .map(u=>({email:(u.email||"").trim().toLowerCase(), name:(u.name||"").trim(), role:u.role==='admin'?'admin':'coordinator'}))
+    .map(u=>({email:(u.email||"").trim().toLowerCase(), name:(u.name||"").trim(), role:u.role==='admin'?'admin':'coordinator', telegramChatId:(u.telegramChatId||"").trim()}))
     .filter(u=>/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(u.email));
   const seen={}; users.forEach(u=>seen[u.email]=u); users=Object.values(seen);   // dedupe, last wins
   const sa=users.find(u=>u.email===SUPER_ADMIN_EMAIL);
