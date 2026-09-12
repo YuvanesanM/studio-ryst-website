@@ -403,11 +403,11 @@ Account Type: CURRENT</div>
   <div class="q-foot">
     <div class="q-confirm">PLEASE CONFIRM YOUR ACCEPTANCE OF THIS QUOTE</div>
     <div class="q-contact-strip">
-      <span>Pooja Nambirajan</span>
-      <span class="sep">|</span>
+      <span id="pPreparedBy" hidden></span>
+      <span class="sep" id="pPreparedBySep" hidden>|</span>
       <a href="tel:+917530011770">+91 75300 11770</a>
       <span class="sep">|</span>
-      <a href="mailto:pooja@ryst.in">pooja@ryst.in</a>
+      <a href="mailto:info@ryst.in">info@ryst.in</a>
     </div>
   </div>
 </div>
@@ -657,6 +657,14 @@ function buildPdfDoc(q){
 
   const terms=(q.terms||'').split('\n').map(t=>t.trim()).filter(Boolean);
   $('#pTerms').innerHTML = terms.map(t=>`<li>${esc(t)}</li>`).join('');
+
+  // Footer "prepared by" — server-computed (see redactQuoteForClient):
+  // whoever created this quote, or whoever last edited it if it originated
+  // from a guest booking with no staff creator; blank if neither.
+  const preparedByName = q.preparedByName || '';
+  $('#pPreparedBy').textContent = preparedByName;
+  $('#pPreparedBy').hidden = !preparedByName;
+  $('#pPreparedBySep').hidden = !preparedByName;
 }
 
 // Generates a real PDF file client-side (html2pdf) and downloads it directly

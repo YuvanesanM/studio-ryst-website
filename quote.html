@@ -411,11 +411,11 @@
         <div class="q-foot">
           <div class="q-confirm">PLEASE CONFIRM YOUR ACCEPTANCE OF THIS QUOTE</div>
           <div class="q-contact-strip">
-            <span>Pooja Nambirajan</span>
-            <span class="sep">|</span>
+            <span id="pPreparedBy" hidden></span>
+            <span class="sep" id="pPreparedBySep" hidden>|</span>
             <a href="tel:+917530011770">+91 75300 11770</a>
             <span class="sep">|</span>
-            <a href="mailto:pooja@ryst.in">pooja@ryst.in</a>
+            <a href="mailto:info@ryst.in">info@ryst.in</a>
           </div>
         </div>
       </div>
@@ -435,6 +435,11 @@
 const PROXY_URL = 'https://ryst-109a-proxy.onrender.com/studio';
 let proxyToken = localStorage.getItem('ryst_proxy_token') || '';
 const IS_ADMIN = (localStorage.getItem('ryst_user_role') || 'coordinator') === 'admin';
+const CURRENT_USER_EMAIL = (localStorage.getItem('ryst_user_email') || '').toLowerCase();
+// Filled in from /user-roles once loaded (initApp) — used to stamp who
+// created/last edited a quote, for the footer's "prepared by" line. Falls
+// back to the bare email if this user has no Name set in User Access.
+let CURRENT_USER_NAME = CURRENT_USER_EMAIL;
 const ZONES = ["Podcast", "Photography", "Culinary", "Multi-Zone"];
 const MIN_HOURS = 1;       // shortest bookable duration (1 hour allowed)
 const DEFAULT_HOURS = 2;   // pre-selected duration for a new quote
@@ -488,6 +493,12 @@ let leadLink = null;       // set when this quote was raised from a CRM lead
 let curScheduleId = null;  // set once this quote has been pushed to the schedule
 let curScheduleConflict = false;  // true when syncToSchedule found a zone/time clash and skipped the write
 let qPaymentsDraft = [];   // {id,date,amount,note} — this quote's payments log
+// {email,name} of whoever created/last saved this quote — see saveQuote().
+// curCreatedBy stays null for a quote that originated from a guest booking
+// (no coordinator has created it — see /public-booking) until a coordinator
+// saves it here for the first time, at which point curLastEditedBy takes
+// over as the footer's "prepared by" name (createdBy is never backfilled).
+let curCreatedBy = null, curLastEditedBy = null;
 
 const $ = s => document.querySelector(s);
 const esc = s => (s||"").toString().replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c]));
@@ -533,6 +544,20 @@ async function fetchTemplatesFromProxy(){
     const d = await res.json();
     TEMPLATES = { welcomeTemplate:d.welcomeTemplate||'', feedbackTemplate:d.feedbackTemplate||'', googleReviewUrl:d.googleReviewUrl||'' };
   }catch(e){ console.warn('Could not load templates from proxy', e); }
+}
+// Looks up this signed-in user's display Name from Settings > User Access,
+// for stamping createdBy/lastEditedBy on save (see saveQuote()) and for the
+// quote footer's "prepared by" line. GET /user-roles is readable by any
+// signed-in user, not just admins.
+async function fetchCurrentUserName(){
+  if(!proxyToken || !CURRENT_USER_EMAIL) return;
+  try{
+    const res = await fetch(PROXY_URL+'/user-roles',{headers:{'X-Token':proxyToken}});
+    if(!res.ok) return;
+    const d = await res.json();
+    const me = (d.users||[]).find(u=>(u.email||'').toLowerCase()===CURRENT_USER_EMAIL);
+    if(me && me.name) CURRENT_USER_NAME = me.name;
+  }catch(e){}
 }
 function fillTemplate(tpl, vars){
   return (tpl||'').replace(/\{(\w+)\}/g, (m,k)=> vars[k]!=null ? vars[k] : m);
@@ -836,7 +861,7 @@ async function initApp(){
   const res = await fetch(PROXY_URL+'/quotes',{headers:{'X-Token':proxyToken}}).catch(()=>null);
   if(res && res.status===401){ proxyToken=''; localStorage.removeItem('ryst_proxy_token'); window.location.href='login.html'; return; }
   if(res && res.ok){
-    await Promise.all([fetchRatesFromProxy(), fetchQuotesFromProxy(), fetchTemplatesFromProxy()]);
+    await Promise.all([fetchRatesFromProxy(), fetchQuotesFromProxy(), fetchTemplatesFromProxy(), fetchCurrentUserName()]);
     setConnected(true);
     // Deep link: quote.html?qno=RYST%2F2026%2F009 opens that saved quote
     // directly (used by the CRM's "open this quote" link).
@@ -969,6 +994,7 @@ function bind(){
 /* ---------- NEW QUOTE ---------- */
 function newQuote(){
   editingKey=null; syncPdfBtn(); clearLeadLink();
+  curCreatedBy=null; curLastEditedBy=null;
   curQno=nextQuoteNo(); curDateISO=new Date().toISOString().slice(0,10);
   curShareToken=genToken(); curSharedAt=null; renderClientResp(null);
   $("#qno").value=curQno; $("#qdate").value=fmtDate(curDateISO);
@@ -1148,6 +1174,12 @@ function render(){
 
   const terms=($("#terms").value||"").split("\n").map(t=>t.trim()).filter(Boolean);
   $("#pTerms").innerHTML=terms.map(t=>`<li>${esc(t)}</li>`).join("");
+  // Footer "prepared by" — the creator's name, or (for a guest-originated
+  // quote with no creator) whoever last edited it here; blank if neither.
+  const preparedByName = (curCreatedBy&&curCreatedBy.name) || (curLastEditedBy&&curLastEditedBy.name) || "";
+  $("#pPreparedBy").textContent = preparedByName;
+  $("#pPreparedBy").hidden = !preparedByName;
+  $("#pPreparedBySep").hidden = !preparedByName;
   updateQBalance(Math.round(tot));
 }
 
@@ -1196,8 +1228,19 @@ async function saveQuote(silent){
     }
   }
   const all=getQuotes(); const key=editingKey||q.qno; const idx=all.findIndex(x=>x.qno===key);
+  // Footer attribution — see the curCreatedBy comment above. A quote already
+  // in the array (idx>=0) keeps whatever createdBy it already had (undefined
+  // for a guest-originated one, staying blank until a coordinator saves it);
+  // one that's genuinely new here was created by this coordinator, in this
+  // tool, right now.
+  const prev = idx>=0 ? all[idx] : null;
+  const me = { email: CURRENT_USER_EMAIL, name: CURRENT_USER_NAME };
+  q.createdBy = prev ? (prev.createdBy || null) : me;
+  q.lastEditedBy = me;
+  curCreatedBy = q.createdBy; curLastEditedBy = q.lastEditedBy;
   if(idx>=0) all[idx]=q; else all.push(q);
   setQuotes(all); editingKey=q.qno; syncPdfBtn(); syncLoadQuoteBtnLabel(); renderLoadQuotePanel();
+  render(); // picks up the just-set curCreatedBy/curLastEditedBy in the footer
   await pushQuotes();
   if(!silent) toast("Quote "+q.qno+" saved");
   if(leadLink && leadLink.id){ await linkQuoteToLead(leadLink.id, q.qno, q.status==='Confirmed'); }
@@ -1206,6 +1249,7 @@ async function saveQuote(silent){
 function loadQuote(qno){
   const q=getQuotes().find(x=>x.qno===qno); if(!q) return;
   editingKey=q.qno; syncPdfBtn(); curQno=q.qno; curDateISO=q.date;
+  curCreatedBy=q.createdBy||null; curLastEditedBy=q.lastEditedBy||null;
   $("#qno").value=curQno; $("#qdate").value=fmtDate(curDateISO);
   $("#invoiceNo").value=q.invoiceNo||"";
   $("#zone").value=ZONES.includes(q.zone)?q.zone:ZONES[0];
