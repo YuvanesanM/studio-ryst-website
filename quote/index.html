@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://www.googletagmanager.com https://checkout.razorpay.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://ryst-109a-proxy.onrender.com https://www.google-analytics.com https://analytics.google.com https://*.google-analytics.com https://*.analytics.google.com https://*.razorpay.com; frame-src https://checkout.razorpay.com https://api.razorpay.com; object-src 'none'; base-uri 'self'; form-action 'self'">
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-G00HG2N31H"></script>
 <script>
@@ -14,6 +15,20 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Quotation · Studio RYST</title>
 <meta name="robots" content="noindex, nofollow">
+<!-- This link gets shared over WhatsApp far more than it's ever "found" —
+     noindex above keeps it out of search, but a branded preview still
+     matters when a customer forwards the link. -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Studio RYST">
+<meta property="og:title" content="Your Quotation · Studio RYST">
+<meta property="og:description" content="View your studio booking quotation from Studio RYST — Chennai's 3-in-1 content production studio.">
+<meta property="og:image" content="https://studio.ryst.in/assets/og-share.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Your Quotation · Studio RYST">
+<meta name="twitter:description" content="View your studio booking quotation from Studio RYST.">
+<meta name="twitter:image" content="https://studio.ryst.in/assets/og-share.jpg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;1,500&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
