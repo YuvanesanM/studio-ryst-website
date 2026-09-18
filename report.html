@@ -153,11 +153,6 @@
       <div class="val" id="roiRevHour">—</div>
       <div class="sub" id="roiRevHourSub"></div>
     </div>
-    <div class="kpi">
-      <div class="lbl">Cost-to-Revenue Ratio</div>
-      <div class="val" id="roiCostRatio">—</div>
-      <div class="sub" id="roiCostRatioSub"></div>
-    </div>
   </div>
 
   <div class="grid">
@@ -575,22 +570,14 @@ function renderROI(){
     $('#roiCountdownSub').innerHTML=`<span>Projected ${info.projectedDate.toLocaleDateString('en-IN',{month:'long',year:'numeric'})}</span>`;
   }
 
-  // Revenue per booked hour + cost-to-revenue ratio (both "since launch")
+  // Revenue per booked hour (since launch)
   const r=roiSinceLaunchRange();
   const book=bookedByZone(r);
   const totalHrs=Object.values(book.hrs).reduce((a,b)=>a+b,0);
   const totalRevenue=series.reduce((s,m)=>s+m.revenue,0);
-  const totalIncentive=series.reduce((s,m)=>s+m.incentive,0);
-  const totalFixed=roiFixedCosts()*series.length;
 
   $('#roiRevHour').textContent=totalHrs>0 ? money(totalRevenue/totalHrs) : '—';
   $('#roiRevHourSub').innerHTML=`<span>${Math.round(totalHrs*10)/10} h booked since launch</span>`;
-
-  const ratio=totalRevenue>0 ? (totalFixed+totalIncentive)/totalRevenue*100 : 0;
-  $('#roiCostRatio').textContent=totalRevenue>0 ? ratio.toFixed(1)+'%' : '—';
-  $('#roiCostRatioSub').innerHTML=totalRevenue>0
-    ? `<span style="color:${ratio<=100?'var(--up)':'var(--down)'}">${ratio<=100?'Profitable':'Above revenue'}</span>`
-    : '<span>No revenue yet</span>';
 }
 
 $('#period').addEventListener('change', e=>{ PERIOD=e.target.value; render(); });
