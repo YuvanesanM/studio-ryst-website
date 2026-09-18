@@ -79,6 +79,16 @@
   .op-row{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted);margin-top:14px;flex-wrap:wrap}
   .op-row input{width:56px;padding:6px 8px;border:1.5px solid var(--line);border-radius:8px;font-size:13px;text-align:center}
 
+  /* ROI section */
+  .sec-head{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin:30px 0 16px;padding-top:20px;border-top:1px solid var(--line)}
+  .sec-head h2{font-size:15px;font-weight:700}
+  .setform{display:flex;flex-direction:column;gap:10px}
+  .setrow{display:flex;align-items:center;gap:10px;font-size:12.5px;color:var(--muted)}
+  .setrow label{min-width:128px;flex-shrink:0}
+  .setrow input{flex:1;min-width:0;padding:7px 9px;border:1.5px solid var(--line);border-radius:8px;font-size:13px;color:var(--ink);background:var(--panel)}
+  .setrow input:focus{outline:none;border-color:var(--accent)}
+  .roi-chart-wrap svg{width:100%;height:auto;display:block}
+
   /* Table */
   table{width:100%;border-collapse:collapse;font-size:13px}
   th{text-align:left;font-size:10.5px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--muted2);padding:8px 10px;border-bottom:1px solid var(--line);white-space:nowrap}
@@ -179,6 +189,72 @@
         <thead><tr><th>Invoice</th><th>Date</th><th>Client</th><th>Zone</th><th style="text-align:right">Amount</th></tr></thead>
         <tbody id="invoices"></tbody>
       </table></div>
+    </div>
+  </div>
+
+  <div class="sec-head">
+    <div><h2>Investment &amp; ROI</h2><div class="cap" style="margin-bottom:0" id="roiHeadCap">Tracking recovery of the studio investment since launch</div></div>
+  </div>
+
+  <div class="kpis">
+    <div class="kpi hero">
+      <div class="lbl">Investment Recovered</div>
+      <div class="val" id="roiPct">—</div>
+      <div class="sub" id="roiSub"></div>
+    </div>
+    <div class="kpi">
+      <div class="lbl">Recovery Countdown</div>
+      <div class="val" id="roiCountdown">—</div>
+      <div class="sub" id="roiCountdownSub"></div>
+    </div>
+    <div class="kpi">
+      <div class="lbl">Revenue / Booked Hour</div>
+      <div class="val" id="roiRevHour">—</div>
+      <div class="sub" id="roiRevHourSub"></div>
+    </div>
+    <div class="kpi">
+      <div class="lbl">Cost-to-Revenue Ratio</div>
+      <div class="val" id="roiCostRatio">—</div>
+      <div class="sub" id="roiCostRatioSub"></div>
+    </div>
+  </div>
+
+  <div class="grid">
+    <div class="panel full">
+      <h2>Cumulative ROI</h2>
+      <div class="cap" id="roiChartCap">Cumulative net profit vs. investment · since launch</div>
+      <div class="roi-chart-wrap" id="roiChart"></div>
+    </div>
+
+    <div class="panel full">
+      <h2 style="margin-bottom:2px">Monthly financials</h2>
+      <div class="cap" style="margin-bottom:0" id="roiTableCap">Revenue vs. break-even, net profit and incentive, by month</div>
+      <div style="overflow-x:auto;margin-top:10px"><table>
+        <thead><tr><th>Month</th><th style="text-align:right">Revenue</th><th style="text-align:right">Break-even</th><th>Status</th><th style="text-align:right">Net profit</th><th style="text-align:right">Incentive</th><th style="text-align:right">Cumulative</th></tr></thead>
+        <tbody id="roiTableBody"></tbody>
+      </table></div>
+    </div>
+
+    <div class="panel">
+      <h2>Zone contribution margin</h2>
+      <div class="cap">Revenue minus each zone's allocated share of fixed costs, by booked hours</div>
+      <div class="hbars" id="zoneMargin"></div>
+    </div>
+
+    <div class="panel">
+      <h2>ROI settings</h2>
+      <div class="cap">Fixed costs, incentive rate and investment — saved in this browser</div>
+      <div class="setform">
+        <div class="setrow"><label for="setLaunch">Launch date</label><input type="date" id="setLaunch"></div>
+        <div class="setrow"><label for="setInvestment">Investment (₹)</label><input type="number" id="setInvestment" min="0" step="1000"></div>
+        <div class="setrow"><label for="setSalary">Salary (₹/mo)</label><input type="number" id="setSalary" min="0" step="500"></div>
+        <div class="setrow"><label for="setRent">Rent (₹/mo)</label><input type="number" id="setRent" min="0" step="500"></div>
+        <div class="setrow"><label for="setElectricity">Electricity (₹/mo)</label><input type="number" id="setElectricity" min="0" step="500"></div>
+        <div class="setrow"><label for="setConsumables">Consumables (₹/mo)</label><input type="number" id="setConsumables" min="0" step="500"></div>
+        <div class="setrow"><label for="setIncentive">Incentive (%)</label><input type="number" id="setIncentive" min="0" max="99" step="0.5"></div>
+        <div class="setrow"><label for="setWindow">Trailing avg (months)</label><input type="number" id="setWindow" min="1" max="12" step="1"></div>
+        <button class="tbtn" id="saveRoiSettings" style="align-self:flex-start;margin-top:2px">Save settings</button>
+      </div>
     </div>
   </div>
 </div>
@@ -344,6 +420,7 @@ function render(){
   renderUtil(book, r);
   renderTopCustomers(curS);
   renderInvoices(curS);
+  renderROI();
 }
 
 function monthShort(ym){ const [y,m]=ym.split('-'); return new Date(y,m-1,1).toLocaleDateString('en-IN',{month:'short'}); }
@@ -437,6 +514,299 @@ function renderTopCustomers(curS){
     .map(c=>[`${c.name} · ${c.count} booking${c.count===1?'':'s'}`, c.value]);
   $('#topCust').innerHTML = hbarsHTML(entries, money);
 }
+
+// ══════════════════════════════════════════════════════════════
+//  INVESTMENT & ROI
+// ══════════════════════════════════════════════════════════════
+// Fixed costs, incentive rate, launch date and total investment are
+// business assumptions that change over time (a raise, a rent hike, a
+// renegotiated incentive) — so they're editable settings persisted to
+// this browser's localStorage, not constants baked into the formulas.
+// Revenue is NOT re-entered here: it's derived from the same SALES
+// records (quotes paid in full) that already power "Sales (ex-GST)"
+// and the Monthly sales trend chart above.
+const ROI_DEFAULTS = {
+  launchDate:'2026-04-30', investment:800000,
+  salary:20000, rent:5000, electricity:5500, consumables:4000,
+  incentivePct:5, trailingWindow:3
+};
+function loadROISettings(){
+  try{ const s=JSON.parse(localStorage.getItem('ryst_growth_settings')||'null'); if(s&&typeof s==='object') return Object.assign({},ROI_DEFAULTS,s); }catch(e){}
+  return Object.assign({},ROI_DEFAULTS);
+}
+let ROI_SETTINGS = loadROISettings();
+function saveROISettings(){ localStorage.setItem('ryst_growth_settings', JSON.stringify(ROI_SETTINGS)); }
+
+function roiFixedCosts(){ return (Number(ROI_SETTINGS.salary)||0)+(Number(ROI_SETTINGS.rent)||0)+(Number(ROI_SETTINGS.electricity)||0)+(Number(ROI_SETTINGS.consumables)||0); }
+function roiIncentiveRate(){ return Math.min(0.99, Math.max(0, (Number(ROI_SETTINGS.incentivePct)||0)/100)); }
+function roiBreakeven(){ return roiFixedCosts()/(1-roiIncentiveRate()); }
+
+// 'YYYY-MM' month-key helpers — every ROI series is bucketed this way.
+function monthKey(y,m){ return y+'-'+pad(m+1); }
+function addMonths(ymStr,n){ const [y,m]=ymStr.split('-').map(Number); const d=new Date(y,m-1+n,1); return monthKey(d.getFullYear(),d.getMonth()); }
+function monthsBetweenInclusive(fromYM,toYM){
+  const out=[]; let cur=fromYM, guard=0;
+  while(cur<=toYM && guard<600){ out.push(cur); cur=addMonths(cur,1); guard++; }
+  return out;
+}
+function roiSinceLaunchRange(){
+  const now=new Date();
+  return { from: ROI_SETTINGS.launchDate, to: ymd(now.getFullYear(),now.getMonth(),now.getDate()) };
+}
+
+// One row per calendar month from launch through the current month —
+// net_profit = revenue*(1-incentive%) - fixed_costs, running cumulative.
+function roiMonthlySeries(){
+  const launchYM=(ROI_SETTINGS.launchDate||ROI_DEFAULTS.launchDate).slice(0,7);
+  const now=new Date(), curYM=monthKey(now.getFullYear(),now.getMonth());
+  if(launchYM>curYM) return [];
+  const months=monthsBetweenInclusive(launchYM,curYM);
+  const fixed=roiFixedCosts(), rate=roiIncentiveRate(), breakeven=roiBreakeven();
+  let cum=0, cumIncentive=0;
+  return months.map(ym=>{
+    const revenue=SALES.filter(x=>x.date && x.date.slice(0,7)===ym).reduce((s,x)=>s+x.net,0);
+    const incentive=revenue*rate;
+    const netProfit=revenue*(1-rate)-fixed;
+    cum+=netProfit; cumIncentive+=incentive;
+    return {ym, revenue, incentive, cumIncentive, netProfit, cum, breakeven, onTrack: revenue>=breakeven};
+  });
+}
+function roiTrailingAvg(series){
+  if(!series.length) return 0;
+  const n=Math.max(1, Math.min(series.length, Number(ROI_SETTINGS.trailingWindow)||3));
+  const slice=series.slice(-n);
+  return slice.reduce((s,m)=>s+m.netProfit,0)/slice.length;
+}
+
+// Recovery status: already recovered (find the crossing month), on track
+// (project forward from the trailing-average run rate), or not on track
+// (trailing average is zero/negative — no honest countdown to show).
+function roiRecoveryInfo(series){
+  const investment=Number(ROI_SETTINGS.investment)||0;
+  const cum=series.length? series[series.length-1].cum : 0;
+  const recovered=Math.max(0, Math.min(cum, investment));
+  const pct=investment>0 ? Math.min(100, Math.max(0, recovered/investment*100)) : 0;
+  const remaining=Math.max(0, investment-Math.max(0,cum));
+
+  let recoveredAtYM=null;
+  for(const m of series){ if(m.cum>=investment){ recoveredAtYM=m.ym; break; } }
+
+  const avg=roiTrailingAvg(series);
+  let status, monthsRemaining=null, projectedDate=null;
+  if(recoveredAtYM){
+    status='recovered';
+  } else if(avg<=0){
+    status='not-on-track';
+  } else {
+    status='projecting';
+    monthsRemaining=(investment-cum)/avg;
+    const now=new Date();
+    projectedDate=new Date(now.getFullYear(), now.getMonth()+Math.ceil(monthsRemaining), 1);
+  }
+  return {investment, cum, recovered, pct, remaining, recoveredAtYM, avg, status, monthsRemaining, projectedDate};
+}
+
+function populateSettingsForm(){
+  $('#setLaunch').value=ROI_SETTINGS.launchDate;
+  $('#setInvestment').value=ROI_SETTINGS.investment;
+  $('#setSalary').value=ROI_SETTINGS.salary;
+  $('#setRent').value=ROI_SETTINGS.rent;
+  $('#setElectricity').value=ROI_SETTINGS.electricity;
+  $('#setConsumables').value=ROI_SETTINGS.consumables;
+  $('#setIncentive').value=ROI_SETTINGS.incentivePct;
+  $('#setWindow').value=ROI_SETTINGS.trailingWindow;
+}
+
+function renderROI(){
+  const series=roiMonthlySeries();
+  const info=roiRecoveryInfo(series);
+
+  $('#roiHeadCap').textContent=`Tracking recovery of the ${money(info.investment)} studio investment since launch (${monthShort(ROI_SETTINGS.launchDate.slice(0,7))} ${ROI_SETTINGS.launchDate.slice(0,4)})`;
+
+  // Investment recovered (hero KPI)
+  $('#roiPct').textContent=info.pct.toFixed(1)+'%';
+  $('#roiSub').innerHTML = info.cum<0
+    ? `<span>Net loss so far: ${money(info.cum)}</span>`
+    : `<span>${money(info.recovered)} of ${money(info.investment)}</span><span>${money(info.remaining)} remaining</span>`;
+
+  // Recovery countdown
+  if(!series.length){
+    $('#roiCountdown').textContent='—';
+    $('#roiCountdownSub').innerHTML='<span>No months since launch yet</span>';
+  } else if(info.status==='recovered'){
+    $('#roiCountdown').textContent='Recovered ✓';
+    $('#roiCountdownSub').innerHTML=`<span>Fully recovered in ${esc(monthShort(info.recoveredAtYM))} ${info.recoveredAtYM.slice(0,4)}</span>`;
+  } else if(info.status==='not-on-track'){
+    $('#roiCountdown').textContent='Not on track';
+    $('#roiCountdownSub').innerHTML=`<span>Trailing ${ROI_SETTINGS.trailingWindow}-mo avg. net profit is ${info.avg<0?'negative':'zero'}</span>`;
+  } else {
+    $('#roiCountdown').textContent=info.monthsRemaining.toFixed(1)+' mo';
+    $('#roiCountdownSub').innerHTML=`<span>Projected ${info.projectedDate.toLocaleDateString('en-IN',{month:'long',year:'numeric'})}</span>`;
+  }
+
+  // Revenue per booked hour + cost-to-revenue ratio (both "since launch")
+  const r=roiSinceLaunchRange();
+  const book=bookedByZone(r);
+  const totalHrs=Object.values(book.hrs).reduce((a,b)=>a+b,0);
+  const totalRevenue=series.reduce((s,m)=>s+m.revenue,0);
+  const totalIncentive=series.reduce((s,m)=>s+m.incentive,0);
+  const totalFixed=roiFixedCosts()*series.length;
+
+  $('#roiRevHour').textContent=totalHrs>0 ? money(totalRevenue/totalHrs) : '—';
+  $('#roiRevHourSub').innerHTML=`<span>${Math.round(totalHrs*10)/10} h booked since launch</span>`;
+
+  const ratio=totalRevenue>0 ? (totalFixed+totalIncentive)/totalRevenue*100 : 0;
+  $('#roiCostRatio').textContent=totalRevenue>0 ? ratio.toFixed(1)+'%' : '—';
+  $('#roiCostRatioSub').innerHTML=totalRevenue>0
+    ? `<span style="color:${ratio<=100?'var(--up)':'var(--down)'}">${ratio<=100?'Profitable':'Above revenue'}</span>`
+    : '<span>No revenue yet</span>';
+
+  renderROIChart(series, info);
+  renderROITable(series);
+  renderZoneMargin(series, r, book, totalHrs);
+}
+
+// Hand-rolled SVG line chart (no charting library elsewhere on this
+// page) styled to match the green Monthly-sales-trend panel: a solid
+// line for actual cumulative net profit, a dashed extrapolation from
+// the trailing-average run rate when not yet recovered, a dashed flat
+// reference line at the investment amount, and a marker at whichever
+// month the two lines cross (actual if already recovered, projected
+// otherwise).
+function renderROIChart(series, info){
+  const el=$('#roiChart');
+  if(!series.length){ el.innerHTML='<div class="empty">No months since launch yet.</div>'; return; }
+  const investment=info.investment;
+  let points=series.map((m,i)=>({x:i, y:m.cum, ym:m.ym, projected:false}));
+  // Cap the drawn projection to 24 months out — a countdown of, say, 126
+  // months is real and shown in the KPI card, but stretching the chart's
+  // x-axis to match makes every month label ambiguous (they repeat every
+  // 12 ticks with no year in sight) and the line itself is unreadably
+  // flat. Beyond this window we just say so in the caption instead of
+  // drawing a decade of dashes.
+  const PROJECT_CAP=24;
+  let projectedCrossIdx=null, crossBeyondWindow=false;
+  if(info.status==='projecting'){
+    let cum=series[series.length-1].cum, ym=series[series.length-1].ym, i=series.length, guard=0;
+    while(cum<investment && guard<PROJECT_CAP){
+      cum+=info.avg; ym=addMonths(ym,1);
+      points.push({x:i, y:cum, ym, projected:true});
+      if(cum>=investment && projectedCrossIdx===null) projectedCrossIdx=i;
+      i++; guard++;
+    }
+    if(cum<investment) crossBeyondWindow=true;
+  }
+  const maxY=Math.max(investment, ...points.map(p=>p.y), 1)*1.12;
+  const minY=Math.min(0, ...points.map(p=>p.y));
+  const W=900,H=260,padL=56,padR=18,padT=18,padB=30;
+  const plotW=W-padL-padR, plotH=H-padT-padB;
+  const xOf=i=> padL + (points.length>1 ? i/(points.length-1)*plotW : plotW/2);
+  const yOf=v=> padT + plotH - ((v-minY)/(maxY-minY||1))*plotH;
+
+  let gridSvg='';
+  const GRID_N=4;
+  for(let g=0; g<=GRID_N; g++){
+    const val=minY+(maxY-minY)*g/GRID_N, y=yOf(val);
+    gridSvg+=`<line x1="${padL}" y1="${y.toFixed(1)}" x2="${W-padR}" y2="${y.toFixed(1)}" stroke="var(--line)" stroke-width="1"/>`;
+    gridSvg+=`<text x="${padL-8}" y="${(y+4).toFixed(1)}" font-size="10" fill="var(--muted2)" text-anchor="end">${esc(compactINR(val))}</text>`;
+  }
+
+  const invY=yOf(investment);
+  // Label sits BELOW the dashed line while the crossing marker's label
+  // (below) sits ABOVE its point — the crossing point is, by definition,
+  // at ~the same height as this line, so that vertical split is what
+  // keeps the two labels from ever overlapping, regardless of how close
+  // together they land horizontally.
+  const invSvg=`<line x1="${padL}" y1="${invY.toFixed(1)}" x2="${W-padR}" y2="${invY.toFixed(1)}" stroke="var(--accent-d)" stroke-width="1.5" stroke-dasharray="5,4"/>
+    <text x="${W-padR}" y="${(invY+16).toFixed(1)}" font-size="10.5" fill="var(--accent-d)" text-anchor="end" font-weight="700">Investment ${esc(compactINR(investment))}</text>`;
+
+  const actualPts=points.filter(p=>!p.projected), projPts=points.filter(p=>p.projected);
+  const pathFor=pts=>pts.map((p,i)=>(i===0?'M':'L')+xOf(p.x).toFixed(1)+','+yOf(p.y).toFixed(1)).join(' ');
+  let linesSvg=`<path d="${pathFor(actualPts)}" fill="none" stroke="var(--accent-d)" stroke-width="2.5"/>`;
+  if(projPts.length){
+    const bridge=[actualPts[actualPts.length-1], ...projPts];
+    linesSvg+=`<path d="${pathFor(bridge)}" fill="none" stroke="var(--accent)" stroke-width="2" stroke-dasharray="4,4"/>`;
+  }
+
+  const dotsSvg=actualPts.map(p=>`<circle cx="${xOf(p.x).toFixed(1)}" cy="${yOf(p.y).toFixed(1)}" r="3" fill="var(--accent-d)"><title>${esc(monthShort(p.ym))} ${p.ym.slice(0,4)}: ${money(p.y)}</title></circle>`).join('');
+
+  let crossSvg='';
+  if(info.status==='recovered'){
+    const idx=series.findIndex(m=>m.ym===info.recoveredAtYM);
+    if(idx>-1){ const p=points[idx];
+      crossSvg=`<circle cx="${xOf(p.x).toFixed(1)}" cy="${yOf(p.y).toFixed(1)}" r="6" fill="#fff" stroke="var(--accent-d)" stroke-width="3"/>
+        <text x="${xOf(p.x).toFixed(1)}" y="${(yOf(p.y)-12).toFixed(1)}" font-size="11" fill="var(--accent-d)" text-anchor="middle" font-weight="700">Recovered</text>`;
+    }
+  } else if(projectedCrossIdx!=null){
+    const p=points.find(pt=>pt.x===projectedCrossIdx);
+    if(p){
+      crossSvg=`<circle cx="${xOf(p.x).toFixed(1)}" cy="${yOf(p.y).toFixed(1)}" r="6" fill="#fff" stroke="var(--accent)" stroke-width="3" stroke-dasharray="2,2"/>
+        <text x="${xOf(p.x).toFixed(1)}" y="${(yOf(p.y)-12).toFixed(1)}" font-size="11" fill="var(--accent)" text-anchor="middle" font-weight="700">Projected</text>`;
+    }
+  }
+
+  const labelEvery=Math.max(1, Math.ceil(points.length/10));
+  const xLabels=points.filter((p,i)=>i%labelEvery===0).map(p=>
+    `<text x="${xOf(p.x).toFixed(1)}" y="${H-8}" font-size="10" fill="var(--muted2)" text-anchor="middle">${esc(monthShort(p.ym))}${p.projected?'*':''}</text>`
+  ).join('');
+
+  el.innerHTML=`<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet">${gridSvg}${invSvg}${linesSvg}${dotsSvg}${crossSvg}${xLabels}</svg>`;
+  let cap=`Cumulative net profit vs. ${compactINR(investment)} investment · since launch`;
+  if(projPts.length) cap += ' · dashed = projected at current run rate';
+  if(crossBeyondWindow) cap += ` · at this pace, recovery is ~${Math.round(info.monthsRemaining)} months out — beyond this chart's ${PROJECT_CAP}-month view`;
+  $('#roiChartCap').textContent = cap;
+}
+
+function renderROITable(series){
+  if(!series.length){ $('#roiTableBody').innerHTML='<tr><td colspan="7" class="empty">No months since launch yet.</td></tr>'; return; }
+  const rows=[...series].reverse();
+  $('#roiTableBody').innerHTML=rows.map(m=>`
+    <tr>
+      <td>${esc(monthShort(m.ym))} ${m.ym.slice(0,4)}</td>
+      <td class="r">${money(m.revenue)}</td>
+      <td class="r">${money(m.breakeven)}</td>
+      <td>${m.onTrack ? '<span class="zpill" style="background:#e7f4ec;color:var(--up)">✓ On track</span>' : '<span class="zpill" style="background:#fbecea;color:var(--down)">✕ Below target</span>'}</td>
+      <td class="r" style="color:${m.netProfit>=0?'var(--up)':'var(--down)'}">${money(m.netProfit)}</td>
+      <td class="r">${money(m.incentive)}</td>
+      <td class="r">${money(m.cum)}</td>
+    </tr>`).join('');
+}
+
+function renderZoneMargin(series, r, book, totalHrs){
+  const fixed=roiFixedCosts()*series.length;
+  const revByZone={};
+  SALES.filter(x=>inRange(x.date,r)).forEach(x=>{ const z=x.zone||'—'; revByZone[z]=(revByZone[z]||0)+x.net; });
+  const entries=PHYS_ZONES.map(z=>{
+    const rev=revByZone[z]||0, hrs=book.hrs[z]||0;
+    const share=totalHrs>0 ? hrs/totalHrs : 0;
+    const allocFixed=fixed*share;
+    return {z, rev, hrs, allocFixed, margin: rev-allocFixed};
+  });
+  if(!series.length){ $('#zoneMargin').innerHTML='<div class="empty">No months since launch yet.</div>'; return; }
+  $('#zoneMargin').innerHTML=entries.map(e=>`
+    <div class="hbar" style="grid-template-columns:104px 1fr auto">
+      <span class="nm"><span class="dot" style="background:${zColor(e.z)}"></span>${esc(e.z)}</span>
+      <span style="font-size:11px;color:var(--muted2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(compactINR(e.rev))} rev − ${esc(compactINR(e.allocFixed))} alloc.</span>
+      <span class="amt" style="color:${e.margin>=0?'var(--up)':'var(--down)'}">${money(e.margin)}</span>
+    </div>`).join('');
+}
+
+populateSettingsForm();
+$('#saveRoiSettings').addEventListener('click', ()=>{
+  ROI_SETTINGS={
+    launchDate: $('#setLaunch').value || ROI_DEFAULTS.launchDate,
+    investment: Number($('#setInvestment').value)||0,
+    salary: Number($('#setSalary').value)||0,
+    rent: Number($('#setRent').value)||0,
+    electricity: Number($('#setElectricity').value)||0,
+    consumables: Number($('#setConsumables').value)||0,
+    incentivePct: Math.min(99, Math.max(0, Number($('#setIncentive').value)||0)),
+    trailingWindow: Math.max(1, Math.min(12, Number($('#setWindow').value)||3)),
+  };
+  saveROISettings();
+  toast('ROI settings saved');
+  renderROI();
+});
 
 $('#period').addEventListener('change', e=>{ PERIOD=e.target.value; render(); });
 $('#opHours').addEventListener('input', e=>{ OPHOURS=Math.max(1,Math.min(24,parseInt(e.target.value)||12)); render(); });
