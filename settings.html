@@ -120,6 +120,7 @@
   <button class="cfg-tab" data-tab="studio">Studio Settings</button>
   <button class="cfg-tab" data-tab="whatsapp">WhatsApp Templates</button>
   <button class="cfg-tab" data-tab="users">User Access</button>
+  <button class="cfg-tab" data-tab="roi">ROI</button>
 </div>
 
 <div class="cfg-body">
@@ -201,6 +202,22 @@
     <p class="sd" style="margin:14px 0 0">To link Telegram: have that person open the bot and send it any message (e.g. <code>/start</code>) — they'll show up in the dropdown above within a few seconds. <button type="button" id="telegramRefreshBtn" style="border:none;background:none;color:var(--accent-d);font-weight:600;font-size:inherit;cursor:pointer;padding:0;text-decoration:underline">Refresh list</button></p>
     <div class="rc-foot">
       <button class="btn primary" id="usersSave">Save user access</button>
+    </div>
+  </div>
+
+  <!-- ROI pane -->
+  <div id="paneRoi" hidden>
+    <p class="sd">Fixed costs, staff incentive rate, launch date and total investment used by the Growth Report's Investment &amp; ROI KPIs. Revenue itself is never entered here — the report pulls it automatically from paid invoices.</p>
+    <label class="f"><span>Launch date</span><input type="date" class="t" id="roiLaunch"></label>
+    <label class="f"><span>Total investment (₹)</span><input type="number" class="t" id="roiInvestment" min="0" step="1000"></label>
+    <label class="f"><span>Salary (₹/month)</span><input type="number" class="t" id="roiSalary" min="0" step="500"></label>
+    <label class="f"><span>Rent (₹/month)</span><input type="number" class="t" id="roiRent" min="0" step="500"></label>
+    <label class="f"><span>Electricity (₹/month)</span><input type="number" class="t" id="roiElectricity" min="0" step="500"></label>
+    <label class="f"><span>Consumables (₹/month)</span><input type="number" class="t" id="roiConsumables" min="0" step="500"></label>
+    <label class="f"><span>Staff incentive (%)</span><input type="number" class="t" id="roiIncentive" min="0" max="99" step="0.5"></label>
+    <label class="f"><span>Trailing average window (months)</span><input type="number" class="t" id="roiWindow" min="1" max="12" step="1"></label>
+    <div class="rc-foot">
+      <button class="btn primary" id="roiSave">Save ROI settings</button>
     </div>
   </div>
 </div>
@@ -386,6 +403,7 @@ function switchTab(tab){
   document.getElementById("paneStudio").hidden  = tab!=="studio";
   document.getElementById("paneWhatsapp").hidden= tab!=="whatsapp";
   document.getElementById("paneUsers").hidden   = tab!=="users";
+  document.getElementById("paneRoi").hidden     = tab!=="roi";
   document.querySelectorAll(".cfg-tab").forEach(b=>b.classList.toggle("active",b.dataset.tab===tab));
 }
 document.querySelectorAll(".cfg-tab").forEach(b=>b.addEventListener("click",()=>switchTab(b.dataset.tab)));
@@ -697,6 +715,47 @@ async function calResync(){
   }catch(e){ status.textContent="Cloud unreachable"; }
   btn.disabled=false; btn.textContent="Sync all bookings to Calendar";
 }
+
+/* ---------- ROI SETTINGS ---------- */
+// Shares its localStorage key with report.html's Growth Report, which
+// reads (but no longer writes) these values — this is now the only
+// place they're edited.
+const ROI_KEY='ryst_growth_settings';
+const ROI_DEFAULTS={
+  launchDate:'2026-04-30', investment:800000,
+  salary:20000, rent:5000, electricity:5500, consumables:4000,
+  incentivePct:5, trailingWindow:3
+};
+function loadRoiSettings(){
+  try{ const s=JSON.parse(localStorage.getItem(ROI_KEY)||'null'); if(s&&typeof s==='object') return Object.assign({},ROI_DEFAULTS,s); }catch(e){}
+  return Object.assign({},ROI_DEFAULTS);
+}
+function populateRoiForm(){
+  const s=loadRoiSettings();
+  document.getElementById('roiLaunch').value=s.launchDate;
+  document.getElementById('roiInvestment').value=s.investment;
+  document.getElementById('roiSalary').value=s.salary;
+  document.getElementById('roiRent').value=s.rent;
+  document.getElementById('roiElectricity').value=s.electricity;
+  document.getElementById('roiConsumables').value=s.consumables;
+  document.getElementById('roiIncentive').value=s.incentivePct;
+  document.getElementById('roiWindow').value=s.trailingWindow;
+}
+populateRoiForm();
+document.getElementById('roiSave').addEventListener('click', ()=>{
+  const s={
+    launchDate: document.getElementById('roiLaunch').value || ROI_DEFAULTS.launchDate,
+    investment: Number(document.getElementById('roiInvestment').value)||0,
+    salary: Number(document.getElementById('roiSalary').value)||0,
+    rent: Number(document.getElementById('roiRent').value)||0,
+    electricity: Number(document.getElementById('roiElectricity').value)||0,
+    consumables: Number(document.getElementById('roiConsumables').value)||0,
+    incentivePct: Math.min(99, Math.max(0, Number(document.getElementById('roiIncentive').value)||0)),
+    trailingWindow: Math.max(1, Math.min(12, Number(document.getElementById('roiWindow').value)||3)),
+  };
+  localStorage.setItem(ROI_KEY, JSON.stringify(s));
+  toast('ROI settings saved');
+});
 
 /* ---------- TOAST ---------- */
 function toast(msg){
