@@ -13,23 +13,23 @@
   gtag('config', 'G-G00HG2N31H');
 </script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Studio RYST — Chennai's 3-in-1 Content Production Studio</title>
-<meta name="description" content="Podcast, photography and culinary content studio in T-Nagar, Chennai. Book by the hour with instant confirmation.">
+<title>Podcast Studio &amp; Kitchen Studio in Chennai | Studio RYST</title>
+<meta name="description" content="Podcast studio, kitchen studio and photography studio in T-Nagar, Chennai — one 3-in-1 creator space. Book by the hour with instant confirmation.">
 <meta name="robots" content="index, follow">
 <link rel="canonical" href="https://studio.ryst.in/">
 <meta name="theme-color" content="#f8a61f">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Studio RYST">
-<meta property="og:title" content="Studio RYST — Chennai's 3-in-1 Content Production Studio">
-<meta property="og:description" content="Podcast, photography and culinary content studio in T-Nagar, Chennai. Book by the hour with instant confirmation.">
+<meta property="og:title" content="Podcast Studio &amp; Kitchen Studio in Chennai | Studio RYST">
+<meta property="og:description" content="Podcast studio, kitchen studio and photography studio in T-Nagar, Chennai — one 3-in-1 creator space. Book by the hour with instant confirmation.">
 <meta property="og:url" content="https://studio.ryst.in/">
 <meta property="og:image" content="https://studio.ryst.in/assets/og-share.jpg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:locale" content="en_IN">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Studio RYST — Chennai's 3-in-1 Content Production Studio">
-<meta name="twitter:description" content="Podcast, photography and culinary content studio in T-Nagar, Chennai. Book by the hour with instant confirmation.">
+<meta name="twitter:title" content="Podcast Studio &amp; Kitchen Studio in Chennai | Studio RYST">
+<meta name="twitter:description" content="Podcast studio, kitchen studio and photography studio in T-Nagar, Chennai — one 3-in-1 creator space. Book by the hour with instant confirmation.">
 <meta name="twitter:image" content="https://studio.ryst.in/assets/og-share.jpg">
 <link rel="icon" href="/assets/logo-300.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -111,7 +111,7 @@ button,input,select,textarea{font-family:inherit}
    Faded via an ::before's opacity rather than animating background/
    backdrop-filter directly — those don't interpolate smoothly cross-browser,
    opacity does. ---- */
-.nav.nav-overlay{position:absolute;top:0;left:0;right:0;background:transparent;border-bottom-color:transparent}
+.nav.nav-overlay{position:absolute;top:0;left:0;right:0;background:transparent;border-bottom-color:transparent;backdrop-filter:none}
 .nav.nav-overlay::before{content:'';position:absolute;inset:0;z-index:-1;background:color-mix(in srgb, var(--bg) 92%, transparent);backdrop-filter:blur(10px);opacity:0;transition:opacity .3s ease}
 .nav.nav-overlay.scrolled::before{opacity:1}
 .nav.nav-overlay .navlinks a,.nav.nav-overlay .menu-btn{color:#fff;transition:color .3s ease}
@@ -341,13 +341,16 @@ footer{border-top:1px solid var(--line);padding:64px 0 30px;margin-top:0}
 .hero-media-bg{position:absolute;inset:0;z-index:0;background:var(--surface-2)}
 .hero-photo,.hero-video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 35%}
 .hero-scrim{position:absolute;inset:0;z-index:1;
-  background:linear-gradient(180deg, rgba(23,19,16,.55) 0%, rgba(23,19,16,.32) 40%, rgba(23,19,16,.74) 100%),
-             linear-gradient(90deg, rgba(23,19,16,.48) 0%, rgba(23,19,16,.08) 55%);}
+  background:linear-gradient(180deg, rgba(23,19,16,.55) 0%, rgba(23,19,16,.35) 40%, rgba(23,19,16,.8) 100%),
+             linear-gradient(90deg, rgba(23,19,16,.78) 0%, rgba(23,19,16,.6) 40%, rgba(23,19,16,.12) 75%);}
+@media (max-width:860px){.hero-scrim{background:linear-gradient(180deg, rgba(23,19,16,.62) 0%, rgba(23,19,16,.7) 45%, rgba(23,19,16,.86) 100%)}}
 .hero-media .hero-inner{position:relative;z-index:2;width:100%;max-width:760px}
 .hero-media .eyebrow{color:var(--accent)}
 .hero-media h1{color:#fff}
 .hero-media h1 em{color:var(--accent)}
-.hero-media p.lead{color:rgba(255,255,255,.86)}
+.hero-media p.lead{color:rgba(255,255,255,.94)}
+.hero-media .eyebrow,.hero-media h1,.hero-media p.lead{text-shadow:0 1px 14px rgba(0,0,0,.45)}
+.nobr{white-space:nowrap}
 .btn-outline-invert{background:transparent;color:#fff;border-color:rgba(255,255,255,.55)}
 .btn-outline-invert:hover{border-color:var(--accent);color:var(--accent)}
 .hero-media .reviews-badge{background:rgba(255,255,255,.12);backdrop-filter:blur(6px);border:1px solid rgba(255,255,255,.25);border-radius:30px;padding:8px 16px 8px 10px;color:#fff}
@@ -460,19 +463,20 @@ footer{border-top:1px solid var(--line);padding:64px 0 30px;margin-top:0}
 
 <section class="hero hero-media kb-static" id="heroSection">
   <div class="hero-media-bg">
+    <picture><source type="image/webp" srcset="/assets/photos/hero.webp">
     <img class="hero-photo" id="heroPhoto" src="/assets/photos/hero.jpg"
-      alt="Inside Studio RYST — Chennai's 3-in-1 podcast, photography and culinary content studio"
+      alt="Behind the scenes at Studio RYST — a podcast interview being filmed with a full lighting rig in our T-Nagar podcast studio"
       width="2400" height="1350" loading="eager" fetchpriority="high"
-      onerror="this.style.display='none'">
+      onerror="this.style.display='none'"></picture>
     <div class="hero-scrim"></div>
   </div>
   <div class="wrap hero-inner">
     <div class="eyebrow">Create. Cook. Converse.</div>
-    <h1>Chennai's first-of-its-kind <em>3-in-1</em> content production studio.</h1>
-    <p class="lead">A hybrid creative facility in T-Nagar built for podcasters, culinary
-      influencers, and brand creators who need more than one kind of space —
-      flexible hourly bookings, semi-acoustic design, climate control, and
-      instant confirmation, all under one roof.</p>
+    <h1>Chennai's <em class="nobr">3&#8209;in&#8209;1</em> podcast studio, kitchen studio &amp; photo studio.</h1>
+    <p class="lead">A podcast studio, a filmable kitchen studio and a photography
+      studio under one roof in T-Nagar — built for podcasters, food creators and
+      brands. Book by the hour with semi-acoustic design, climate control and
+      instant confirmation.</p>
     <div class="ctas">
       <a class="btn btn-brass" href="/booking/"><span>Book a Session</span></a>
       <a class="btn btn-outline-invert" href="/packages/"><span>View Packages</span></a>
@@ -504,7 +508,7 @@ footer{border-top:1px solid var(--line);padding:64px 0 30px;margin-top:0}
     </div>
     <div class="stat-item">
       <div class="stat-value"><span class="stat-num" data-count-to="2">0</span></div>
-      <div class="stat-label">Hours Minimum Booking</div>
+      <div class="stat-label">Hr Minimum · Podcast &amp; Photo</div>
     </div>
   </div>
 </div></section>
@@ -513,29 +517,32 @@ footer{border-top:1px solid var(--line);padding:64px 0 30px;margin-top:0}
   <div class="section-head">
     <div class="eyebrow">What is Studio RYST</div>
     <h2>One studio, three ways to create.</h2>
-    <p>Studio RYST brings podcasting, culinary content, and photography together in
-      a single thoughtfully designed space — so creators managing multiple formats
-      don't have to book, pack up, and travel between three different studios
-      across the city.</p>
+    <p>Studio RYST brings a podcast studio, a kitchen studio and a photography
+      studio together in one thoughtfully designed space in T-Nagar, Chennai — so
+      creators managing multiple formats don't have to book, pack up, and travel
+      between three different studios across the city. Record a video podcast in
+      the morning, film a recipe reel in the kitchen after lunch, and shoot
+      product stills before you leave.</p>
   </div>
   <div class="zones">
     <a class="zone-card photo has-media" href="/studio/">
       <div class="zone-card-media"><picture><source type="image/webp" srcset="/assets/photos/zone-photography.webp"><img src="/assets/photos/zone-photography.jpg" alt="Photography zone at Studio RYST — continuous LED lighting and backdrop" width="1200" height="900" loading="lazy" onerror="this.style.display='none'"></picture><span class="zone-card-tag-chip">Photography</span></div>
-      <div class="zone-card-body"><span class="tag">Light. Frame. Capture.</span><h3>Photography</h3>
+      <div class="zone-card-body"><span class="tag">Light. Frame. Capture.</span><h3>Photography Studio</h3>
         <p>Continuous LED lighting with a green screen available — built for
           product shoots, editorials, headshots and
-          e-commerce.</p><span class="more">Explore this zone →</span></div></a>
+          e-commerce. Book from 2 hours.</p><span class="more">Explore this zone →</span></div></a>
     <a class="zone-card podcast has-media" href="/podcast-studio-chennai/">
       <div class="zone-card-media"><picture><source type="image/webp" srcset="/assets/photos/zone-podcast.webp"><img src="/assets/photos/zone-podcast.jpg" alt="Podcast zone at Studio RYST — sofa seating and broadcast-ready setup" width="1200" height="900" loading="lazy" onerror="this.style.display='none'"></picture><span class="zone-card-tag-chip">Podcast</span></div>
-      <div class="zone-card-body"><span class="tag">Speak. Record. Inspire.</span><h3>Podcast</h3>
-        <p>Acoustically treated with broadcast-grade microphones, a sofa set and
-          ambient lighting — for episodes, interviews and brand
-          storytelling.</p><span class="more">Explore this zone →</span></div></a>
+      <div class="zone-card-body"><span class="tag">Speak. Record. Inspire.</span><h3>Podcast Studio</h3>
+        <p>A podcast studio with acoustic treatment, broadcast-grade microphones,
+          a sofa set and ambient lighting — for video podcasts, interviews and
+          brand storytelling. Book from 2 hours.</p><span class="more">Explore this zone →</span></div></a>
     <a class="zone-card culinary has-media" href="/kitchen-studio-chennai/">
-      <div class="zone-card-media"><picture><source type="image/webp" srcset="/assets/photos/zone-culinary.webp"><img src="/assets/photos/zone-culinary.jpg" alt="Culinary zone at Studio RYST — kitchen and countertop setup" width="1200" height="900" loading="lazy" onerror="this.style.display='none'"></picture><span class="zone-card-tag-chip">Culinary</span></div>
-      <div class="zone-card-body"><span class="tag">Cook. Style. Shoot.</span><h3>Culinary</h3>
-        <p>A premium kitchen designed to be filmed in, with styling-friendly
-          counters and light for recipe videos and food photography.</p>
+      <div class="zone-card-media"><picture><source type="image/webp" srcset="/assets/photos/zone-culinary.webp"><img src="/assets/photos/zone-culinary.jpg" alt="Culinary zone at Studio RYST — kitchen and countertop setup" width="1200" height="900" loading="lazy" onerror="this.style.display='none'"></picture><span class="zone-card-tag-chip">Kitchen</span></div>
+      <div class="zone-card-body"><span class="tag">Cook. Style. Shoot.</span><h3>Kitchen Studio</h3>
+        <p>A premium kitchen studio designed to be filmed in, with styling-friendly
+          counters and light for recipe videos, cooking shows and food
+          photography. Book from 4 hours.</p>
         <span class="more">Explore this zone →</span></div></a>
   </div>
 </div></section>
