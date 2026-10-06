@@ -9,5 +9,6 @@ Disallow: /settings.html
 Disallow: /report.html
 Disallow: /reviews.html
 Disallow: /enquiry-import.html
+Disallow: /freelancers.html
 
 Sitemap: https://studio.ryst.in/sitemap.xml
