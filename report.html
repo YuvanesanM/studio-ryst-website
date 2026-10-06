@@ -153,6 +153,11 @@
       <div class="val" id="roiRevHour">—</div>
       <div class="sub" id="roiRevHourSub"></div>
     </div>
+    <div class="kpi">
+      <div class="lbl">Crew payments</div>
+      <div class="val" id="kCrew">—</div>
+      <div class="sub" id="kCrewSub"></div>
+    </div>
   </div>
 
   <div class="grid">
@@ -183,6 +188,12 @@
       <h2>Top customers</h2>
       <div class="cap" id="topCustCap">By total invoiced value, selected period</div>
       <div class="hbars" id="topCust"></div>
+    </div>
+
+    <div class="panel">
+      <h2>Crew payments</h2>
+      <div class="cap" id="crewCap">Paid to freelancers, selected period</div>
+      <div class="hbars" id="crewBars"></div>
     </div>
 
     <div class="panel full">
@@ -220,6 +231,9 @@ const PHYS_ZONES=['Podcast','Photography','Culinary'];
 const zColor=z=>ZONE_COLORS[z]||'var(--muted2)';
 
 let QUOTES=[], SESSIONS=[], SALES=[], PERIOD='this-month', OPHOURS=12;
+// Crew (freelancer) invoices from freelancers.html — CREW holds the paid
+// ones, dated by when they were paid; unpaid ones only feed CREW_DUE.
+let CREW=[], CREW_DUE=0, CREW_DUE_N=0;
 
 // ── Logo (shared with other tools) ──
 (function(){ try{const s=JSON.parse(localStorage.getItem('ryst_quote_settings')||'null'); if(s&&s.logo){$('#logo').src=s.logo;return;}}catch(e){}
@@ -243,10 +257,12 @@ async function api(path){
 async function load(){
   $('#loader').className='';
   try{
-    const [q,s]=await Promise.all([api('/quotes'), api('/schedule')]);
+    // Crew data is optional — the report still loads if it can't be read.
+    const [q,s,c]=await Promise.all([api('/quotes'), api('/schedule'), api('/freelancers').catch(()=>null)]);
     QUOTES=Array.isArray(q.quotes)?q.quotes:[];
     SESSIONS=Array.isArray(s.sessions)?s.sessions:[];
     SALES=buildSaleRecords();
+    buildCrewRecords(c||{});
     render();
   }catch(e){ toast(e.message||'Could not load report',true); }
   finally{ $('#loader').className='hide'; }
@@ -274,6 +290,20 @@ function buildSaleRecords(){
   return QUOTES.filter(isQuoteFullyPaid).map(q=>({qno:q.qno, date:qDate(q), cname:q.cname, cphone:q.cphone||'', zone:q.zone, net:qNet(q), gross:qGrandTotal(q), invoiceNo:q.invoiceNo||''}));
 }
 const normPhone=p=>String(p||'').replace(/\D/g,'').slice(-10);
+
+// ── Crew payments — the full invoice amount (before any TDS deducted, since
+// that's still paid out, just to the tax department), mirroring
+// freelancers.html's billTotals().gross.
+function crewGross(b){ return Math.round((b.items||[]).reduce((s,it)=>s+(parseFloat(it.qty)||0)*(parseFloat(it.rate)||0),0)*100)/100; }
+function buildCrewRecords(doc){
+  const byId={}; (doc.freelancers||[]).forEach(f=>{ byId[f.id]=f; });
+  CREW=[]; CREW_DUE=0; CREW_DUE_N=0;
+  (doc.bills||[]).forEach(b=>{
+    const f=byId[b.freelancerId]||{}, sup=b.supplier||{};
+    const rec={id:b.freelancerId||sup.name, date:b.paidOn||b.date||'', amount:crewGross(b), name:sup.name||f.name||'—', role:sup.role||f.role||''};
+    if(b.status==='paid') CREW.push(rec); else { CREW_DUE+=rec.amount; CREW_DUE_N++; }
+  });
+}
 
 // ── Period ranges (local, no TZ shift) ──
 const pad=n=>String(n).padStart(2,'0');
@@ -319,12 +349,14 @@ function bookedByZone(r){
   return {hrs,cnt};
 }
 
-function deltaHTML(cur, prev){
+// costUp: for a cost (crew payments), a rise is the bad direction, so the
+// up/down colouring is flipped while the arrows still show the real change.
+function deltaHTML(cur, prev, costUp){
   if(PERIOD==='all') return '';
-  if(!prev){ return cur>0?'<span class="d up">▲ new</span>':''; }
+  if(!prev){ return cur>0?`<span class="d ${costUp?'down':'up'}">▲ new</span>`:''; }
   const pct=Math.round((cur-prev)/prev*100);
   if(pct===0) return '<span class="d">▬ 0%</span>';
-  return `<span class="d ${pct>0?'up':'down'}">${pct>0?'▲':'▼'} ${Math.abs(pct)}%</span>`;
+  return `<span class="d ${(pct>0)!==!!costUp?'up':'down'}">${pct>0?'▲':'▼'} ${Math.abs(pct)}%</span>`;
 }
 
 function render(){
@@ -358,6 +390,7 @@ function render(){
   renderSalesZone(curS, book);
   renderUtil(book, r);
   renderTopCustomers(curS);
+  renderCrew(r, rp);
   renderInvoices(curS);
   renderROI();
 }
@@ -454,6 +487,26 @@ function renderTopCustomers(curS){
   $('#topCust').innerHTML = hbarsHTML(entries, money);
 }
 
+function renderCrew(r, rp){
+  const cur=CREW.filter(x=>inRange(x.date,r)), prev=CREW.filter(x=>inRange(x.date,rp));
+  const total=cur.reduce((s,x)=>s+x.amount,0), pTotal=prev.reduce((s,x)=>s+x.amount,0);
+  $('#kCrew').textContent=money(total);
+  $('#kCrewSub').innerHTML=deltaHTML(total,pTotal,true)+`<span>${cur.length} paid</span>`
+    +(CREW_DUE_N?`<span>· ${money(CREW_DUE)} unpaid</span>`:'');
+  $('#crewCap').textContent=`Paid to freelancers, selected period${CREW_DUE_N?` · ${CREW_DUE_N} invoice${CREW_DUE_N===1?'':'s'} (${money(CREW_DUE)}) still unpaid`:''}`;
+  const by={};
+  cur.forEach(x=>{ const k=x.id||x.name; if(!by[k]) by[k]={name:x.name, role:x.role, n:0, v:0}; by[k].n++; by[k].v+=x.amount; });
+  const rows=Object.values(by).sort((a,b)=>b.v-a.v).slice(0,10);
+  if(!rows.length){ $('#crewBars').innerHTML='<div class="empty">No crew payments in this period.</div>'; return; }
+  const max=Math.max(1,...rows.map(x=>x.v));
+  $('#crewBars').innerHTML=rows.map(x=>`
+    <div class="hbar" title="${esc(x.name)}${x.role?' · '+esc(x.role):''} · ${x.n} payment${x.n===1?'':'s'}">
+      <span class="nm"><span class="dot" style="background:var(--accent)"></span>${esc(x.name)}</span>
+      <span class="track"><span class="fill" style="width:${Math.max(2,x.v/max*100)}%;background:var(--accent)"></span></span>
+      <span class="amt">${money(x.v)}</span>
+    </div>`).join('');
+}
+
 // ══════════════════════════════════════════════════════════════
 //  INVESTMENT & ROI
 // ══════════════════════════════════════════════════════════════
@@ -494,7 +547,8 @@ function roiSinceLaunchRange(){
 }
 
 // One row per calendar month from launch through the current month —
-// net_profit = revenue*(1-incentive%) - fixed_costs, running cumulative.
+// net_profit = revenue*(1-incentive%) - fixed_costs - crew payments made
+// that month, running cumulative.
 function roiMonthlySeries(){
   const launchYM=(ROI_SETTINGS.launchDate||ROI_DEFAULTS.launchDate).slice(0,7);
   const now=new Date(), curYM=monthKey(now.getFullYear(),now.getMonth());
@@ -505,7 +559,8 @@ function roiMonthlySeries(){
   return months.map(ym=>{
     const revenue=SALES.filter(x=>x.date && x.date.slice(0,7)===ym).reduce((s,x)=>s+x.net,0);
     const incentive=revenue*rate;
-    const netProfit=revenue*(1-rate)-fixed;
+    const crew=CREW.filter(x=>x.date && x.date.slice(0,7)===ym).reduce((s,x)=>s+x.amount,0);
+    const netProfit=revenue*(1-rate)-fixed-crew;
     cum+=netProfit; cumIncentive+=incentive;
     return {ym, revenue, incentive, cumIncentive, netProfit, cum, breakeven, onTrack: revenue>=breakeven};
   });
