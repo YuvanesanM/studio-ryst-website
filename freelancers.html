@@ -154,8 +154,6 @@
   /* ---- TOAST / ADMIN BLOCK ---- */
   .toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(20px);background:#1d211c;color:#fff;padding:12px 20px;border-radius:10px;font-size:13px;opacity:0;transition:.25s;z-index:60;pointer-events:none;max-width:90vw}
   .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
-  .admin-block{position:fixed;inset:0;z-index:60;background:var(--bg);display:none;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:24px;text-align:center}
-  .admin-block.show{display:flex}
   .loading{padding:60px 0;text-align:center;color:var(--muted2)}
 
   @media(max-width:980px){
@@ -201,7 +199,7 @@
 
   <!-- ================= CREW LIST ================= -->
   <section id="vCrew" hidden>
-    <p class="sd">Freelance crew you hire for shoots — contact, PAN, bank details and the rates you've approved. Visible to admins only; stored encrypted.</p>
+    <p class="sd">Freelance crew you hire for shoots — contact, PAN, bank details and the rates you've approved. Visible to signed-in staff only; stored encrypted.</p>
     <div class="toolbar">
       <input class="t" id="crewSearch" placeholder="Search name, role, mobile…">
       <select class="t" id="crewFilter" style="max-width:170px">
@@ -350,13 +348,6 @@
   <option>per shoot</option><option>per episode</option><option>per project</option><option>per item</option>
 </datalist>
 
-<div id="adminBlock" class="admin-block">
-  <div style="font-size:44px">🔒</div>
-  <div style="font-size:19px;font-weight:700;color:var(--ink)">Admins only</div>
-  <div style="font-size:14px;color:var(--muted2);max-width:380px;line-height:1.5">Freelancer bank details and invoices are only visible to admins. Your account is signed in as a coordinator.</div>
-  <a class="btn primary" href="login.html" style="margin-top:6px">← Back to home</a>
-</div>
-
 <div id="printArea"></div>
 <div class="toast" id="toast"></div>
 
@@ -370,6 +361,7 @@ const BILL_TO = {
   address: '113(52), Ankur Plaza, G.N. Chetty Road,\nT. Nagar, Chennai – 600017, Tamil Nadu',
 };
 let proxyToken = localStorage.getItem('ryst_proxy_token') || '';
+const ME = (localStorage.getItem('ryst_user_email') || '').toLowerCase();
 
 const $ = s => document.querySelector(s);
 const esc = s => (s ?? '').toString().replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -427,7 +419,7 @@ async function api(method, body) {
   return d;
 }
 // Re-read the latest copy, apply one change, write it back — so two open
-// tabs (or two admins) never silently overwrite each other's other records.
+// tabs (or two staff) never silently overwrite each other's other records.
 let saving = false;
 async function mutate(fn) {
   if (saving) throw new Error('Still saving — try again in a moment');
@@ -631,8 +623,8 @@ $('#crewSave').addEventListener('click', async () => {
     await mutate(doc => {
       const now = new Date().toISOString();
       const i = editCrewId ? doc.freelancers.findIndex(f => f.id === editCrewId) : -1;
-      if (i >= 0) doc.freelancers[i] = Object.assign({}, doc.freelancers[i], rec, { updatedAt: now });
-      else doc.freelancers.push(Object.assign({ id: uid(), createdAt: now }, rec, { updatedAt: now }));
+      if (i >= 0) doc.freelancers[i] = Object.assign({}, doc.freelancers[i], rec, { updatedAt: now, updatedBy: ME });
+      else doc.freelancers.push(Object.assign({ id: uid(), createdAt: now, createdBy: ME }, rec, { updatedAt: now, updatedBy: ME }));
     });
     dirty = false;
     toast('Saved ' + rec.name);
@@ -870,6 +862,7 @@ $('#billSave').addEventListener('click', async () => {
         items: cur.items.filter(it => it.desc || num(it.rate)).map(it => ({ desc: (it.desc || '').trim(), date: it.date || '', qty: num(it.qty), unit: it.unit || '', rate: num(it.rate) })),
         no: (cur.no || '').trim(),
         updatedAt: now,
+        updatedBy: ME,
       });
       if (rec.status !== 'paid') { rec.paidOn = ''; rec.payRef = ''; }
       // Bills keep a copy of the supplier details as they were when it was
@@ -885,7 +878,7 @@ $('#billSave').addEventListener('click', async () => {
       if (doc.bills.some(x => x.no === rec.no && x.id !== rec.id)) throw new Error('invoice no. ' + rec.no + ' is already used');
       const i = rec.id ? doc.bills.findIndex(x => x.id === rec.id) : -1;
       if (i >= 0) doc.bills[i] = rec;
-      else { rec.id = uid(); rec.createdAt = now; doc.bills.push(rec); }
+      else { rec.id = uid(); rec.createdAt = now; rec.createdBy = ME; doc.bills.push(rec); }
       return rec;
     });
     cur = JSON.parse(JSON.stringify(saved));
@@ -927,18 +920,8 @@ $('#billWa').addEventListener('click', () => {
 });
 
 /* ---------- BOOT ---------- */
-function myRole() {
-  try {
-    let p = (proxyToken.split('.')[0] || '').replace(/-/g, '+').replace(/_/g, '/');
-    p += '='.repeat((4 - p.length % 4) % 4);
-    const d = JSON.parse(atob(p));
-    if (d && d.role) return d.role;
-  } catch (e) {}
-  return localStorage.getItem('ryst_user_role') || 'coordinator';
-}
 (async function boot() {
   if (!proxyToken) { location.href = 'login.html'; return; }
-  if (myRole() !== 'admin') { $('#adminBlock').classList.add('show'); return; }
   try { DB = normalize(await api('GET')); }
   catch (e) { $('#loading').textContent = 'Could not load freelancers: ' + e.message; return; }
   $('#loading').hidden = true;
