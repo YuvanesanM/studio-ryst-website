@@ -145,11 +145,9 @@
   .d-words{margin-top:12px;font-size:12px;color:#333;background:#f7f7f5;border-radius:6px;padding:8px 10px}
   .d-notes{margin-top:10px;font-size:12px;color:#444;white-space:pre-line}
   .d-decl{margin-top:18px;font-size:11px;color:#444;border:1px solid #e3e3e0;border-radius:6px;padding:10px 12px}
-  .d-sign{display:flex;justify-content:space-between;align-items:flex-end;gap:20px;margin-top:26px}
-  .d-stamp{border:2px solid #2f7d54;color:#2f7d54;border-radius:8px;padding:6px 12px;font-size:11px;font-weight:700;letter-spacing:.5px;transform:rotate(-3deg)}
+  .d-sign{display:flex;justify-content:flex-end;margin-top:26px}
   .d-sig{text-align:center;min-width:220px;font-size:12px}
   .d-sig .line{border-top:1px solid #333;margin-top:46px;padding-top:5px;color:#555}
-  .d-foot{margin-top:24px;padding-top:10px;border-top:1px solid #eee;font-size:10px;color:#888;text-align:center}
 
   /* ---- TOAST / ADMIN BLOCK ---- */
   .toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(20px);background:#1d211c;color:#fff;padding:12px 20px;border-radius:10px;font-size:13px;opacity:0;transition:.25s;z-index:60;pointer-events:none;max-width:90vw}
@@ -171,12 +169,14 @@
   }
 
   /* Print / Save as PDF: only the invoice, on clean A4 */
-  @page{size:A4;margin:12mm}
+  /* margin:0 stops the browser adding its own header/footer (page URL,
+     date, title) to the printout; the doc's padding gives the margin instead */
+  @page{size:A4;margin:0}
   @media print{
     body{background:#fff}
     body > *:not(#printArea){display:none!important}
     #printArea{display:block!important}
-    #printArea .doc{box-shadow:none;max-width:none;padding:0}
+    #printArea .doc{box-shadow:none;max-width:none;padding:14mm 14mm 12mm}
   }
   #printArea{display:none}
 </style>
@@ -825,10 +825,8 @@ function docHTML(b) {
     ${b.notes ? `<div class="d-notes">${esc(b.notes)}</div>` : ''}
     <div class="d-decl"><b>Declaration:</b> I am not registered under the Goods and Services Tax Act, 2017, so no GST has been charged on this invoice. I provided the services listed above to ${esc(BILL_TO.brand)} (${esc(BILL_TO.legal)}), and the amounts and bank details shown are correct.</div>
     <div class="d-sign">
-      <div>${b.status === 'paid' ? `<div class="d-stamp">PAID · ${esc(fmtDate(b.paidOn))}${b.payMode ? ' · ' + esc(b.payMode) : ''}${b.payRef ? '<br>Ref: ' + esc(b.payRef) : ''}</div>` : ''}</div>
       <div class="d-sig"><div class="line">${esc(s.name)}<br>Signature of supplier</div></div>
     </div>
-    <div class="d-foot">Prepared by ${esc(BILL_TO.brand)} on behalf of the supplier named above, from the details they provided.</div>
   </div>`;
 }
 function renderPreview() {
