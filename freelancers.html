@@ -114,6 +114,7 @@
   .preview-wrap{position:sticky;top:130px;max-height:calc(100vh - 150px);overflow-y:auto;overflow-x:hidden;border-radius:12px;border:1px solid var(--line);background:#e9ebe6;padding:16px}
   #preview{position:relative;overflow:hidden}
   #preview .doc{width:794px;max-width:none;transform-origin:0 0;position:absolute;top:0;left:0}
+  .lock-note{background:var(--warn-soft);border:1px solid #f1dcb3;color:var(--warn);border-radius:11px;padding:10px 14px;font-size:13px;font-weight:600;margin:-6px 0 16px}
   .paybox{background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin-top:16px}
 
   /* ---- THE INVOICE DOCUMENT ---- */
@@ -289,6 +290,7 @@
       <button class="btn" id="billPrint" type="button">Print / PDF</button>
       <button class="btn primary" id="billSave" type="button">Save</button>
     </div>
+    <div class="lock-note" id="billLock" hidden>🔒 This invoice is paid, so it's read-only. Only an admin can change or delete it.</div>
     <div class="split">
       <div>
         <div class="card">
@@ -328,7 +330,7 @@
             <label class="f"><span>Mode</span><select class="t" id="bMode"><option>Bank transfer</option><option>UPI</option><option>Cash</option><option>Cheque</option></select></label>
           </div>
           <label class="f"><span>UTR / reference</span><input class="t" id="bPayRef" autocomplete="off"></label>
-          <p class="hint">Once marked paid, the freelancer's name, PAN and bank details on this invoice are frozen. Later edits to their profile won't change it.</p>
+          <p class="hint">Once saved as paid, the freelancer's name, PAN and bank details on this invoice are frozen (later edits to their profile won't change it), and only an admin can edit or delete it.</p>
           <button class="btn danger sm" id="billDelete" type="button" hidden style="margin-top:10px">Delete invoice</button>
         </div>
       </div>
@@ -362,6 +364,18 @@ const BILL_TO = {
 };
 let proxyToken = localStorage.getItem('ryst_proxy_token') || '';
 const ME = (localStorage.getItem('ryst_user_email') || '').toLowerCase();
+// Admins can change or delete anything; coordinators can't touch a paid
+// invoice or delete a freelancer who has invoices. The proxy enforces the
+// same rules on save — this only shapes the UI to match.
+const IS_ADMIN = (() => {
+  try {
+    let p = (proxyToken.split('.')[0] || '').replace(/-/g, '+').replace(/_/g, '/');
+    p += '='.repeat((4 - p.length % 4) % 4);
+    const d = JSON.parse(atob(p));
+    if (d && d.role) return d.role === 'admin';
+  } catch (e) {}
+  return localStorage.getItem('ryst_user_role') === 'admin';
+})();
 
 const $ = s => document.querySelector(s);
 const esc = s => (s ?? '').toString().replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -554,7 +568,7 @@ function openCrew(f) {
   rateDraft = f && f.rates && f.rates.length ? f.rates.map(r => Object.assign({}, r)) : [{ service: '', unit: 'per day', rate: '' }];
   renderRates();
   const hasBills = f && DB.bills.some(b => b.freelancerId === f.id);
-  $('#crewDelete').hidden = !f || hasBills;
+  $('#crewDelete').hidden = !f || (hasBills && !IS_ADMIN);
   document.querySelectorAll('#vCrewEd .t').forEach(el => el.classList.remove('bad'));
   dirty = false;
   show('vCrewEd');
@@ -633,10 +647,12 @@ $('#crewSave').addEventListener('click', async () => {
   finally { btn.disabled = false; btn.textContent = 'Save'; }
 });
 $('#crewDelete').addEventListener('click', async () => {
-  const f = crewById(editCrewId); if (!f || !confirm(`Delete ${f.name}? This can't be undone.`)) return;
+  const f = crewById(editCrewId); if (!f) return;
+  const n = DB.bills.filter(b => b.freelancerId === f.id).length;
+  if (!confirm(`Delete ${f.name}?${n ? ` Their ${n} invoice${n === 1 ? '' : 's'} will be kept.` : ''} This can't be undone.`)) return;
   try {
     await mutate(doc => {
-      if (doc.bills.some(b => b.freelancerId === f.id)) throw new Error('they have invoices — mark them inactive instead');
+      if (!IS_ADMIN && doc.bills.some(b => b.freelancerId === f.id)) throw new Error('they have invoices — only an admin can delete them. Mark them inactive instead');
       doc.freelancers = doc.freelancers.filter(x => x.id !== f.id);
     });
     dirty = false; toast('Deleted'); renderCrew(); show('vCrew');
@@ -694,29 +710,39 @@ $('#addBill').addEventListener('click', () => {
 /* ================= INVOICE EDITOR ================= */
 let cur = null;   // the invoice being edited (a working copy)
 function openBill(b, freelancerId) {
-  cur = b ? JSON.parse(JSON.stringify(b)) : {
+  cur = Object.assign({
     id: null, no: '', freelancerId: freelancerId || '', date: todayISO(), period: '', ref: '',
     items: [], tds: { pct: 0, section: '' }, notes: '', status: 'unpaid', paidOn: '', payMode: 'Bank transfer', payRef: '',
-  };
+  }, b ? JSON.parse(JSON.stringify(b)) : {});
   if (!cur.items.length) cur.items.push(blankItem());
   const opts = DB.freelancers.filter(f => f.active !== false || f.id === cur.freelancerId)
     .sort((a, c) => (a.name || '').localeCompare(c.name || ''));
   $('#bCrew').innerHTML = '<option value="">Select freelancer…</option>' + opts.map(f => `<option value="${esc(f.id)}">${esc(f.name)} — ${esc(f.role)}</option>`).join('');
   $('#bCrew').value = cur.freelancerId;
-  $('#bCrew').disabled = cur.status === 'paid';
   $('#bDate').value = cur.date; $('#bNo').value = cur.no; $('#bPeriod').value = cur.period; $('#bRef').value = cur.ref;
   $('#bTds').value = (cur.tds && cur.tds.pct ? cur.tds.pct + '|' + (cur.tds.section || '') : '0|');
   if (!$('#bTds').value) $('#bTds').value = '0|';
   $('#bNotes').value = cur.notes;
   $('#bStatus').value = cur.status; $('#bPaidOn').value = cur.paidOn; $('#bMode').value = cur.payMode || 'Bank transfer'; $('#bPayRef').value = cur.payRef;
   $('#billEdTitle').textContent = b ? 'Invoice ' + b.no : 'New invoice';
-  $('#billDelete').hidden = !b || b.status === 'paid';
   if (!cur.freelancerId && opts.length === 1) { cur.freelancerId = opts[0].id; $('#bCrew').value = cur.freelancerId; }
   if (!b && cur.freelancerId) prefillFromRates();
-  renderItems(); syncPayFields();
+  renderItems(); syncPayFields(); applyBillLock(b ? b.status : '');
   dirty = false;
   show('vBillEd');
   renderPreview();
+}
+// savedStatus is the invoice's status as stored (not the live dropdown):
+// a saved paid invoice is read-only for coordinators.
+function applyBillLock(savedStatus) {
+  const locked = savedStatus === 'paid' && !IS_ADMIN;
+  $('#billLock').hidden = !locked;
+  $('#billSave').hidden = locked;
+  $('#billDelete').hidden = !cur.id || locked;
+  document.querySelectorAll('#vBillEd .split > div:first-child :is(input,select,textarea,button)').forEach(el => {
+    if (el.id !== 'billDelete') el.disabled = locked;
+  });
+  if (!locked) syncPayFields();
 }
 function blankItem() { return { desc: '', date: '', qty: 1, unit: '', rate: '' }; }
 // A new invoice for someone with exactly one approved rate starts with it filled in.
@@ -782,7 +808,6 @@ $('#bTds').addEventListener('change', () => { const [p, s] = $('#bTds').value.sp
 $('#bStatus').addEventListener('change', () => {
   cur.status = $('#bStatus').value; dirty = true;
   if (cur.status === 'paid' && !cur.paidOn) { cur.paidOn = todayISO(); $('#bPaidOn').value = cur.paidOn; }
-  $('#bCrew').disabled = false;
   syncPayFields(); renderPreview();
 });
 function syncPayFields() { const paid = $('#bStatus').value === 'paid'; ['#bPaidOn', '#bMode', '#bPayRef'].forEach(s => $(s).disabled = !paid); }
@@ -867,7 +892,7 @@ $('#billSave').addEventListener('click', async () => {
       // raised; refreshed on every save until it's paid, then frozen.
       const f = doc.freelancers.find(x => x.id === rec.freelancerId);
       const prevRec = rec.id ? doc.bills.find(x => x.id === rec.id) : null;
-      if (f && !(rec.status === 'paid' && prevRec && prevRec.status === 'paid' && prevRec.supplier)) rec.supplier = snapshot(f);
+      if (f && !(rec.status === 'paid' && prevRec && prevRec.status === 'paid' && prevRec.supplier && prevRec.freelancerId === rec.freelancerId)) rec.supplier = snapshot(f);
       if (!rec.no) {
         const pre = 'FL/' + fyOf(rec.date) + '/';
         const max = doc.bills.filter(x => (x.no || '').startsWith(pre)).reduce((m, x) => Math.max(m, parseInt(x.no.slice(pre.length), 10) || 0), 0);
@@ -882,8 +907,7 @@ $('#billSave').addEventListener('click', async () => {
     cur = JSON.parse(JSON.stringify(saved));
     dirty = false;
     $('#bNo').value = cur.no; $('#billEdTitle').textContent = 'Invoice ' + cur.no;
-    $('#billDelete').hidden = cur.status === 'paid';
-    $('#bCrew').disabled = cur.status === 'paid';
+    applyBillLock(cur.status);
     renderPreview();
     toast('Saved ' + cur.no);
   } catch (e) { toast('Could not save: ' + e.message); }
@@ -891,7 +915,7 @@ $('#billSave').addEventListener('click', async () => {
 });
 $('#billCancel').addEventListener('click', () => { if (confirmLeave()) { renderBills(); show('vBills'); } });
 $('#billDelete').addEventListener('click', async () => {
-  if (!cur.id || !confirm(`Delete invoice ${cur.no}? This can't be undone.`)) return;
+  if (!cur.id || !confirm(`Delete ${cur.status === 'paid' ? 'paid ' : ''}invoice ${cur.no}?${cur.status === 'paid' ? ' It will also drop out of the Growth Report.' : ''} This can't be undone.`)) return;
   try {
     await mutate(doc => { doc.bills = doc.bills.filter(x => x.id !== cur.id); });
     dirty = false; toast('Invoice deleted'); renderBills(); show('vBills');
