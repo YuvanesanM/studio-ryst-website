@@ -79,6 +79,15 @@
   .na-btn:hover{color:var(--ink)}
 
   /* posting brief */
+  /* daily counts (Instagram followers / Google reviews) */
+  .counts{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px;max-width:520px}
+  .counts label{display:flex;flex-direction:column;gap:4px}
+  .counts label>span{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.4px}
+  .cprev{font-size:11.5px;color:var(--muted2);margin-top:2px}
+  .cprev b{font-weight:700}
+  .cprev .up{color:var(--accent-d)} .cprev .down{color:var(--danger)}
+  .cprev a{color:var(--accent-d);font-weight:600;text-decoration:none}
+  .cprev a:hover{text-decoration:underline}
   .brief{margin-top:10px;background:var(--post-soft);border:1px solid #e0d3f2;border-radius:11px;padding:12px 14px;font-size:13px;line-height:1.55}
   .brief-top{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px}
   .tag{font-size:10.5px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;padding:3px 9px;border-radius:20px;background:#fff;color:var(--post);border:1px solid #e0d3f2}
@@ -224,6 +233,7 @@ function tasksFor(iso) {
   const T = [];
   const add = (group, id, label, extra) => T.push(Object.assign({ group, id, label }, extra || {}));
 
+  add('opening', 'o_counts', 'Record today’s Instagram followers and Google reviews', { counts: true, hint: 'Open the Studio RYST Instagram profile and the Google Business Profile and type the numbers exactly as they show right now. Do it at about the same time every day so the growth is comparable.' });
   add('opening', 'o_sched', 'Check today’s schedule', { hint: 'Confirm the zone, start time and payment status of every booking.', link: 'login.html', linkLabel: 'Schedule' });
   add('opening', 'o_welcome', 'Send tomorrow’s welcome WhatsApps', { hint: 'The home page shows a reminder card for each client who needs one.', link: 'login.html', linkLabel: 'Home' });
   add('opening', 'o_reset', 'Reset every zone that’s booked today', { hint: 'Podcast: sofas straight, mics wiped, cables tidy. Photography: backdrop clean, floor swept. Kitchen: counters clean, gas and water working, bins empty.' });
@@ -262,6 +272,44 @@ function tasksFor(iso) {
   return T;
 }
 const isMonthly = id => id.startsWith('m_');
+// ---- daily counts: Instagram followers + Google reviews, tracked for growth ----
+const COUNT_FIELDS = [['followers', 'Instagram followers'], ['reviews', 'Google reviews']];
+const fmtN = n => Number(n).toLocaleString('en-IN');
+// The most recent earlier day that has a value for this field.
+function prevCount(iso, field) {
+  let best = null;
+  for (const k of Object.keys(DB.days)) {
+    const v = DB.days[k] && DB.days[k][field];
+    if (k < iso && Number.isInteger(v) && (!best || k > best.date)) best = { date: k, value: v };
+  }
+  return best;
+}
+function countsHTML() {
+  const r = dayRec(SEL);
+  return `<div class="counts">${COUNT_FIELDS.map(([f, label]) => {
+    const pv = prevCount(SEL, f), cur = r[f];
+    const delta = Number.isInteger(cur) && pv ? cur - pv.value : null;
+    const note = pv ? `Last: <b>${fmtN(pv.value)}</b> on ${esc(parseISO(pv.date).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' }))}` +
+      (delta == null ? '' : ` · <span class="${delta > 0 ? 'up' : delta < 0 ? 'down' : ''}">${delta > 0 ? '+' : ''}${fmtN(delta)}</span>`) : 'First entry — nothing to compare yet';
+    return `<label><span>${esc(label)}</span><input class="t" type="number" min="0" step="1" inputmode="numeric" data-count="${f}" value="${Number.isInteger(cur) ? cur : ''}" placeholder="0"><div class="cprev">${note}</div></label>`;
+  }).join('')}</div><div class="cprev" style="margin-top:8px"><a href="https://www.instagram.com/studio.ryst" target="_blank" rel="noopener">Open Instagram profile ↗</a> · <a href="https://maps.app.goo.gl/4aBPUkbHD1D1UtP68" target="_blank" rel="noopener">Open Google profile ↗</a></div>`;
+}
+// Re-rendering the list would wipe a number that is half-typed, so keep it.
+function snapshotCounts() {
+  const out = {};
+  document.querySelectorAll('#groups [data-count]').forEach(el => {
+    const saved = dayRec(SEL)[el.dataset.count];
+    if (String(Number.isInteger(saved) ? saved : '') !== el.value || el === document.activeElement)
+      out[el.dataset.count] = { v: el.value, focus: el === document.activeElement, pos: el.selectionStart };
+  });
+  return out;
+}
+function restoreCounts(snap) {
+  Object.entries(snap).forEach(([k, s]) => {
+    const el = document.querySelector(`#groups [data-count="${k}"]`); if (!el) return;
+    el.value = s.v; if (s.focus) { el.focus(); try { el.setSelectionRange(s.pos, s.pos); } catch (e) {} }
+  });
+}
 // What the evening Telegram summary is checked against: everything except monthly tasks.
 const plannedFor = iso => tasksFor(iso).filter(t => !isMonthly(t.id)).map(t => ({ id: t.id, label: t.label }));
 
@@ -349,14 +397,16 @@ function renderTasks(full) {
       const meta = e ? `${e.na ? 'Not needed today' : '✓ Done'} · ${esc(who(e.by))} · ${esc(new Date(e.at).toLocaleTimeString('en-IN', { hour: 'numeric', minute: '2-digit' }))}` : '';
       return `<div class="task${e ? ' done' : ''}${e && e.na ? ' na' : ''}" data-id="${esc(t.id)}">
         <button class="chk" type="button" role="checkbox" aria-checked="${e ? 'true' : 'false'}" aria-label="${esc(t.label)}" data-tick="${esc(t.id)}">✓</button>
-        <div class="tbody"><div class="tlabel">${esc(t.label)}</div>${t.hint ? `<div class="thint">${esc(t.hint)}</div>` : ''}${t.brief ? briefHTML(t.brief) : ''}${meta ? `<div class="tmeta">${meta}</div>` : ''}</div>
+        <div class="tbody"><div class="tlabel">${esc(t.label)}</div>${t.hint ? `<div class="thint">${esc(t.hint)}</div>` : ''}${t.counts ? countsHTML() : ''}${t.brief ? briefHTML(t.brief) : ''}${meta ? `<div class="tmeta">${meta}</div>` : ''}</div>
         <div class="tact">${t.link ? `<a href="${esc(t.link)}">${esc(t.linkLabel || 'Open')} →</a>` : ''}<button class="na-btn" type="button" data-na="${esc(t.id)}">${e && e.na ? 'Needed' : 'N/A today'}</button></div>
       </div>`;
     }).join('')}</section>`;
   }).join('');
   // Keep any open <details> open across re-renders.
   const open = [...document.querySelectorAll('#groups details[open]')].length > 0;
+  const snap = snapshotCounts();
   $('#groups').innerHTML = html;
+  restoreCounts(snap);
   if (open) document.querySelectorAll('#groups details').forEach(d => d.open = true);
   $('#progNum').textContent = `${done} of ${tasks.length}`;
   $('#progFill').style.width = (tasks.length ? Math.round(done / tasks.length * 100) : 0) + '%';
@@ -387,9 +437,32 @@ $('#groups').addEventListener('click', e => {
   const tick = e.target.closest('[data-tick]'), na = e.target.closest('[data-na]');
   const id = tick ? tick.dataset.tick : na ? na.dataset.na : null; if (!id) return;
   const cur = doneEntry(SEL, id);
+  // The counts task completes itself once both numbers are in (or use N/A today).
+  if (tick && id === 'o_counts') {
+    if (!cur) { const empty = document.querySelector('#groups [data-count]:not([value]), #groups [data-count][value=""]') || document.querySelector('#groups [data-count]'); if (empty) empty.focus(); toast('Type in both numbers to complete this'); }
+    return;
+  }
   const on = tick ? !cur : !(cur && cur.na);   // N/A toggles N/A; the checkbox toggles done
   const asNa = !!na && on;
   queue(opTick(SEL, id, on, asNa, plannedFor(SEL))); renderTasks(false);
+});
+const opCount = (iso, field, val, planned) => doc => {
+  const d = dayOf(doc, iso); d.planned = planned; d.done = d.done || {};
+  if (val == null) delete d[field]; else d[field] = val;
+  if (Number.isInteger(d.followers) && Number.isInteger(d.reviews)) d.done.o_counts = { by: ME, at: new Date().toISOString() };
+  else if (d.done.o_counts && !d.done.o_counts.na) delete d.done.o_counts;
+};
+$('#groups').addEventListener('change', e => {
+  const el = e.target.closest('[data-count]'); if (!el) return;
+  const f = el.dataset.count, label = COUNT_FIELDS.find(x => x[0] === f)[1], saved = dayRec(SEL)[f];
+  const revert = () => { el.value = Number.isInteger(saved) ? saved : ''; };
+  if (el.value.trim() === '') { if (Number.isInteger(saved)) { queue(opCount(SEL, f, null, plannedFor(SEL))); renderTasks(false); } return; }
+  const v = Number(el.value);
+  if (!Number.isInteger(v) || v < 0) { toast('Enter a whole number'); revert(); return; }
+  // Guard against typos in the growth history: a big jump needs a second look.
+  const pv = prevCount(SEL, f);
+  if (pv && pv.value > 0 && Math.abs(v - pv.value) > Math.max(20, pv.value * 0.2) && !confirm(`${label} was ${fmtN(pv.value)} on ${pv.date}. Save ${fmtN(v)}?`)) { revert(); return; }
+  queue(opCount(SEL, f, v, plannedFor(SEL))); renderTasks(false);
 });
 $('#week').addEventListener('click', e => { const b = e.target.closest('[data-go]'); if (b) go(b.dataset.go); });
 $('#prevDay').addEventListener('click', () => go(addDays(SEL, -1)));
