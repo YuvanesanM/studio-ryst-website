@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Dashboard — Studio RYST</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/shell.css">
+<style>
+  :root{
+    --bg:#f3f4f1; --panel:#ffffff; --panel2:#f7f8f5; --line:#e3e5e0;
+    --accent:#3d9b69; --accent-d:#2f7d54; --accent-soft:#eaf4ee;
+    --ink:#1d211c; --muted:#5f655d; --muted2:#7d847b;
+    --danger:#c0584b; --danger-soft:#fbeceb; --warn:#b7791f; --warn-soft:#fdf4e3; --info:#4f6fa8; --info-soft:#edf1f8;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;min-height:100%;background:var(--bg);color:var(--ink);font-family:"Outfit",system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+  a{color:inherit}
+  [hidden]{display:none!important}
+  .page{max-width:1320px;margin:0 auto;padding:24px 28px 40px}
+
+  /* header */
+  .hello{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:18px}
+  .hello h1{margin:0;font-size:24px;font-weight:700;letter-spacing:-.3px}
+  .hello p{margin:3px 0 0;color:var(--muted2);font-size:13.5px}
+  .hello-r{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+  .upd{font-size:12px;color:var(--muted2)}
+  .btn{display:inline-flex;align-items:center;gap:7px;padding:8px 13px;border-radius:9px;border:1px solid var(--line);background:var(--panel);font:inherit;font-size:13px;font-weight:600;color:var(--ink);text-decoration:none;cursor:pointer;white-space:nowrap;transition:.15s}
+  .btn:hover{border-color:var(--accent);color:var(--accent-d)}
+  .btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+  .btn.primary:hover{background:var(--accent-d);color:#fff}
+
+  /* KPI tiles */
+  .kpis{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:12px;margin-bottom:16px}
+  .kpi{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px 16px;text-decoration:none;display:block;min-width:0;transition:border-color .15s,transform .15s}
+  a.kpi:hover{border-color:#bfd9c9;transform:translateY(-1px)}
+  .kpi .lbl{font-size:11px;font-weight:700;color:var(--muted2);letter-spacing:.6px;text-transform:uppercase;display:flex;align-items:center;gap:6px}
+  .kpi .val{font-size:26px;font-weight:700;letter-spacing:-.5px;margin-top:6px;line-height:1.1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .kpi .sub{font-size:12px;color:var(--muted);margin-top:5px;display:flex;gap:6px;align-items:center;flex-wrap:wrap;min-height:18px}
+  .kpi.hero{background:linear-gradient(135deg,#2f7d54,#3d9b69);border:none;color:#fff}
+  .kpi.hero .lbl,.kpi.hero .sub{color:#dcefe4}
+  .chip{font-size:11px;font-weight:700;padding:1px 7px;border-radius:20px;background:var(--panel2);color:var(--muted)}
+  .chip.up{background:#e3f3ea;color:var(--accent-d)} .chip.down{background:var(--danger-soft);color:var(--danger)}
+  .kpi.hero .chip{background:rgba(255,255,255,.18);color:#fff}
+  .dot{width:8px;height:8px;border-radius:50%;display:inline-block;flex-shrink:0}
+
+  /* layout */
+  .grid{display:grid;grid-template-columns:minmax(0,1.65fr) minmax(0,1fr);gap:16px;align-items:start}
+  .col{display:flex;flex-direction:column;gap:16px;min-width:0}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px 18px;min-width:0}
+  .ch{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px}
+  .ch h2{margin:0;font-size:14.5px;font-weight:700;display:flex;align-items:center;gap:8px}
+  .ch h2 .n{font-size:11.5px;font-weight:700;color:var(--muted2);background:var(--panel2);border:1px solid var(--line);border-radius:20px;padding:1px 8px}
+  .ch a{font-size:12.5px;font-weight:600;color:var(--accent-d);text-decoration:none;white-space:nowrap}
+  .ch a:hover{text-decoration:underline}
+  .empty{color:var(--muted2);font-size:13px;padding:14px 4px;text-align:center}
+  .skel{color:var(--muted2);font-size:13px;padding:10px 0}
+
+  /* sessions */
+  .sess{display:grid;grid-template-columns:92px minmax(0,1fr) auto;gap:12px;align-items:center;padding:10px 0;border-top:1px solid var(--line);text-decoration:none}
+  .sess:first-of-type{border-top:none}
+  a.sess:hover .sname{color:var(--accent-d)}
+  .stime{font-size:13px;font-weight:700;line-height:1.25}
+  .stime small{display:block;font-weight:500;color:var(--muted2);font-size:11.5px}
+  .sname{font-weight:600;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .smeta{font-size:12px;color:var(--muted);display:flex;align-items:center;gap:6px;margin-top:2px}
+  .tag{font-size:10.5px;font-weight:700;letter-spacing:.3px;text-transform:uppercase;padding:3px 8px;border-radius:20px;white-space:nowrap}
+  .tag.ok{background:var(--accent-soft);color:var(--accent-d)} .tag.warn{background:var(--warn-soft);color:var(--warn)} .tag.bad{background:var(--danger-soft);color:var(--danger)} .tag.info{background:var(--info-soft);color:var(--info)} .tag.mute{background:var(--panel2);color:var(--muted2)}
+  .dayhead{font-size:11px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--muted2);margin:12px 0 2px;display:flex;align-items:center;gap:8px}
+  .dayhead::after{content:"";flex:1;height:1px;background:var(--line)}
+  .dayhead:first-child{margin-top:0}
+
+  /* tasks */
+  .ring-row{display:flex;align-items:center;gap:14px;margin-bottom:10px}
+  .ring{width:58px;height:58px;flex-shrink:0}
+  .ring-txt b{display:block;font-size:20px;font-weight:700}
+  .ring-txt small{color:var(--muted2);font-size:12px}
+  .tl{list-style:none;margin:0;padding:0}
+  .tl li{display:flex;gap:9px;align-items:flex-start;padding:7px 0;border-top:1px solid var(--line);font-size:13px}
+  .tl li:first-child{border-top:none}
+  .tl .box{width:15px;height:15px;border:2px solid #c3c8c0;border-radius:4px;flex-shrink:0;margin-top:1px}
+  .tl small{display:block;color:var(--muted2);font-size:11px;text-transform:uppercase;letter-spacing:.4px;font-weight:700}
+  .post{margin-top:10px;background:#f1ebf9;border:1px solid #e0d3f2;border-radius:10px;padding:9px 12px;font-size:12.5px;color:#4b3a66}
+  .post b{color:#7a4fb5}
+
+  /* attention */
+  .att{display:flex;gap:11px;align-items:center;padding:10px 0;border-top:1px solid var(--line);text-decoration:none}
+  .att:first-child{border-top:none}
+  .att-ic{width:32px;height:32px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0}
+  .att-ic.bad{background:var(--danger-soft)} .att-ic.warn{background:var(--warn-soft)} .att-ic.info{background:var(--info-soft)} .att-ic.ok{background:var(--accent-soft)}
+  .att-t{flex:1;min-width:0}
+  .att-t b{display:block;font-size:13.5px;font-weight:600}
+  .att-t small{display:block;font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .att .go{color:var(--muted2);font-size:16px}
+  a.att:hover b{color:var(--accent-d)}
+
+  /* growth */
+  .gw{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
+  .gm .lbl{font-size:11px;font-weight:700;color:var(--muted2);letter-spacing:.6px;text-transform:uppercase}
+  .gm .v{font-size:21px;font-weight:700;margin-top:3px}
+  .gm svg{display:block;width:100%;height:54px;margin-top:8px;overflow:visible}
+  .gm .ax{display:flex;justify-content:space-between;font-size:10.5px;color:var(--muted2);margin-top:3px}
+  .bars{display:flex;align-items:flex-end;gap:6px;height:54px;margin-top:8px}
+  .bars div{flex:1;background:#cfe6d8;border-radius:4px 4px 0 0;min-height:2px}
+  .bars div.cur{background:var(--accent)}
+
+  .qa{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}
+  .qa a{display:flex;align-items:center;gap:9px;padding:11px 12px;border:1px solid var(--line);border-radius:11px;text-decoration:none;font-size:13px;font-weight:600;background:var(--panel)}
+  .qa a:hover{border-color:var(--accent);color:var(--accent-d)}
+  .qa .e{font-size:17px}
+
+  @media(max-width:1280px){ .kpis{grid-template-columns:repeat(3,minmax(0,1fr))} }
+  @media(max-width:1080px){ .grid{grid-template-columns:1fr} }
+  @media(max-width:640px){
+    .page{padding:16px 12px 24px}
+    .hello h1{font-size:20px}
+    .kpis{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+    .kpi{padding:12px 13px}
+    .kpi .val{font-size:21px}
+    .gw{grid-template-columns:1fr}
+    .sess{grid-template-columns:78px minmax(0,1fr)}
+    .sess .tag{grid-column:2;justify-self:start}
+    .card{padding:14px 14px}
+  }
+</style>
+</head>
+<body data-shell="dashboard">
+<main class="page">
+  <div class="hello">
+    <div><h1 id="hello">Welcome</h1><p id="today"></p></div>
+    <div class="hello-r"><span class="upd" id="upd">Loading…</span><button class="btn" id="refresh" type="button">↻ Refresh</button><a class="btn primary" href="quote.html" id="newQuote">+ New quote</a></div>
+  </div>
+
+  <section class="kpis" id="kpis"></section>
+
+  <div class="grid">
+    <div class="col">
+      <section class="card" id="cToday"><div class="ch"><h2>Today’s sessions <span class="n" id="todayN">–</span></h2><a href="login.html?view=schedule">Schedule →</a></div><div id="todayList" class="skel">Loading…</div></section>
+      <section class="card" id="cUpcoming"><div class="ch"><h2>Coming up · next 7 days <span class="n" id="upN">–</span></h2><a href="login.html?view=schedule">Calendar →</a></div><div id="upList" class="skel">Loading…</div></section>
+      <section class="card" id="cGrowth"><div class="ch"><h2>Growth</h2><a href="report.html" id="growthLink">Growth report →</a></div><div class="gw" id="growth"><div class="skel">Loading…</div></div></section>
+    </div>
+    <div class="col">
+      <section class="card" id="cTasks"><div class="ch"><h2>Today’s tasks</h2><a href="daily-tasks.html">Open checklist →</a></div><div id="tasks" class="skel">Loading…</div></section>
+      <section class="card" id="cAttn"><div class="ch"><h2>Needs attention <span class="n" id="attN">–</span></h2></div><div id="attn" class="skel">Loading…</div></section>
+      <section class="card"><div class="ch"><h2>Quick actions</h2></div><div class="qa" id="qa"></div></section>
+    </div>
+  </div>
+</main>
+
+<script src="assets/daily-plan.js"></script>
+<script src="assets/shell.js"></script>
+<script>
+const PROXY_URL = 'https://ryst-109a-proxy.onrender.com/studio';
+const TOKEN = localStorage.getItem('ryst_proxy_token') || '';
+if (!TOKEN) location.href = 'login.html';
+const $ = s => document.querySelector(s);
+const esc = s => (s ?? '').toString().replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const INR0 = new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 });
+const money = n => INR0.format(Math.round(Number(n) || 0));
+const fmtN = n => Number(n).toLocaleString('en-IN');
+const compact = n => { n = Number(n) || 0; const a = Math.abs(n); return a >= 1e7 ? '₹' + (n / 1e7).toFixed(2) + 'Cr' : a >= 1e5 ? '₹' + (n / 1e5).toFixed(1) + 'L' : a >= 1e3 ? '₹' + (n / 1e3).toFixed(n >= 1e4 ? 0 : 1) + 'k' : '₹' + Math.round(n); };
+const ZC = { podcast: '#3d9b69', photography: '#c8893d', culinary: '#c0584b', kitchen: '#c0584b', 'multi-zone': '#5b7db1' };
+const ZL = { podcast: 'Podcast', photography: 'Photography', culinary: 'Kitchen', kitchen: 'Kitchen', 'multi-zone': 'Multi-zone' };
+const zk = z => (z || '').trim().toLowerCase();
+const DOW3 = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
+const fmt12 = t => { if (!t) return ''; const [h, m] = t.split(':').map(Number); return (h % 12 || 12) + (m ? ':' + String(m).padStart(2, '0') : '') + (h >= 12 ? ' pm' : ' am'); };
+const hhmmNow = () => { const d = new Date(); return String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0'); };
+const durH = s => { if (!s.start || !s.end) return 0; const [a, b] = s.start.split(':').map(Number), [c, d] = s.end.split(':').map(Number); let m = (c * 60 + d) - (a * 60 + b); if (m < 0) m += 1440; return m / 60; };
+const dayLabel = iso => { const n = Math.round((parseISO(iso) - parseISO(todayISO())) / 864e5); return n === 0 ? 'Today' : n === 1 ? 'Tomorrow' : parseISO(iso).toLocaleDateString('en-IN', { weekday: 'long', day: 'numeric', month: 'short' }); };
+
+async function get(path) {
+  const r = await fetch(PROXY_URL + path, { headers: { 'X-Token': TOKEN } });
+  if (r.status === 401) { localStorage.removeItem('ryst_proxy_token'); location.href = 'login.html'; throw new Error('expired'); }
+  if (!r.ok) throw new Error('HTTP ' + r.status);
+  return r.json();
+}
+const opt = p => get(p).catch(() => null);
+
+/* ---------- quote money (same rules as the Growth Report) ---------- */
+const lineT = it => (parseFloat(it.price) || 0) * (parseFloat(it.qty) || 0);
+const qItems = q => (q.items || []).filter(it => it.desc || it.price);
+const qSub = q => qItems(q).reduce((s, it) => s + lineT(it), 0);
+const qGst = q => qItems(q).reduce((s, it) => s + lineT(it) * (parseFloat(it.gst) || 0) / 100, 0);
+const qNet = q => { const s = qSub(q); return s - Math.min(parseFloat(q.discount) || 0, s); };
+const qGrand = q => Math.round(qNet(q) + qGst(q));
+const qPaid = q => (q.payments || []).reduce((s, p) => s + (Number(p.amount) || 0), 0);
+const qDate = q => q.date || (q.savedAt ? new Date(q.savedAt).toISOString().slice(0, 10) : '');
+
+let ME = null, Q = [], S = [], TD = null, SO = null, LEADS = null, EQ = null, CREW = null;
+const can = m => !ME || ME.role === 'admin' || (ME.modules || []).includes(m);
+
+function sessionsOn(iso) {
+  const dow = DOW3[parseISO(iso).getDay()];
+  return S.filter(s => s.date ? s.date === iso : (s.days || []).some(d => String(d).toLowerCase().slice(0, 3) === dow))
+    .sort((a, b) => (a.start || '').localeCompare(b.start || ''));
+}
+const quoteOf = s => s.quoteNo ? Q.find(q => q.qno === s.quoteNo) : null;
+function payTag(q) {
+  if (!q) return '';
+  const g = qGrand(q), p = qPaid(q);
+  if (g > 0 && p >= g) return '<span class="tag ok">Paid</span>';
+  if (p > 0) return `<span class="tag warn">${money(g - p)} due</span>`;
+  return g > 0 ? `<span class="tag bad">Unpaid</span>` : '';
+}
+function sessHTML(s, iso) {
+  const q = quoteOf(s), z = zk(s.zone), now = hhmmNow(), today = iso === todayISO();
+  const live = today && s.start && s.end && now >= s.start && now < s.end, over = today && s.end && now >= s.end;
+  const status = live ? '<span class="tag info">In progress</span>' : over ? '<span class="tag mute">Done</span>' : payTag(q);
+  const href = s.quoteNo ? 'quote.html?qno=' + encodeURIComponent(s.quoteNo) : '';
+  return `<${href ? `a href="${href}"` : 'div'} class="sess">
+    <div class="stime">${esc(fmt12(s.start) || 'Anytime')}<small>${s.end ? 'to ' + esc(fmt12(s.end)) : ''}</small></div>
+    <div style="min-width:0"><div class="sname">${esc(s.name || (q && q.cname) || 'Booking')}</div>
+      <div class="smeta"><span class="dot" style="background:${ZC[z] || '#9aa097'}"></span>${esc(ZL[z] || s.zone || '')}${s.quoteNo ? ' · ' + esc(s.quoteNo) : ''}${!s.date ? ' · weekly' : ''}</div></div>
+    ${status || '<span></span>'}</${href ? 'a' : 'div'}>`;
+}
+
+/* ---------- daily counts: automated first, manual entries as fallback ---------- */
+function series(field) {
+  const pts = {};
+  Object.entries((TD && TD.days) || {}).forEach(([d, r]) => { if (r && Number.isInteger(r[field])) pts[d] = r[field]; });
+  Object.entries((SO && SO.days) || {}).forEach(([d, r]) => { if (r && Number.isInteger(r[field])) pts[d] = r[field]; });
+  return Object.keys(pts).sort().map(d => ({ d, v: pts[d] }));
+}
+function deltaSince(pts, days) {
+  if (!pts.length) return null;
+  const last = pts[pts.length - 1], cut = addDays(todayISO(), -days);
+  const base = pts.filter(p => p.d <= cut).pop() || pts[0];
+  return base === last ? null : last.v - base.v;
+}
+const chip = (n, suffix) => n == null ? '' : `<span class="chip ${n > 0 ? 'up' : n < 0 ? 'down' : ''}">${n > 0 ? '▲ +' : n < 0 ? '▼ ' : ''}${fmtN(n)}${suffix || ''}</span>`;
+
+/* ---------- render ---------- */
+function render() {
+  const today = todayISO(), now = new Date();
+  const who = (ME && ME.name) || (localStorage.getItem('ryst_user_email') || '').split('@')[0] || '';
+  const h = now.getHours();
+  $('#hello').textContent = (h < 12 ? 'Good morning' : h < 17 ? 'Good afternoon' : 'Good evening') + (who ? ', ' + who.charAt(0).toUpperCase() + who.slice(1) : '');
+  $('#today').textContent = fmtLong(today);
+  $('#upd').textContent = 'Updated ' + now.toLocaleTimeString('en-IN', { hour: 'numeric', minute: '2-digit' });
+  $('#newQuote').hidden = !can('quotes');
+
+  // sessions
+  const tSess = sessionsOn(today);
+  const nextUp = tSess.find(s => !s.end || hhmmNow() < s.end);
+  const upDays = Array.from({ length: 7 }, (_, i) => addDays(today, i + 1)).map(d => ({ d, list: sessionsOn(d) }));
+  const upCount = upDays.reduce((n, x) => n + x.list.length, 0), upHours = upDays.reduce((n, x) => n + x.list.reduce((a, s) => a + durH(s), 0), 0);
+
+  // money
+  const month = today.slice(0, 7), lastMonth = addDays(today.slice(0, 8) + '01', -1).slice(0, 7);
+  const sales = Q.filter(q => { const g = qGrand(q); return g > 0 && qPaid(q) >= g; });
+  const salesIn = m => sales.filter(q => qDate(q).slice(0, 7) === m).reduce((s, q) => s + qNet(q), 0);
+  const revNow = salesIn(month), revLast = salesIn(lastMonth);
+  const revPct = revLast ? Math.round((revNow - revLast) / revLast * 100) : null;
+  const due = Q.filter(q => q.scheduleId && q.clientStatus !== 'Declined' && q.sessionDate && q.sessionDate >= addDays(today, -30) && qPaid(q) < qGrand(q));
+  const dueTotal = due.reduce((s, q) => s + qGrand(q) - qPaid(q), 0);
+
+  // socials
+  const fol = series('followers'), rev = series('reviews');
+  const lastRating = Object.keys((SO && SO.days) || {}).sort().reverse().map(d => SO.days[d].rating).find(Boolean);
+
+  const tile = (cls, href, lbl, val, sub) => `<${href ? `a href="${href}"` : 'div'} class="kpi ${cls}"><div class="lbl">${lbl}</div><div class="val">${val}</div><div class="sub">${sub}</div></${href ? 'a' : 'div'}>`;
+  const tiles = [];
+  if (can('schedule')) {
+    tiles.push(tile('hero', 'login.html?view=schedule', 'Today', tSess.length + (tSess.length === 1 ? ' session' : ' sessions'),
+      nextUp ? `Next ${esc(fmt12(nextUp.start))} · ${esc(ZL[zk(nextUp.zone)] || nextUp.zone || '')}` : tSess.length ? 'All done for today' : 'Nothing booked'));
+    tiles.push(tile('', 'login.html?view=schedule', 'Next 7 days', upCount + (upCount === 1 ? ' session' : ' sessions'), `${Math.round(upHours * 10) / 10} h booked`));
+  }
+  if (can('growth')) tiles.push(tile('', 'report.html', 'Sales this month', money(revNow), revPct == null ? (revLast ? '' : 'ex-GST, paid in full') : `${chip(revPct, '%')}<span>vs ${compact(revLast)} last month</span>`));
+  if (can('quotes')) tiles.push(tile('', 'quote.html', 'Balance due', money(dueTotal), due.length ? `${due.length} confirmed booking${due.length === 1 ? '' : 's'}` : 'Nothing outstanding'));
+  tiles.push(tile('', 'https://www.instagram.com/studio.ryst', 'Instagram', fol.length ? fmtN(fol[fol.length - 1].v) : '—',
+    fol.length ? `${chip(deltaSince(fol, 7))}<span>${deltaSince(fol, 7) == null ? 'tracking started' : 'this week'}</span>` : (SO && SO.sources && SO.sources.instagram ? 'First reading pending' : 'Entered daily in tasks')));
+  tiles.push(tile('', 'reviews.html', 'Google reviews', rev.length ? fmtN(rev[rev.length - 1].v) : '—',
+    rev.length ? `${lastRating ? '<span>★ ' + lastRating + '</span>' : ''}${chip(deltaSince(rev, 7))}<span>${deltaSince(rev, 7) == null ? '' : 'this week'}</span>` : 'First reading pending'));
+  $('#kpis').innerHTML = tiles.join('').replace(/href="https:\/\/www\.instagram/, 'target="_blank" rel="noopener" href="https://www.instagram');
+
+  // today + upcoming lists
+  $('#cToday').hidden = $('#cUpcoming').hidden = !can('schedule');
+  $('#todayN').textContent = tSess.length;
+  $('#todayList').className = ''; $('#todayList').innerHTML = tSess.length ? tSess.map(s => sessHTML(s, today)).join('') : '<div class="empty">No sessions today.</div>';
+  $('#upN').textContent = upCount;
+  $('#upList').className = '';
+  $('#upList').innerHTML = upCount ? upDays.filter(x => x.list.length).map(x => `<div class="dayhead">${esc(dayLabel(x.d))}</div>` + x.list.map(s => sessHTML(s, x.d)).join('')).join('') : '<div class="empty">Nothing booked in the next 7 days.</div>';
+
+  renderTasks(today);
+  renderAttention(today, due);
+  renderGrowth(fol, rev, sales, month);
+  renderQuick();
+}
+
+function renderTasks(today) {
+  const box = $('#tasks'); box.className = '';
+  $('#cTasks').hidden = !can('tasks');
+  if (!can('tasks')) return;
+  if (!TD) { box.innerHTML = '<div class="empty">Couldn’t load today’s tasks.</div>'; return; }
+  if (SO && SO.sources) DAILY_AUTO = Object.assign(DAILY_AUTO, SO.sources);
+  const tasks = tasksFor(today), rec = TD.days[today] || {};
+  const doneOf = id => {
+    if (rec.done && rec.done[id]) return true;
+    if (!isMonthly(id)) return false;
+    const d = parseISO(today);
+    for (let n = 1; n <= 7; n++) { const r = TD.days[isoOf(new Date(d.getFullYear(), d.getMonth(), n))]; if (r && r.done && r.done[id]) return true; }
+    return false;
+  };
+  const left = tasks.filter(t => !doneOf(t.id)), done = tasks.length - left.length, pct = tasks.length ? done / tasks.length : 0;
+  const C = 2 * Math.PI * 24, post = tasks.find(t => t.group === 'post');
+  const gname = Object.fromEntries(GROUPS);
+  box.innerHTML = `<div class="ring-row"><svg class="ring" viewBox="0 0 58 58"><circle cx="29" cy="29" r="24" fill="none" stroke="#e8ebe6" stroke-width="7"/><circle cx="29" cy="29" r="24" fill="none" stroke="#3d9b69" stroke-width="7" stroke-linecap="round" stroke-dasharray="${(C * pct).toFixed(1)} ${C.toFixed(1)}" transform="rotate(-90 29 29)"/></svg>
+    <div class="ring-txt"><b>${done} of ${tasks.length}</b><small>${left.length ? left.length + ' still to do' : 'All done today ✓'}</small></div></div>` +
+    (left.length ? `<ul class="tl">${left.slice(0, 5).map(t => `<li><span class="box"></span><span><small>${esc(gname[t.group] || '')}</small>${esc(t.label)}</span></li>`).join('')}</ul>${left.length > 5 ? `<div class="empty" style="padding:8px 0 0;text-align:left">+ ${left.length - 5} more</div>` : ''}` : '') +
+    (post && post.brief ? `<div class="post"><b>Today’s post:</b> ${esc(post.label)}</div>` : '');
+}
+
+function renderAttention(today, due) {
+  const items = [];
+  const add = (tone, ic, title, sub, href) => items.push({ tone, ic, title, sub, href });
+  // WhatsApp nudges (same rules as the Schedule page's reminder cards)
+  if (can('schedule')) {
+    const tomorrow = addDays(today, 1), nowT = Date.now();
+    const phoneOk = p => (p || '').replace(/\D/g, '').slice(-10).length === 10;
+    const wel = Q.filter(q => q.sessionDate === tomorrow && q.sessionStart && phoneOk(q.cphone) && !q.welcomeSentAt);
+    const fb = Q.filter(q => {
+      if (!q.sessionDate || !q.sessionStart || !phoneOk(q.cphone) || q.feedbackSentAt || qPaid(q) <= 0) return false;
+      const end = new Date(`${q.sessionDate}T${q.sessionStart}`).getTime() + (parseFloat(q.hours) || 1) * 36e5;
+      return end <= nowT && nowT - end <= 3 * 864e5;
+    });
+    if (wel.length || fb.length) add('info', '💬', `${wel.length + fb.length} WhatsApp message${wel.length + fb.length === 1 ? '' : 's'} to send`, [wel.length && `${wel.length} welcome`, fb.length && `${fb.length} feedback request`].filter(Boolean).join(' · '), 'login.html?view=schedule');
+  }
+  if (can('quotes')) {
+    const soon = due.filter(q => q.sessionDate >= today && q.sessionDate <= addDays(today, 3)).sort((a, b) => a.sessionDate.localeCompare(b.sessionDate));
+    if (soon.length) add('warn', '₹', `${money(soon.reduce((s, q) => s + qGrand(q) - qPaid(q), 0))} due before upcoming sessions`, soon.slice(0, 3).map(q => `${q.cname || q.qno} (${dayLabel(q.sessionDate)})`).join(', '), 'quote.html?qno=' + encodeURIComponent(soon[0].qno));
+    const past = due.filter(q => q.sessionDate < today);
+    if (past.length) add('bad', '⚠️', `${past.length} completed session${past.length === 1 ? '' : 's'} not fully paid`, past.slice(0, 3).map(q => q.cname || q.qno).join(', '), 'quote.html?qno=' + encodeURIComponent(past[0].qno));
+  }
+  if (can('pipeline') && LEADS) {
+    const toISO = s => { s = s || ''; let m; if (/^\d{4}-\d{2}-\d{2}/.test(s)) return s.slice(0, 10); if ((m = /^(\d{1,2})[\/-](\d{1,2})[\/-](\d{4})/.exec(s))) return `${m[3]}-${String(+m[2]).padStart(2, '0')}-${String(+m[1]).padStart(2, '0')}`; return ''; };
+    const fu = (LEADS.leads || []).filter(l => !['Booked', 'Lost'].includes(l.stage) && toISO(l.followup) && toISO(l.followup) <= today);
+    if (fu.length) add('warn', '📞', `${fu.length} lead follow-up${fu.length === 1 ? '' : 's'} due`, fu.slice(0, 3).map(l => l.company || l.contact || 'Lead').join(', '), 'pipeline.html');
+  }
+  if (can('equipment') && EQ) {
+    const bad = (EQ.items || []).filter(i => ['Needs attention', 'Needs repair', 'Out of service'].includes(i.condition));
+    if (bad.length) add('bad', '🛠', `${bad.length} equipment item${bad.length === 1 ? '' : 's'} need attention`, bad.slice(0, 3).map(i => i.name).join(', '), 'equipment.html');
+  }
+  if (can('crew') && CREW) {
+    const un = (CREW.bills || []).filter(b => b.status !== 'paid');
+    const amt = un.reduce((s, b) => s + (b.items || []).reduce((a, it) => a + (parseFloat(it.qty) || 0) * (parseFloat(it.rate) || 0), 0), 0);
+    if (un.length) add('info', '🎬', `${un.length} crew invoice${un.length === 1 ? '' : 's'} unpaid`, money(amt), 'freelancers.html');
+  }
+  $('#attN').textContent = items.length;
+  const box = $('#attn'); box.className = '';
+  box.innerHTML = items.length ? items.map(i => `<a class="att" href="${esc(i.href)}"><span class="att-ic ${i.tone}">${i.ic}</span><span class="att-t"><b>${esc(i.title)}</b>${i.sub ? `<small>${esc(i.sub)}</small>` : ''}</span><span class="go">›</span></a>`).join('')
+    : '<div class="att"><span class="att-ic ok">✓</span><span class="att-t"><b>All clear</b><small>Nothing needs your attention right now.</small></span></div>';
+}
+
+function spark(pts, color) {
+  const last30 = pts.filter(p => p.d >= addDays(todayISO(), -30));
+  if (last30.length < 2) return '<div class="ax" style="margin-top:12px">Trend appears after a few days of readings</div>';
+  const W = 200, H = 50, t0 = parseISO(last30[0].d).getTime(), t1 = parseISO(last30[last30.length - 1].d).getTime() || t0 + 1;
+  const vs = last30.map(p => p.v), lo = Math.min(...vs), hi = Math.max(...vs), r = Math.max(1, hi - lo);
+  const pt = p => ((parseISO(p.d).getTime() - t0) / Math.max(1, t1 - t0) * W).toFixed(1) + ',' + (H - 4 - (p.v - lo) / r * (H - 10)).toFixed(1);
+  const sh = d => parseISO(d).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' });
+  return `<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" aria-hidden="true"><polyline points="${last30.map(pt).join(' ')}" fill="none" stroke="${color}" stroke-width="2" vector-effect="non-scaling-stroke" stroke-linejoin="round"/></svg><div class="ax"><span>${sh(last30[0].d)}</span><span>${sh(last30[last30.length - 1].d)}</span></div>`;
+}
+function renderGrowth(fol, rev, sales, month) {
+  const box = $('#growth');
+  const parts = [];
+  parts.push(`<div class="gm"><div class="lbl">Instagram · 30 days</div><div class="v">${fol.length ? fmtN(fol[fol.length - 1].v) : '—'} ${chip(deltaSince(fol, 30))}</div>${spark(fol, '#3d9b69')}</div>`);
+  parts.push(`<div class="gm"><div class="lbl">Google reviews · 30 days</div><div class="v">${rev.length ? fmtN(rev[rev.length - 1].v) : '—'} ${chip(deltaSince(rev, 30))}</div>${spark(rev, '#c8893d')}</div>`);
+  if (can('growth')) {
+    const months = Array.from({ length: 6 }, (_, i) => { const d = new Date(); d.setDate(1); d.setMonth(d.getMonth() - 5 + i); return isoOf(d).slice(0, 7); });
+    const vals = months.map(m => sales.filter(q => qDate(q).slice(0, 7) === m).reduce((s, q) => s + qNet(q), 0)), mx = Math.max(1, ...vals);
+    parts.push(`<div class="gm"><div class="lbl">Sales · last 6 months</div><div class="v">${compact(vals.reduce((a, b) => a + b, 0))}</div><div class="bars">${vals.map((v, i) => `<div class="${months[i] === month ? 'cur' : ''}" style="height:${Math.max(4, v / mx * 100)}%" title="${esc(months[i])}: ${money(v)}"></div>`).join('')}</div><div class="ax"><span>${parseISO(months[0] + '-01').toLocaleDateString('en-IN', { month: 'short' })}</span><span>${parseISO(month + '-01').toLocaleDateString('en-IN', { month: 'short' })}</span></div></div>`);
+  }
+  box.innerHTML = parts.join('');
+  $('#growthLink').hidden = !can('growth');
+}
+function renderQuick() {
+  const a = [
+    can('quotes') && ['quote.html', '🧾', 'New quote'],
+    can('pipeline') && ['pipeline.html', '📞', 'Leads & follow-ups'],
+    can('tasks') && ['daily-tasks.html', '✅', 'Daily checklist'],
+    can('equipment') && ['equipment.html?check=1', '🎥', 'Equipment check'],
+    can('crew') && ['freelancers.html', '🎬', 'Crew invoice'],
+    ['https://signage.ryst.in/', '🖥', 'TV display'],
+  ].filter(Boolean);
+  $('#qa').innerHTML = a.map(([h, e, l]) => `<a href="${h}"${h.startsWith('http') ? ' target="_blank" rel="noopener"' : ''}><span class="e">${e}</span>${esc(l)}</a>`).join('');
+}
+
+async function load() {
+  $('#upd').textContent = 'Refreshing…';
+  ME = await opt('/me') || ME;
+  const [q, s, td, so, leads, eq, crew] = await Promise.all([
+    opt('/quotes'), opt('/schedule'), can('tasks') ? opt('/daily-tasks') : null, opt('/social-stats'),
+    can('pipeline') ? opt('/leads') : null, can('equipment') ? opt('/equipment') : null, can('crew') ? opt('/freelancers') : null,
+  ]);
+  if (q) Q = Array.isArray(q.quotes) ? q.quotes : [];
+  if (s) S = Array.isArray(s.sessions) ? s.sessions : [];
+  TD = td && td.days ? td : (td === null && TD) || TD; SO = so || SO; LEADS = leads || LEADS; EQ = eq || EQ; CREW = crew || CREW;
+  render();
+}
+$('#refresh').addEventListener('click', load);
+// Keep the screen current when it's left open (e.g. on the front-desk laptop).
+setInterval(() => { if (document.visibilityState === 'visible') load(); }, 5 * 60 * 1000);
+load();
+</script>
+</body>
+</html>

@@ -1,0 +1,106 @@
+/* Studio RYST staff app shell — left sidebar (laptop), drawer + bottom tabs
+   (phone). Mounted by assets/shell.js on every staff page; only applies once
+   html.rs-on is set, so pages look unchanged if the script doesn't run. */
+:root{
+  --rs-w:236px; --rs-wc:68px;
+  --rs-bg:#132019; --rs-bg2:#1a2a22; --rs-line:rgba(255,255,255,.07);
+  --rs-fg:#c9d4ce; --rs-mut:#7f9088; --rs-hi:#ffffff; --rs-accent:#4fbd82;
+  --rs-tab-h:62px;
+}
+html.rs-on body{padding-left:var(--rs-w);transition:padding-left .18s ease}
+html.rs-on.rs-collapsed body{padding-left:var(--rs-wc)}
+
+/* Redundant bits of each page's own header (logo, Home, Log out, cross-links)
+   — the sidebar does those jobs now. Page titles and page actions stay. */
+html.rs-on header.top > img,
+html.rs-on header.bar img.hdr-logo,
+html.rs-on #btnHome,
+html.rs-on .dash-top,
+html.rs-on header #logoutBtn,
+html.rs-on header .tbtn[onclick*="login.html"],
+html.rs-on header .tbtn[onclick*="report.html"],
+html.rs-on header .tbtn[onclick*="pipeline.html"],
+html.rs-on header a[href="login.html"],
+html.rs-on header a[href="daily-tasks.html"],
+html.rs-on header a[href="equipment.html"]{display:none!important}
+/* quote.html's label had a divider after the (now hidden) logo */
+html.rs-on header.bar .bar-left .sub{border-left:0;padding-left:0}
+
+/* ── sidebar ── */
+.rs-side{position:fixed;left:0;top:0;bottom:0;width:var(--rs-w);background:var(--rs-bg);color:var(--rs-fg);display:flex;flex-direction:column;z-index:40;font-family:"Outfit",system-ui,sans-serif;transition:width .18s ease,transform .22s ease;border-right:1px solid #0c1511}
+html.rs-collapsed .rs-side{width:var(--rs-wc)}
+.rs-brand{display:flex;align-items:center;gap:11px;padding:16px 16px 14px;text-decoration:none;color:var(--rs-hi);border-bottom:1px solid var(--rs-line);min-height:68px}
+.rs-brand img{width:36px;height:36px;border-radius:9px;background:#fff;object-fit:contain;padding:2px;flex-shrink:0}
+.rs-brand b{display:block;font-size:15px;font-weight:700;letter-spacing:.2px;line-height:1.15;white-space:nowrap}
+.rs-brand small{display:block;font-size:11px;color:var(--rs-mut);font-weight:500;letter-spacing:.3px;white-space:nowrap}
+.rs-nav{flex:1;overflow-y:auto;padding:8px 10px 12px;scrollbar-width:thin;scrollbar-color:#2c3d35 transparent}
+.rs-group{margin-top:12px}
+.rs-gt{font-size:10.5px;font-weight:700;letter-spacing:1.1px;text-transform:uppercase;color:var(--rs-mut);padding:0 10px 6px;white-space:nowrap;overflow:hidden}
+.rs-item{position:relative;display:flex;align-items:center;gap:12px;padding:9px 10px;border-radius:9px;color:var(--rs-fg);text-decoration:none;font-size:14px;font-weight:500;white-space:nowrap;transition:background .12s,color .12s}
+.rs-item:hover{background:rgba(255,255,255,.06);color:var(--rs-hi)}
+.rs-item.on{background:rgba(79,189,130,.16);color:var(--rs-hi)}
+.rs-item.on::before{content:"";position:absolute;left:-10px;top:8px;bottom:8px;width:3px;border-radius:0 3px 3px 0;background:var(--rs-accent)}
+.rs-item.on .rs-ic{color:var(--rs-accent)}
+.rs-ic{flex-shrink:0}
+.rs-item .rs-ext{margin-left:auto;opacity:.5;font-size:11px}
+.rs-foot{border-top:1px solid var(--rs-line);padding:10px}
+.rs-user{display:flex;align-items:center;gap:10px;padding:8px 8px 10px;min-width:0}
+.rs-av{width:32px;height:32px;border-radius:50%;background:var(--rs-accent);color:#0c1a13;font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center;flex-shrink:0;text-transform:uppercase}
+.rs-who{min-width:0}
+.rs-who b{display:block;font-size:13px;color:var(--rs-hi);font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rs-who small{display:block;font-size:11px;color:var(--rs-mut);text-transform:capitalize}
+.rs-btnrow{display:flex;gap:6px}
+.rs-fbtn{flex:1;display:flex;align-items:center;justify-content:center;gap:7px;background:rgba(255,255,255,.05);border:1px solid var(--rs-line);color:var(--rs-fg);border-radius:9px;padding:8px;font:inherit;font-size:12.5px;font-weight:600;cursor:pointer;white-space:nowrap}
+.rs-fbtn:hover{background:rgba(255,255,255,.1);color:var(--rs-hi)}
+.rs-collapse{flex:0 0 38px}
+
+/* collapsed rail */
+html.rs-collapsed .rs-brand{justify-content:center;padding:16px 0 14px}
+html.rs-collapsed .rs-brand span,
+html.rs-collapsed .rs-gt,
+html.rs-collapsed .rs-item span,
+html.rs-collapsed .rs-who,
+html.rs-collapsed .rs-fbtn span,
+html.rs-collapsed .rs-item .rs-ext{display:none}
+html.rs-collapsed .rs-gt{display:block;height:1px;margin:6px 8px 8px;padding:0;background:var(--rs-line);font-size:0}
+html.rs-collapsed .rs-item{justify-content:center;padding:10px 0}
+html.rs-collapsed .rs-user{justify-content:center;padding:6px 0 10px}
+html.rs-collapsed .rs-btnrow{flex-direction:column}
+html.rs-collapsed .rs-collapse{flex:1}
+
+/* page title for pages that have no header of their own */
+.rs-pagehead{padding:22px 0 6px}
+.rs-pagehead h1{margin:0;font-size:22px;font-weight:700;letter-spacing:-.2px;color:#1d211c}
+.rs-pagehead p{margin:4px 0 0;font-size:13px;color:#7d847b}
+
+/* no-access cover */
+.rs-block{position:fixed;inset:0 0 0 var(--rs-w);z-index:35;background:#f3f4f1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:24px;text-align:center;font-family:"Outfit",system-ui,sans-serif;color:#1d211c}
+html.rs-collapsed .rs-block{left:var(--rs-wc)}
+.rs-block b{font-size:19px}
+.rs-block p{margin:0;color:#7d847b;font-size:14px;max-width:380px;line-height:1.5}
+.rs-block a{margin-top:6px;background:#3d9b69;color:#fff;text-decoration:none;padding:9px 16px;border-radius:9px;font-weight:600;font-size:13.5px}
+
+/* mobile: drawer + bottom tabs */
+.rs-tabs,.rs-backdrop{display:none}
+@media (max-width:900px){
+  html.rs-on body,html.rs-on.rs-collapsed body{padding-left:0;padding-bottom:calc(var(--rs-tab-h) + env(safe-area-inset-bottom,0px))}
+  .rs-side,html.rs-collapsed .rs-side{width:272px;transform:translateX(-100%);box-shadow:none}
+  html.rs-open .rs-side{transform:none;box-shadow:0 0 40px rgba(0,0,0,.35)}
+  html.rs-collapsed .rs-brand span,html.rs-collapsed .rs-gt,html.rs-collapsed .rs-item span,html.rs-collapsed .rs-who,html.rs-collapsed .rs-fbtn span{display:initial}
+  html.rs-collapsed .rs-gt{display:block;height:auto;margin:0;padding:0 10px 6px;background:none;font-size:10.5px}
+  html.rs-collapsed .rs-item{justify-content:flex-start;padding:9px 10px}
+  html.rs-collapsed .rs-brand{justify-content:flex-start;padding:16px 16px 14px}
+  html.rs-collapsed .rs-user{justify-content:flex-start;padding:8px 8px 10px}
+  html.rs-collapsed .rs-btnrow{flex-direction:row}
+  .rs-collapse{display:none!important}
+  .rs-backdrop{display:block;position:fixed;inset:0;background:rgba(10,18,14,.45);z-index:39;opacity:0;pointer-events:none;transition:opacity .2s}
+  html.rs-open .rs-backdrop{opacity:1;pointer-events:auto}
+  .rs-tabs{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:38;background:#fff;border-top:1px solid #e3e5e0;height:calc(var(--rs-tab-h) + env(safe-area-inset-bottom,0px));padding-bottom:env(safe-area-inset-bottom,0px);font-family:"Outfit",system-ui,sans-serif;box-shadow:0 -4px 18px rgba(0,0,0,.04)}
+  .rs-tab{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;color:#7d847b;text-decoration:none;font-size:10.5px;font-weight:600;background:none;border:none;font-family:inherit;cursor:pointer;padding:0}
+  .rs-tab.on{color:#2f7d54}
+  .rs-block,html.rs-collapsed .rs-block{left:0;bottom:var(--rs-tab-h)}
+  /* page toasts and sticky bottom bars sit above the tab bar */
+  html.rs-on .toast,html.rs-on #toast{bottom:calc(var(--rs-tab-h) + 16px)!important}
+  html.rs-on .cbar{bottom:var(--rs-tab-h)}
+}
+@media print{ .rs-side,.rs-tabs,.rs-backdrop,.rs-block{display:none!important} html.rs-on body{padding:0!important} }
