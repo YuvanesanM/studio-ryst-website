@@ -40,11 +40,20 @@
   .nav-btn{width:36px;height:36px;border-radius:9px;border:1px solid var(--line);background:var(--panel);font-size:16px;padding:0}
   .nav-btn:hover{border-color:var(--accent);color:var(--accent-d)}
   .daybar input[type=date]{width:auto;padding:7px 10px}
-  .prog{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin-bottom:14px}
-  .prog-top{display:flex;justify-content:space-between;align-items:baseline;font-size:13px;color:var(--muted);font-weight:500}
-  .prog-top b{font-size:18px;color:var(--ink)}
-  .bar-track{height:8px;background:var(--panel2);border-radius:20px;overflow:hidden;margin-top:9px;border:1px solid var(--line)}
-  .bar-fill{height:100%;background:var(--accent);width:0;transition:width .25s}
+  /* hero: ring + cheer + streak */
+  .hero{display:flex;align-items:center;gap:18px;background:linear-gradient(135deg,#2f7d54,#3d9b69);color:#fff;border-radius:18px;padding:18px 20px;margin-bottom:14px}
+  .ring{width:86px;height:86px;flex-shrink:0;position:relative}
+  .ring svg{width:100%;height:100%;transform:rotate(-90deg)}
+  .ring circle{transition:stroke-dasharray .5s ease}
+  .ring b{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:21px;font-weight:700}
+  .hero-txt{flex:1;min-width:0}
+  .cheer{font-size:19px;font-weight:700;line-height:1.25}
+  .hero-sub{font-size:13px;color:#dcefe4;margin-top:3px}
+  .hero-chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;align-items:center}
+  .streak{background:rgba(255,255,255,.18);border-radius:20px;padding:4px 11px;font-size:12.5px;font-weight:700}
+  .hero .save-st{color:#dcefe4!important}
+  .hero .save-st.err{color:#ffe1dc!important}
+  .hero .save-st button{color:#fff!important}
   .save-st{font-size:12px;color:var(--muted2)}
   .save-st.err{color:var(--danger);font-weight:600}
   .save-st button{border:none;background:none;color:var(--accent-d);font-weight:700;text-decoration:underline;padding:0 0 0 4px;font-size:12px}
@@ -61,10 +70,25 @@
   .gh::after{content:"";flex:1;height:1px;background:var(--line)}
   .gh .cnt{color:var(--muted2);letter-spacing:.3px}
   .gh.post{color:var(--post)}
-  .task{display:flex;gap:12px;align-items:flex-start;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin-bottom:8px}
+  .task{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:4px 12px;align-items:center;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:12px 12px 12px 14px;margin-bottom:8px;cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent;transition:background .15s,border-color .15s,transform .08s}
+  .task:hover{border-color:#cfe0d6}
+  .task:active{transform:scale(.995)}
   .task.done{background:var(--panel2)}
-  .task.done .tlabel{color:var(--muted2);text-decoration:line-through}
-  .chk{flex-shrink:0;width:26px;height:26px;border-radius:8px;border:2px solid #c3c8c0;background:#fff;color:transparent;font-size:15px;line-height:1;padding:0;margin-top:1px;transition:.12s}
+  .task.done .tlabel{color:var(--muted2);text-decoration:line-through;text-decoration-color:#b9c1b6}
+  .chk{flex-shrink:0;width:28px;height:28px;border-radius:50%;border:2px solid #c3c8c0;background:#fff;color:transparent;font-size:15px;line-height:1;padding:0;transition:.12s}
+  .task.just .chk{animation:pop .4s ease}
+  @keyframes pop{0%{transform:scale(.5)}60%{transform:scale(1.25)}100%{transform:scale(1)}}
+  .more{border:none;background:none;color:var(--muted2);font-size:18px;line-height:1;padding:4px 8px;border-radius:8px;letter-spacing:1px}
+  .more:hover{background:var(--panel2);color:var(--ink)}
+  .task.open .more{color:var(--accent-d)}
+  .tdetails{display:none;grid-column:2 / -1;cursor:auto;user-select:text;padding-top:4px}
+  .task.open .tdetails{display:block}
+  .tdetails .row{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-top:8px}
+  .tdetails a{font-size:12.5px;font-weight:700;color:var(--accent-d);text-decoration:none}
+  .always{grid-column:2 / -1;cursor:auto}
+  .confetti{position:fixed;inset:0;pointer-events:none;z-index:90;overflow:hidden}
+  .confetti i{position:absolute;top:-14px;width:8px;height:13px;border-radius:2px;animation:fall linear forwards}
+  @keyframes fall{to{transform:translateY(108vh) rotate(760deg)}}
   .chk:hover{border-color:var(--accent)}
   .task.done .chk{background:var(--accent);border-color:var(--accent);color:#fff}
   .task.na .chk{background:#9aa097;border-color:#9aa097}
@@ -112,7 +136,11 @@
   @media(max-width:600px){
     .wrap{padding:16px 12px 80px}
     .grid2{grid-template-columns:1fr}
-    .daybar .title{font-size:18px}
+    .daybar .title{font-size:18px;flex-basis:100%}
+    .daybar input[type=date]{flex:1;min-width:0}
+    .hero{padding:16px;gap:14px}
+    .ring{width:74px;height:74px}
+    .cheer{font-size:17px}
     .task{padding:11px 11px;gap:10px}
     .brief dl{grid-template-columns:1fr;gap:1px}
     .brief dt{margin-top:6px}
@@ -140,9 +168,13 @@
       <button class="btn sm" id="todayBtn" type="button">Today</button>
     </div>
 
-    <div class="prog">
-      <div class="prog-top"><span><b id="progNum">0 of 0</b> done</span><span class="save-st" id="saveSt"></span></div>
-      <div class="bar-track"><div class="bar-fill" id="progFill"></div></div>
+    <div class="hero">
+      <div class="ring"><svg viewBox="0 0 86 86"><circle cx="43" cy="43" r="36" fill="none" stroke="rgba(255,255,255,.22)" stroke-width="9"/><circle id="ringArc" cx="43" cy="43" r="36" fill="none" stroke="#fff" stroke-width="9" stroke-linecap="round" stroke-dasharray="0 999"/></svg><b id="ringPct">0%</b></div>
+      <div class="hero-txt">
+        <div class="cheer" id="cheer">Let’s go!</div>
+        <div class="hero-sub" id="progNum">0 of 0 done</div>
+        <div class="hero-chips"><span class="streak" id="streak">🔥</span><span class="save-st" id="saveSt"></span></div>
+      </div>
     </div>
 
     <div class="week" id="week"></div>
@@ -286,6 +318,38 @@ function briefHTML(b) {
     <dl><dt>Post</dt><dd>${esc(b.what)}</dd><dt>Hook</dt><dd>${esc(b.hook)}</dd><dt>Call to action</dt><dd>${esc(b.cta)}</dd></dl>
     <details><summary>Before you post</summary><ul class="rules">${POST_RULES.map(r => `<li>${esc(r)}</li>`).join('')}</ul><div class="timing">${esc(POST_TIMING)}</div></details></div>`;
 }
+// The streak: consecutive days with every planned task done (or skipped).
+function dayComplete(iso) {
+  const pl = iso === todayISO() ? tasksFor(iso).filter(t => !isMonthly(t.id)) : ((DB.days[iso] || {}).planned || []);
+  return pl.length > 0 && pl.every(t => doneEntry(iso, t.id));
+}
+function streak() {
+  let n = 0, d = dayComplete(todayISO()) ? todayISO() : addDays(todayISO(), -1);
+  while (n < 400 && dayComplete(d)) { n++; d = addDays(d, -1); }
+  return n;
+}
+function cheerFor(pct, isToday) {
+  if (!isToday) return pct >= 1 ? 'That day was a full house ✅' : pct > 0 ? 'Partly done that day' : 'Nothing ticked that day';
+  if (pct >= 1) return 'All done — legend! 🎉';
+  if (pct >= .67) return 'Last stretch — almost there 🏁';
+  if (pct >= .34) return 'Halfway there — keep going 💪';
+  if (pct > 0) return 'Off to a good start ✨';
+  return new Date().getHours() < 12 ? 'Good morning! Let’s make today great ☀️' : 'Let’s get through today’s list 🚀';
+}
+function confetti() {
+  if (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const box = document.createElement('div'); box.className = 'confetti';
+  const colors = ['#3d9b69', '#c8893d', '#c0584b', '#5b7db1', '#f2c14e', '#7a4fb5'];
+  for (let i = 0; i < 90; i++) {
+    const p = document.createElement('i');
+    p.style.left = Math.random() * 100 + 'vw'; p.style.background = colors[i % colors.length];
+    p.style.animationDelay = Math.random() * .6 + 's'; p.style.animationDuration = 1.6 + Math.random() * 1.3 + 's';
+    box.appendChild(p);
+  }
+  document.body.appendChild(box); setTimeout(() => box.remove(), 3600);
+}
+const OPEN = new Set();      // tasks whose "how" is open
+let JUST = null, lastPct = null;
 function renderTasks(full) {
   const tasks = tasksFor(SEL);
   let done = 0;
@@ -295,22 +359,31 @@ function renderTasks(full) {
     const dn = list.filter(t => doneEntry(SEL, t.id)).length; done += dn;
     return `<section class="grp"><div class="gh${g === 'post' ? ' post' : ''}">${esc(title)} <span class="cnt">${dn}/${list.length}</span></div>${list.map(t => {
       const e = doneEntry(SEL, t.id);
-      const meta = e ? `${e.na ? 'Not needed today' : '✓ Done'} · ${esc(who(e.by))} · ${esc(new Date(e.at).toLocaleTimeString('en-IN', { hour: 'numeric', minute: '2-digit' }))}` : '';
-      return `<div class="task${e ? ' done' : ''}${e && e.na ? ' na' : ''}" data-id="${esc(t.id)}">
+      const meta = e ? `${e.na ? 'Skipped' : '✓'} · ${esc(who(e.by))} · ${esc(new Date(e.at).toLocaleTimeString('en-IN', { hour: 'numeric', minute: '2-digit' }))}` : '';
+      const hasMore = t.hint || t.brief || t.link;
+      return `<div class="task${e ? ' done' : ''}${e && e.na ? ' na' : ''}${OPEN.has(t.id) ? ' open' : ''}${JUST === t.id ? ' just' : ''}" data-id="${esc(t.id)}">
         <button class="chk" type="button" role="checkbox" aria-checked="${e ? 'true' : 'false'}" aria-label="${esc(t.label)}" data-tick="${esc(t.id)}">✓</button>
-        <div class="tbody"><div class="tlabel">${esc(t.label)}</div>${t.hint ? `<div class="thint">${esc(t.hint)}</div>` : ''}${t.counts ? countsHTML() : ''}${t.brief ? briefHTML(t.brief) : ''}${meta ? `<div class="tmeta">${meta}</div>` : ''}</div>
-        <div class="tact">${t.link ? `<a href="${esc(t.link)}">${esc(t.linkLabel || 'Open')} →</a>` : ''}<button class="na-btn" type="button" data-na="${esc(t.id)}">${e && e.na ? 'Needed' : 'N/A today'}</button></div>
+        <div class="tbody"><div class="tlabel">${esc(t.label)}</div>${meta ? `<div class="tmeta">${meta}</div>` : ''}</div>
+        <button class="more" type="button" data-more="${esc(t.id)}" aria-label="How to" title="How to">${hasMore ? '⋯' : '⋯'}</button>
+        ${t.counts ? `<div class="always">${countsHTML()}</div>` : ''}
+        <div class="tdetails">${t.hint ? `<div class="thint">${esc(t.hint)}</div>` : ''}${t.brief ? briefHTML(t.brief) : ''}
+          <div class="row">${t.link ? `<a href="${esc(t.link)}">${esc(t.linkLabel || 'Open')} →</a>` : ''}<button class="na-btn" type="button" data-na="${esc(t.id)}">${e && e.na ? 'Undo skip' : 'Skip today'}</button></div></div>
       </div>`;
     }).join('')}</section>`;
   }).join('');
-  // Keep any open <details> open across re-renders.
-  const open = [...document.querySelectorAll('#groups details[open]')].length > 0;
   const snap = snapshotCounts();
   $('#groups').innerHTML = html;
   restoreCounts(snap);
-  if (open) document.querySelectorAll('#groups details').forEach(d => d.open = true);
-  $('#progNum').textContent = `${done} of ${tasks.length}`;
-  $('#progFill').style.width = (tasks.length ? Math.round(done / tasks.length * 100) : 0) + '%';
+  JUST = null;
+  const pct = tasks.length ? done / tasks.length : 0, isToday = SEL === todayISO();
+  $('#progNum').textContent = `${done} of ${tasks.length} done` + (tasks.length - done ? ` · ${tasks.length - done} to go` : '');
+  $('#ringPct').textContent = Math.round(pct * 100) + '%';
+  $('#ringArc').setAttribute('stroke-dasharray', `${(2 * Math.PI * 36 * pct).toFixed(1)} 999`);
+  $('#cheer').textContent = cheerFor(pct, isToday);
+  const st = streak();
+  $('#streak').textContent = st ? `🔥 ${st}-day streak` : '🔥 Finish today to start a streak';
+  if (isToday && lastPct !== null && lastPct < 1 && pct >= 1) confetti();
+  lastPct = isToday ? pct : null;
   renderWeek();
   if (full) {
     const r = dayRec(SEL);
@@ -321,7 +394,7 @@ function renderWeek() {
   $('#week').innerHTML = Array.from({ length: 7 }, (_, i) => addDays(SEL, i - 6)).map(iso => {
     const r = DB.days[iso], pl = r && r.planned && r.planned.length ? r.planned : null;
     const pct = pl ? Math.round(pl.filter(t => r.done && r.done[t.id]).length / pl.length * 100) : null;
-    return `<button class="wd${iso === SEL ? ' sel' : ''}${pct === 100 ? ' full' : ''}" type="button" data-go="${iso}">${esc(parseISO(iso).toLocaleDateString('en-IN', { weekday: 'short' }))}<b>${pct == null ? '–' : pct + '%'}</b></button>`;
+    return `<button class="wd${iso === SEL ? ' sel' : ''}${pct === 100 ? ' full' : ''}" type="button" data-go="${iso}">${esc(parseISO(iso).toLocaleDateString('en-IN', { weekday: 'short' }))}<b>${pct == null ? '–' : pct === 100 ? '✅' : pct + '%'}</b></button>`;
   }).join('');
 }
 function go(iso, fresh) {
@@ -330,22 +403,33 @@ function go(iso, fresh) {
   const isToday = iso === todayISO();
   $('#dayTitle').innerHTML = `${esc(parseISO(iso).toLocaleDateString('en-IN', { weekday: 'long' }))}<small>${esc(parseISO(iso).toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' }))}${isToday ? ' · today' : ''}</small>`;
   $('#nextDay').disabled = false;
+  lastPct = null;
   renderTasks(true);
   // Opening today's list registers its plan, so the evening summary can tell "nobody opened it" from "opened but not finished".
   if (isToday && !(dayRec(iso).planned && dayRec(iso).planned.length)) queue(opPlan(iso, plannedFor(iso)));
 }
+const CHEERS = ['Nice! {n} to go', 'Boom ✅ {n} left', 'On a roll — {n} to go', 'Great work — {n} more', 'Ticked! {n} left'];
 $('#groups').addEventListener('click', e => {
-  const tick = e.target.closest('[data-tick]'), na = e.target.closest('[data-na]');
-  const id = tick ? tick.dataset.tick : na ? na.dataset.na : null; if (!id) return;
+  const row = e.target.closest('.task'); if (!row) return;
+  const id = row.dataset.id;
+  if (e.target.closest('[data-more]')) { OPEN.has(id) ? OPEN.delete(id) : OPEN.add(id); row.classList.toggle('open'); return; }
+  const na = e.target.closest('[data-na]');
+  // Links, inputs and the how-to text don't tick the task.
+  if (!na && e.target.closest('a, input, textarea, select, .tdetails, .always')) return;
   const cur = doneEntry(SEL, id);
-  // The counts task completes itself once both numbers are in (or use N/A today).
-  if (tick && id === 'o_counts') {
-    if (!cur) { const empty = document.querySelector('#groups [data-count]:not([value]), #groups [data-count][value=""]') || document.querySelector('#groups [data-count]'); if (empty) empty.focus(); toast('Type in both numbers to complete this'); }
+  // The counts task completes itself once the numbers are in (or Skip today).
+  if (!na && id === 'o_counts') {
+    if (!cur) { const empty = [...document.querySelectorAll('#groups [data-count]')].find(x => !x.value) || document.querySelector('#groups [data-count]'); if (empty) empty.focus(); toast('Type in the number' + (manualFields().length > 1 ? 's' : '') + ' to complete this'); }
     return;
   }
-  const on = tick ? !cur : !(cur && cur.na);   // N/A toggles N/A; the checkbox toggles done
-  const asNa = !!na && on;
-  queue(opTick(SEL, id, on, asNa, plannedFor(SEL))); renderTasks(false);
+  const on = na ? !(cur && cur.na) : !cur;
+  queue(opTick(SEL, id, on, !!na && on, plannedFor(SEL)));
+  if (on && !na) {
+    JUST = id;
+    const left = tasksFor(SEL).filter(t => !doneEntry(SEL, t.id)).length;
+    toast(left ? CHEERS[Math.floor(Math.random() * CHEERS.length)].replace('{n}', left) : 'All done! 🎉');
+  }
+  renderTasks(false);
 });
 const opCount = (iso, field, val, planned) => doc => {
   const d = dayOf(doc, iso); d.planned = planned; d.done = d.done || {};

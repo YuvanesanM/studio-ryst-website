@@ -20,8 +20,8 @@ function isoWeekNo(d) {
 
 /* ---------- the plan ---------- */
 const GROUPS = [
-  ['opening', 'Opening'], ['during', 'During sessions'], ['after', 'After sessions'], ['closing', 'Closing'],
-  ['post', 'Posting'], ['week', 'This week'], ['month', 'This month'],
+  ['opening', '☀️ Morning'], ['during', '🎬 During the day'], ['closing', '🌙 Wrap-up'],
+  ['post', '📣 Post of the day'], ['week', '📅 This week'], ['month', '🗓 This month'],
 ];
 const ZONES = ['Podcast', 'Photography', 'Kitchen', 'Common / IT'];
 const POST_RULES = [
@@ -45,19 +45,19 @@ function postingBrief(dow, wk) {
   const tipZone = TIP_ZONES[wk % 3], tip = TIPS[tipZone][Math.floor(wk / 3) % 3];
   const featZone = TIP_ZONES[(wk + 1) % 3];
   switch (dow) {
-    case 1: return { title: 'Story — today’s setup', format: 'Story', pillar: 'Show the space',
+    case 1: return { title: '📣 Story: today’s setup', format: 'Story', pillar: 'Show the space',
       what: 'A photo or 5–10 second clip of the zone booked today, set up and ready (use the “ready” photos from opening).',
       hook: '“Today in T. Nagar: a studio set up and ready for a shoot.”', cta: 'Book your slot — link in bio (add the link sticker).' };
-    case 2: return { title: `Reel — ${tip}`, format: 'Reel (15–30 sec)', pillar: 'Make it useful',
+    case 2: return { title: `📣 Reel: ${tip}`, format: 'Reel (15–30 sec)', pillar: 'Make it useful',
       what: `A quick tip from the ${tipZone} zone: ${tip}. Film it on your phone in the zone itself; one idea, no more than 4 shots.`,
       hook: `“${tip}”`, cta: `DM “${tipZone.toUpperCase()}” for rates — then log the DM as an enquiry.` };
-    case 4: return { title: `Carousel — ${featZone} zone feature`, format: 'Carousel (5–7 slides)', pillar: 'Show the space + the work',
+    case 4: return { title: `📣 Carousel: the ${featZone} zone`, format: 'Carousel (5–7 slides)', pillar: 'Show the space + the work',
       what: `Slide 1: the hook. 2–3: the ${featZone} zone from different angles. 4: the gear. 5: what you can shoot here. 6: minimum booking (${MIN_HOURS[featZone]}) and how to book.`,
       hook: `“Inside Chennai’s only 3-in-1 studio: the ${featZone} zone”`, cta: 'Save this for your next shoot · book via the link in bio.' };
-    case 5: return { title: 'Story — review spotlight', format: 'Story', pillar: 'Social proof',
+    case 5: return { title: '📣 Story: review spotlight', format: 'Story', pillar: 'Social proof',
       what: 'A screenshot of a recent Google review (crop out nothing — keep the reviewer’s name and stars) on a clean background. Reshare any client tag of us from this week too.',
       hook: '“What our creators say”', cta: 'Read more reviews on Google · book via the link in bio.' };
-    case 6: return { title: 'Post — client result or before/after', format: 'Photo or Reel', pillar: 'Show the work',
+    case 6: return { title: '📣 Post: a client result', format: 'Photo or Reel', pillar: 'Show the work',
       what: 'A finished client result (episode clip, plated dish, edited photo) or a before/after of a zone reset. Only with the client’s permission; tag them.',
       hook: '“Made at Studio RYST”', cta: 'Your turn — book a session, link in bio.' };
     default: return null;
@@ -70,43 +70,39 @@ function tasksFor(iso) {
   const T = [];
   const add = (group, id, label, extra) => T.push(Object.assign({ group, id, label }, extra || {}));
 
+  // Short, friendly list — the how-to lives in each task's hint (tap to open).
+  add('opening', 'o_sched', '📅 Check today’s bookings', { hint: 'Zone, start time and payment for every session today.', link: 'login.html?view=schedule', linkLabel: 'Schedule' });
+  add('opening', 'o_ready', '✨ Get the studio ready', { hint: 'Reset the zones booked today — sofas straight, mics wiped, backdrop clean, kitchen counters clear — then AC, lights and the TV counter on.' });
+  add('opening', 'o_welcome', '👋 Send tomorrow’s welcomes', { hint: 'One WhatsApp for each client booked tomorrow. The Schedule page has a button for each.', link: 'login.html?view=schedule', linkLabel: 'Schedule' });
   // Only the numbers that aren't recorded automatically (see DAILY_AUTO) are asked for; none left → no task.
   const manual = [!DAILY_AUTO.instagram && 'Instagram followers', !DAILY_AUTO.google && 'Google reviews'].filter(Boolean);
-  if (manual.length) add('opening', 'o_counts', 'Record today’s ' + manual.join(' and '), { counts: true, hint: 'Type the number' + (manual.length > 1 ? 's' : '') + ' exactly as shown right now on the ' + (manual.length > 1 ? 'Instagram profile and the Google Business Profile' : manual[0] === 'Instagram followers' ? 'Instagram profile' : 'Google Business Profile') + '. Do it at about the same time every day so the growth is comparable.' });
-  add('opening', 'o_sched', 'Check today’s schedule', { hint: 'Confirm the zone, start time and payment status of every booking.', link: 'login.html', linkLabel: 'Schedule' });
-  add('opening', 'o_welcome', 'Send tomorrow’s welcome WhatsApps', { hint: 'The home page shows a reminder card for each client who needs one.', link: 'login.html', linkLabel: 'Home' });
-  add('opening', 'o_reset', 'Reset every zone that’s booked today', { hint: 'Podcast: sofas straight, mics wiped, cables tidy. Photography: backdrop clean, floor swept. Kitchen: counters clean, gas and water working, bins empty.' });
-  add('opening', 'o_power', 'AC, lights and TV counter on', { hint: 'Check the counter shows the right “Up Next”.' });
-  add('opening', 'o_photo', 'Take “ready” photos of each zone', { hint: 'Raw material for stories and Google photos. Use daylight if you can; tidy the frame first.' });
+  if (manual.length) add('opening', 'o_counts', '📈 Log today’s ' + manual.join(' & '), { counts: true, hint: 'Type the number' + (manual.length > 1 ? 's' : '') + ' exactly as shown right now. Same time each day keeps the growth chart honest.' });
 
-  add('during', 'd_bts', 'Capture 2–3 behind-the-scenes photos or clips', { hint: 'Only with the client’s OK. Wide shots of the setup and the gear in use work best.' });
-  add('during', 'd_issues', 'Note any problems', { hint: 'Gear that failed, anything a client complained about, anything that ran short. Log gear problems in Equipment.', link: 'equipment.html', linkLabel: 'Equipment' });
+  add('during', 'o_photo', '📸 Snap photos & clips for socials', { hint: '“Ready” shots of each zone, plus 2–3 behind-the-scenes clips during sessions — only with the client’s OK.' });
+  add('during', 'a_feedback', '⭐ Ask today’s clients for a review', { hint: 'Send the feedback WhatsApp once a session ends. The Schedule page has a button for each.', link: 'login.html?view=schedule', linkLabel: 'Schedule' });
+  add('during', 'a_payment', '💰 Collect what’s due', { hint: 'Every session today should end fully paid. Record payments on the quote.', link: 'quote.html', linkLabel: 'Quotes' });
+  add('during', 'c_leads', '📞 Follow up leads', { hint: 'Reply to new enquiries within an hour. Nudge unpaid quotes on day 1, 3 and 7, then mark them lost.', link: 'pipeline.html', linkLabel: 'Pipeline' });
 
-  add('after', 'a_reset', 'Reset each zone after its session', { hint: 'Wipe down what was used and put everything back so the next session starts clean.' });
-  add('after', 'a_feedback', 'Send the feedback WhatsApp with the Google review link', { hint: 'To every client whose session ended today. The home page shows a reminder card for each.', link: 'login.html', linkLabel: 'Home' });
-  add('after', 'a_payment', 'Record any payment still due', { hint: 'Check each of today’s quotes shows as fully paid.', link: 'quote.html', linkLabel: 'Quotes' });
-
-  add('closing', 'c_leads', 'Lead follow-up', { hint: 'New enquiries: reply within 1 hour in working hours. Quotes sent but unpaid: follow up on day 1, 3 and 7, then mark lost. Past clients: message anyone not heard from in 30 days. Record every outcome.', link: 'pipeline.html', linkLabel: 'Pipeline' });
-  add('closing', 'c_reviews', 'Reply to new Google reviews', { hint: 'Within 24 hours, using the words people search for naturally (“Glad our podcast studio worked for you”).', link: 'reviews.html', linkLabel: 'Reviews' });
-  add('closing', 'c_equip', 'Log any equipment issues', { hint: 'Anything broken, missing or low on battery goes in the register so the owner is alerted.', link: 'equipment.html', linkLabel: 'Equipment' });
-  add('closing', 'c_lock', 'Lock-up', { hint: 'Equipment off, windows shut, kitchen gas off, trash out.' });
+  add('closing', 'c_reviews', '💬 Reply to new Google reviews', { hint: 'A quick thank-you that mentions the studio naturally (“Glad our podcast studio worked for you”).', link: 'reviews.html', linkLabel: 'Reviews' });
+  add('closing', 'c_issues', '🛠 Report anything broken', { hint: 'Gear that failed or anything that ran short — log it in Equipment and the owner gets a ping.', link: 'equipment.html', linkLabel: 'Equipment' });
+  add('closing', 'c_lock', '🔒 Reset & lock up', { hint: 'Zones tidy for tomorrow, equipment off, windows shut, kitchen gas off, trash out.' });
 
   const brief = postingBrief(dow, wk);
   if (brief) add('post', 'p_post', brief.title, { brief });
-  else if (dow === 0) add('post', 'p_plan', 'Plan next week’s content', { hint: 'Pick 2 recent sessions to feature, check each client is happy to be posted, and collect the photos and clips. The Monday–Saturday posts use them.' });
+  else if (dow === 0) add('post', 'p_plan', '🗒 Plan next week’s posts', { hint: 'Pick 2 recent sessions to feature, check each client is happy to be posted, and collect the photos and clips.' });
 
   if (dow === 2) {
     const z = ZONES[wk % ZONES.length];
-    add('week', 'w_equip', `Equipment check — ${z}`, { hint: 'Test every item in the zone and update its condition. The zone rotates weekly so everything is checked about monthly.', link: 'equipment.html?check=1&zone=' + encodeURIComponent(z), linkLabel: 'Start check' });
+    add('week', 'w_equip', `🔧 Equipment check — ${z}`, { hint: 'Test every item in the zone and update its condition. The zone rotates weekly, so everything gets checked about once a month.', link: 'equipment.html?check=1&zone=' + encodeURIComponent(z), linkLabel: 'Start check' });
   }
-  if (dow === 3) add('week', 'w_google', 'Google Business Profile: upload 3–5 photos and publish one update', { hint: 'Recent photos help local ranking. Mix the space, the gear and people at work. Reuse this week’s best Instagram material.' });
-  if (dow === 5) add('week', 'w_review', 'Weekly review', { hint: 'Bookings per zone, new Google reviews (aim for 3+ a week), and which posts brought enquiries. Do more of what worked.', link: 'report.html', linkLabel: 'Growth report' });
+  if (dow === 3) add('week', 'w_google', '🗺 Google: add 3–5 photos + 1 update', { hint: 'Fresh photos help local ranking. Reuse this week’s best Instagram shots.' });
+  if (dow === 5) add('week', 'w_review', '📊 Weekly review', { hint: 'Bookings per zone, new Google reviews (aim for 3+), and which posts brought enquiries.', link: 'report.html', linkLabel: 'Growth report' });
 
   if (dom <= 7) {
-    add('month', 'm_growth', 'Compare this month’s bookings to target', { hint: 'On the Growth Report.', link: 'report.html', linkLabel: 'Growth report' });
-    add('month', 'm_crew', 'Check all crew invoices are entered', { link: 'freelancers.html', linkLabel: 'Crew' });
-    add('month', 'm_highlights', 'Update Instagram highlights', { hint: 'Add this month’s best stories to the relevant highlight (Zones, Reviews, Behind the scenes).' });
-    add('month', 'm_warranty', 'Review equipment due for service or past warranty', { link: 'equipment.html?filter=due', linkLabel: 'Equipment' });
+    add('month', 'm_growth', '🎯 Bookings vs target', { link: 'report.html', linkLabel: 'Growth report' });
+    add('month', 'm_crew', '🧾 All crew invoices entered?', { link: 'freelancers.html', linkLabel: 'Crew' });
+    add('month', 'm_highlights', '✨ Refresh Instagram highlights', { hint: 'Add this month’s best stories to the right highlight (Zones, Reviews, Behind the scenes).' });
+    add('month', 'm_warranty', '🛡 Warranty & service check', { link: 'equipment.html?filter=due', linkLabel: 'Equipment' });
   }
   return T;
 }
