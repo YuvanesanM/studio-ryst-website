@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Daily Tasks — Studio RYST</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#f3f4f1; --panel:#ffffff; --panel2:#f7f8f5;
+    --line:#e3e5e0; --accent:#3d9b69; --accent-d:#2f7d54; --accent-soft:#eaf4ee;
+    --ink:#1d211c; --muted:#5f655d; --muted2:#7d847b; --danger:#c0584b; --warn:#b7791f; --warn-soft:#fdf4e3;
+    --post:#7a4fb5; --post-soft:#f1ebf9;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;min-height:100%;background:var(--bg);color:var(--ink);font-family:"Outfit",system-ui,sans-serif;font-weight:400;-webkit-font-smoothing:antialiased}
+  button{font-family:inherit;cursor:pointer}
+  input,textarea,select{font-family:inherit}
+  [hidden]{display:none!important}
+
+  header.bar{display:flex;align-items:center;gap:10px;padding:10px 20px;background:var(--panel);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:10;height:59px}
+  header.bar img.hdr-logo{height:36px;object-fit:contain}
+  .bar-title{font-size:14px;font-weight:600;color:var(--ink);flex:1}
+  .btn{display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border-radius:9px;border:1px solid var(--line);background:var(--panel);font-size:13px;font-weight:500;color:var(--ink);text-decoration:none;transition:.15s;white-space:nowrap}
+  .btn:hover{border-color:var(--accent);color:var(--accent-d)}
+  .btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+  .btn.sm{padding:6px 10px;font-size:12px}
+
+  .wrap{max-width:860px;margin:0 auto;padding:22px 20px 90px}
+  .t{width:100%;border:1px solid var(--line);border-radius:9px;padding:9px 12px;font-size:13.5px;background:var(--panel);color:var(--ink);outline:none;transition:.15s}
+  .t:focus{border-color:var(--accent)}
+  textarea.t{resize:vertical;min-height:64px}
+
+  /* date + progress */
+  .daybar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+  .daybar .title{font-size:20px;font-weight:700;flex:1;min-width:200px;line-height:1.2}
+  .daybar .title small{display:block;font-size:12.5px;font-weight:500;color:var(--muted2);margin-top:2px}
+  .nav-btn{width:36px;height:36px;border-radius:9px;border:1px solid var(--line);background:var(--panel);font-size:16px;padding:0}
+  .nav-btn:hover{border-color:var(--accent);color:var(--accent-d)}
+  .daybar input[type=date]{width:auto;padding:7px 10px}
+  .prog{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin-bottom:14px}
+  .prog-top{display:flex;justify-content:space-between;align-items:baseline;font-size:13px;color:var(--muted);font-weight:500}
+  .prog-top b{font-size:18px;color:var(--ink)}
+  .bar-track{height:8px;background:var(--panel2);border-radius:20px;overflow:hidden;margin-top:9px;border:1px solid var(--line)}
+  .bar-fill{height:100%;background:var(--accent);width:0;transition:width .25s}
+  .save-st{font-size:12px;color:var(--muted2)}
+  .save-st.err{color:var(--danger);font-weight:600}
+  .save-st button{border:none;background:none;color:var(--accent-d);font-weight:700;text-decoration:underline;padding:0 0 0 4px;font-size:12px}
+
+  .week{display:flex;gap:6px;margin-bottom:18px}
+  .wd{flex:1;min-width:0;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:7px 4px;text-align:center;font-size:11px;color:var(--muted2);font-weight:600;text-transform:uppercase;letter-spacing:.4px;cursor:pointer}
+  .wd b{display:block;font-size:14px;color:var(--ink);letter-spacing:0;margin-top:2px;text-transform:none}
+  .wd.sel{border-color:var(--accent);background:var(--accent-soft)}
+  .wd.full b{color:var(--accent-d)}
+
+  /* groups + tasks */
+  .grp{margin-bottom:20px}
+  .gh{font-size:11px;letter-spacing:1.2px;text-transform:uppercase;color:var(--accent-d);font-weight:700;margin:0 0 9px;display:flex;align-items:center;gap:8px}
+  .gh::after{content:"";flex:1;height:1px;background:var(--line)}
+  .gh .cnt{color:var(--muted2);letter-spacing:.3px}
+  .gh.post{color:var(--post)}
+  .task{display:flex;gap:12px;align-items:flex-start;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin-bottom:8px}
+  .task.done{background:var(--panel2)}
+  .task.done .tlabel{color:var(--muted2);text-decoration:line-through}
+  .chk{flex-shrink:0;width:26px;height:26px;border-radius:8px;border:2px solid #c3c8c0;background:#fff;color:transparent;font-size:15px;line-height:1;padding:0;margin-top:1px;transition:.12s}
+  .chk:hover{border-color:var(--accent)}
+  .task.done .chk{background:var(--accent);border-color:var(--accent);color:#fff}
+  .task.na .chk{background:#9aa097;border-color:#9aa097}
+  .tbody{flex:1;min-width:0}
+  .tlabel{font-size:14.5px;font-weight:600;line-height:1.35}
+  .thint{font-size:12.5px;color:var(--muted);margin-top:3px;line-height:1.5}
+  .tmeta{font-size:11.5px;color:var(--muted2);margin-top:5px}
+  .tact{display:flex;flex-direction:column;align-items:flex-end;gap:6px;flex-shrink:0}
+  .tact a{font-size:12px;font-weight:600;color:var(--accent-d);text-decoration:none;white-space:nowrap}
+  .tact a:hover{text-decoration:underline}
+  .na-btn{border:none;background:none;font-size:11.5px;color:var(--muted2);padding:0;text-decoration:underline}
+  .na-btn:hover{color:var(--ink)}
+
+  /* posting brief */
+  .brief{margin-top:10px;background:var(--post-soft);border:1px solid #e0d3f2;border-radius:11px;padding:12px 14px;font-size:13px;line-height:1.55}
+  .brief-top{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px}
+  .tag{font-size:10.5px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;padding:3px 9px;border-radius:20px;background:#fff;color:var(--post);border:1px solid #e0d3f2}
+  .brief dl{margin:0;display:grid;grid-template-columns:78px 1fr;gap:5px 10px}
+  .brief dt{font-weight:700;color:var(--post);font-size:11.5px;text-transform:uppercase;letter-spacing:.3px;padding-top:1px}
+  .brief dd{margin:0;color:var(--ink)}
+  .brief .rules{margin:10px 0 0;padding:9px 0 0 18px;border-top:1px dashed #d3c2ea;color:var(--muted);font-size:12.5px}
+  .brief .rules li{margin:2px 0}
+  .brief .timing{margin-top:8px;font-size:12px;color:var(--muted2)}
+  .brief details summary{cursor:pointer;font-weight:700;color:var(--post);font-size:12.5px}
+
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px 18px}
+  .f{display:flex;flex-direction:column;gap:5px;margin-bottom:12px}
+  .f>span{font-size:11.5px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.4px}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:0 14px}
+  .hint{color:var(--muted2);font-size:12px;margin:2px 0 0}
+  .empty{background:var(--panel);border:1px dashed #cdd1cb;border-radius:14px;padding:30px 20px;text-align:center;color:var(--muted)}
+  .loading{padding:60px 0;text-align:center;color:var(--muted2)}
+  .toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(20px);background:#1d211c;color:#fff;padding:12px 20px;border-radius:10px;font-size:13px;opacity:0;transition:.25s;z-index:60;pointer-events:none;max-width:90vw}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+  @media(max-width:600px){
+    .wrap{padding:16px 12px 80px}
+    .grid2{grid-template-columns:1fr}
+    .daybar .title{font-size:18px}
+    .task{padding:11px 11px;gap:10px}
+    .brief dl{grid-template-columns:1fr;gap:1px}
+    .brief dt{margin-top:6px}
+  }
+</style>
+</head>
+<body>
+
+<header class="bar">
+  <img class="hdr-logo" src="assets/logo-300.png" alt="Studio RYST">
+  <span class="bar-title">Daily Tasks</span>
+  <a class="btn" href="equipment.html">🎥 Equipment</a>
+  <a class="btn" href="login.html">← Home</a>
+</header>
+
+<main class="wrap">
+  <div id="loading" class="loading">Loading…</div>
+  <div id="app" hidden>
+    <div class="daybar">
+      <div class="title" id="dayTitle"></div>
+      <button class="nav-btn" id="prevDay" type="button" aria-label="Previous day">‹</button>
+      <input class="t" id="dayPick" type="date">
+      <button class="nav-btn" id="nextDay" type="button" aria-label="Next day">›</button>
+      <button class="btn sm" id="todayBtn" type="button">Today</button>
+    </div>
+
+    <div class="prog">
+      <div class="prog-top"><span><b id="progNum">0 of 0</b> done</span><span class="save-st" id="saveSt"></span></div>
+      <div class="bar-track"><div class="bar-fill" id="progFill"></div></div>
+    </div>
+
+    <div class="week" id="week"></div>
+    <div id="groups"></div>
+
+    <div class="card" id="dayFields">
+      <div class="gh" style="margin-top:0">End of day</div>
+      <div class="grid2">
+        <label class="f"><span>New enquiries from Instagram / Google today</span><input class="t" id="fLeads" type="number" min="0" step="1" inputmode="numeric" placeholder="0"></label>
+        <label class="f"><span>Post link (Instagram or Google)</span><input class="t" id="fPostLink" placeholder="Paste the link to today's post"></label>
+      </div>
+      <label class="f" style="margin-bottom:0"><span>Notes for the owner</span><textarea class="t" id="fNote" rows="2" placeholder="Anything that went wrong, anything needed, anything to follow up…"></textarea></label>
+      <p class="hint">Counting enquiries and keeping post links shows which content actually brings bookings.</p>
+    </div>
+  </div>
+</main>
+<div class="toast" id="toast"></div>
+
+<script>
+const PROXY_URL = 'https://ryst-109a-proxy.onrender.com/studio';
+let proxyToken = localStorage.getItem('ryst_proxy_token') || '';
+const ME = (localStorage.getItem('ryst_user_email') || '').toLowerCase();
+const $ = s => document.querySelector(s);
+const esc = s => (s ?? '').toString().replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function toast(msg) { const t = $('#toast'); t.textContent = msg; t.classList.add('show'); clearTimeout(toast._t); toast._t = setTimeout(() => t.classList.remove('show'), 2600); }
+
+/* ---------- dates ---------- */
+const pad = n => String(n).padStart(2, '0');
+const isoOf = d => d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate());
+const todayISO = () => isoOf(new Date());
+const parseISO = iso => new Date(iso + 'T00:00:00');
+const addDays = (iso, n) => { const d = parseISO(iso); d.setDate(d.getDate() + n); return isoOf(d); };
+const fmtLong = iso => parseISO(iso).toLocaleDateString('en-IN', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+function isoWeekNo(d) {
+  const t = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
+  t.setUTCDate(t.getUTCDate() + 4 - (t.getUTCDay() || 7));
+  return Math.ceil(((t - new Date(Date.UTC(t.getUTCFullYear(), 0, 1))) / 864e5 + 1) / 7);
+}
+
+/* ---------- the plan ---------- */
+const GROUPS = [
+  ['opening', 'Opening'], ['during', 'During sessions'], ['after', 'After sessions'], ['closing', 'Closing'],
+  ['post', 'Posting'], ['week', 'This week'], ['month', 'This month'],
+];
+const ZONES = ['Podcast', 'Photography', 'Kitchen', 'Common / IT'];
+const POST_RULES = [
+  'Hook in the first line (or first 2 seconds) — say what makes it worth stopping for.',
+  'One call to action, e.g. “Book your slot — link in bio” or “DM PODCAST for rates”.',
+  'Caption and alt text use the words people search: “podcast studio Chennai”, “kitchen studio Chennai”, “photography studio Chennai”.',
+  'Tag the location: Studio RYST, T. Nagar.',
+  '3–5 relevant hashtags, not 30.',
+  'Get the client’s OK before posting their face, brand or work.',
+];
+const POST_TIMING = 'Best starting guess for Chennai: evenings (≈ 7–9 pm) or lunchtime. Check Instagram Insights after a month and move the time to whenever your followers are online.';
+const TIPS = {
+  Podcast: ['3 things to do before your first podcast recording', 'How to sit and speak for cleaner audio', 'Video podcast: what the camera sees vs. what the mic hears'],
+  Kitchen: ['How we light a food video in 30 seconds', 'Styling a dish for the camera: 3 quick tricks', 'The 5 shots every cooking video needs'],
+  Photography: ['Lighting a product on a plain background', 'Headshot posing: 3 fixes for stiff photos', 'Softbox vs. LED panel: when to use which'],
+};
+const TIP_ZONES = ['Podcast', 'Kitchen', 'Photography'];
+const MIN_HOURS = { Podcast: '2 hours', Photography: '2 hours', Kitchen: '4 hours' };
+
+function postingBrief(dow, wk) {
+  const tipZone = TIP_ZONES[wk % 3], tip = TIPS[tipZone][Math.floor(wk / 3) % 3];
+  const featZone = TIP_ZONES[(wk + 1) % 3];
+  switch (dow) {
+    case 1: return { title: 'Story — today’s setup', format: 'Story', pillar: 'Show the space',
+      what: 'A photo or 5–10 second clip of the zone booked today, set up and ready (use the “ready” photos from opening).',
+      hook: '“Today in T. Nagar: a studio set up and ready for a shoot.”', cta: 'Book your slot — link in bio (add the link sticker).' };
+    case 2: return { title: `Reel — ${tip}`, format: 'Reel (15–30 sec)', pillar: 'Make it useful',
+      what: `A quick tip from the ${tipZone} zone: ${tip}. Film it on your phone in the zone itself; one idea, no more than 4 shots.`,
+      hook: `“${tip}”`, cta: `DM “${tipZone.toUpperCase()}” for rates — then log the DM as an enquiry.` };
+    case 4: return { title: `Carousel — ${featZone} zone feature`, format: 'Carousel (5–7 slides)', pillar: 'Show the space + the work',
+      what: `Slide 1: the hook. 2–3: the ${featZone} zone from different angles. 4: the gear. 5: what you can shoot here. 6: minimum booking (${MIN_HOURS[featZone]}) and how to book.`,
+      hook: `“Inside Chennai’s only 3-in-1 studio: the ${featZone} zone”`, cta: 'Save this for your next shoot · book via the link in bio.' };
+    case 5: return { title: 'Story — review spotlight', format: 'Story', pillar: 'Social proof',
+      what: 'A screenshot of a recent Google review (crop out nothing — keep the reviewer’s name and stars) on a clean background. Reshare any client tag of us from this week too.',
+      hook: '“What our creators say”', cta: 'Read more reviews on Google · book via the link in bio.' };
+    case 6: return { title: 'Post — client result or before/after', format: 'Photo or Reel', pillar: 'Show the work',
+      what: 'A finished client result (episode clip, plated dish, edited photo) or a before/after of a zone reset. Only with the client’s permission; tag them.',
+      hook: '“Made at Studio RYST”', cta: 'Your turn — book a session, link in bio.' };
+    default: return null;
+  }
+}
+
+// Every task for a date. Monthly tasks only appear on days 1–7.
+function tasksFor(iso) {
+  const d = parseISO(iso), dow = d.getDay(), wk = isoWeekNo(d), dom = d.getDate();
+  const T = [];
+  const add = (group, id, label, extra) => T.push(Object.assign({ group, id, label }, extra || {}));
+
+  add('opening', 'o_sched', 'Check today’s schedule', { hint: 'Confirm the zone, start time and payment status of every booking.', link: 'login.html', linkLabel: 'Schedule' });
+  add('opening', 'o_welcome', 'Send tomorrow’s welcome WhatsApps', { hint: 'The home page shows a reminder card for each client who needs one.', link: 'login.html', linkLabel: 'Home' });
+  add('opening', 'o_reset', 'Reset every zone that’s booked today', { hint: 'Podcast: sofas straight, mics wiped, cables tidy. Photography: backdrop clean, floor swept. Kitchen: counters clean, gas and water working, bins empty.' });
+  add('opening', 'o_power', 'AC, lights and TV counter on', { hint: 'Check the counter shows the right “Up Next”.' });
+  add('opening', 'o_photo', 'Take “ready” photos of each zone', { hint: 'Raw material for stories and Google photos. Use daylight if you can; tidy the frame first.' });
+
+  add('during', 'd_bts', 'Capture 2–3 behind-the-scenes photos or clips', { hint: 'Only with the client’s OK. Wide shots of the setup and the gear in use work best.' });
+  add('during', 'd_issues', 'Note any problems', { hint: 'Gear that failed, anything a client complained about, anything that ran short. Log gear problems in Equipment.', link: 'equipment.html', linkLabel: 'Equipment' });
+
+  add('after', 'a_reset', 'Reset each zone after its session', { hint: 'Wipe down what was used and put everything back so the next session starts clean.' });
+  add('after', 'a_feedback', 'Send the feedback WhatsApp with the Google review link', { hint: 'To every client whose session ended today. The home page shows a reminder card for each.', link: 'login.html', linkLabel: 'Home' });
+  add('after', 'a_payment', 'Record any payment still due', { hint: 'Check each of today’s quotes shows as fully paid.', link: 'quote.html', linkLabel: 'Quotes' });
+
+  add('closing', 'c_leads', 'Lead follow-up', { hint: 'New enquiries: reply within 1 hour in working hours. Quotes sent but unpaid: follow up on day 1, 3 and 7, then mark lost. Past clients: message anyone not heard from in 30 days. Record every outcome.', link: 'pipeline.html', linkLabel: 'Pipeline' });
+  add('closing', 'c_reviews', 'Reply to new Google reviews', { hint: 'Within 24 hours, using the words people search for naturally (“Glad our podcast studio worked for you”).', link: 'reviews.html', linkLabel: 'Reviews' });
+  add('closing', 'c_equip', 'Log any equipment issues', { hint: 'Anything broken, missing or low on battery goes in the register so the owner is alerted.', link: 'equipment.html', linkLabel: 'Equipment' });
+  add('closing', 'c_lock', 'Lock-up', { hint: 'Equipment off, windows shut, kitchen gas off, trash out.' });
+
+  const brief = postingBrief(dow, wk);
+  if (brief) add('post', 'p_post', brief.title, { brief });
+  else if (dow === 0) add('post', 'p_plan', 'Plan next week’s content', { hint: 'Pick 2 recent sessions to feature, check each client is happy to be posted, and collect the photos and clips. The Monday–Saturday posts use them.' });
+
+  if (dow === 2) {
+    const z = ZONES[wk % ZONES.length];
+    add('week', 'w_equip', `Equipment check — ${z}`, { hint: 'Test every item in the zone and update its condition. The zone rotates weekly so everything is checked about monthly.', link: 'equipment.html?check=1&zone=' + encodeURIComponent(z), linkLabel: 'Start check' });
+  }
+  if (dow === 3) add('week', 'w_google', 'Google Business Profile: upload 3–5 photos and publish one update', { hint: 'Recent photos help local ranking. Mix the space, the gear and people at work. Reuse this week’s best Instagram material.' });
+  if (dow === 5) add('week', 'w_review', 'Weekly review', { hint: 'Bookings per zone, new Google reviews (aim for 3+ a week), and which posts brought enquiries. Do more of what worked.', link: 'report.html', linkLabel: 'Growth report' });
+
+  if (dom <= 7) {
+    add('month', 'm_growth', 'Compare this month’s bookings to target', { hint: 'On the Growth Report.', link: 'report.html', linkLabel: 'Growth report' });
+    add('month', 'm_crew', 'Check all crew invoices are entered', { link: 'freelancers.html', linkLabel: 'Crew' });
+    add('month', 'm_highlights', 'Update Instagram highlights', { hint: 'Add this month’s best stories to the relevant highlight (Zones, Reviews, Behind the scenes).' });
+    add('month', 'm_warranty', 'Review equipment due for service or past warranty', { link: 'equipment.html?filter=due', linkLabel: 'Equipment' });
+  }
+  return T;
+}
+const isMonthly = id => id.startsWith('m_');
+// What the evening Telegram summary is checked against: everything except monthly tasks.
+const plannedFor = iso => tasksFor(iso).filter(t => !isMonthly(t.id)).map(t => ({ id: t.id, label: t.label }));
+
+/* ---------- data ---------- */
+let DB = { version: 1, days: {} };
+let NAMES = {};
+const normalize = d => ({ version: 1, ...(d && typeof d === 'object' ? d : {}), days: (d && d.days && typeof d.days === 'object') ? d.days : {} });
+async function api(method, body, path) {
+  const res = await fetch(PROXY_URL + (path || '/daily-tasks'), {
+    method,
+    headers: Object.assign({ 'X-Token': proxyToken }, body ? { 'Content-Type': 'application/json' } : {}),
+    body: body ? JSON.stringify(body) : undefined,
+  });
+  if (res.status === 401) { localStorage.removeItem('ryst_proxy_token'); location.href = 'login.html'; throw new Error('Session expired'); }
+  const d = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(d.error || ('Server error ' + res.status));
+  return d;
+}
+const who = email => NAMES[(email || '').toLowerCase()] || (email || '').split('@')[0] || 'someone';
+const dayRec = iso => DB.days[iso] || {};
+
+// Monthly tasks stay open across days 1–7, so "done" looks at all of them.
+function doneEntry(iso, id) {
+  const r = dayRec(iso).done && dayRec(iso).done[id];
+  if (r || !isMonthly(id)) return r || null;
+  const d = parseISO(iso);
+  for (let n = 1; n <= 7; n++) {
+    const e = (DB.days[isoOf(new Date(d.getFullYear(), d.getMonth(), n))] || {}).done;
+    if (e && e[id]) return e[id];
+  }
+  return null;
+}
+
+/* ---------- saving: optimistic, queued, merged onto the latest copy ---------- */
+let pending = [], flushing = false;
+function setStatus(kind, msg) {
+  const el = $('#saveSt'); el.className = 'save-st' + (kind === 'error' ? ' err' : '');
+  el.innerHTML = kind === 'saving' ? 'Saving…' : kind === 'saved' ? 'Saved ✓' : kind === 'error' ? `Couldn’t save — ${esc(msg || '')} <button type="button" id="retry">Retry</button>` : '';
+  const r = $('#retry'); if (r) r.addEventListener('click', flush);
+}
+function queue(op) { op(DB); pending.push(op); setStatus('saving'); flush(); }
+async function flush() {
+  if (flushing) return; flushing = true;
+  while (pending.length) {
+    const batch = pending.slice();
+    try {
+      const fresh = normalize(await api('GET'));
+      batch.forEach(o => o(fresh));
+      await api('PUT', fresh);
+      pending.splice(0, batch.length);
+      DB = fresh; pending.forEach(o => o(DB));
+    } catch (e) { setStatus('error', e.message); flushing = false; return; }
+  }
+  flushing = false; setStatus('saved'); renderTasks(false);
+}
+window.addEventListener('beforeunload', e => { if (pending.length) { e.preventDefault(); e.returnValue = ''; } });
+const dayOf = (doc, iso) => (doc.days[iso] = doc.days[iso] || {});
+const opPlan = (iso, planned) => doc => { dayOf(doc, iso).planned = planned; };
+const opTick = (iso, id, on, na, planned) => doc => {
+  const d = dayOf(doc, iso); d.planned = planned; d.done = d.done || {};
+  if (on) d.done[id] = Object.assign({ by: ME, at: new Date().toISOString() }, na ? { na: true } : {});
+  else if (isMonthly(id)) {
+    const dt = parseISO(iso);
+    for (let n = 1; n <= 7; n++) { const k = isoOf(new Date(dt.getFullYear(), dt.getMonth(), n)); if (doc.days[k] && doc.days[k].done) delete doc.days[k].done[id]; }
+  } else delete d.done[id];
+};
+const opField = (iso, key, val, planned) => doc => { const d = dayOf(doc, iso); d.planned = planned; if (val === '' || val == null) delete d[key]; else d[key] = val; };
+
+/* ---------- rendering ---------- */
+let SEL = todayISO();
+function briefHTML(b) {
+  return `<div class="brief"><div class="brief-top"><span class="tag">${esc(b.format)}</span><span class="tag">${esc(b.pillar)}</span></div>
+    <dl><dt>Post</dt><dd>${esc(b.what)}</dd><dt>Hook</dt><dd>${esc(b.hook)}</dd><dt>Call to action</dt><dd>${esc(b.cta)}</dd></dl>
+    <details><summary>Before you post</summary><ul class="rules">${POST_RULES.map(r => `<li>${esc(r)}</li>`).join('')}</ul><div class="timing">${esc(POST_TIMING)}</div></details></div>`;
+}
+function renderTasks(full) {
+  const tasks = tasksFor(SEL);
+  let done = 0;
+  const html = GROUPS.map(([g, title]) => {
+    const list = tasks.filter(t => t.group === g);
+    if (!list.length) return '';
+    const dn = list.filter(t => doneEntry(SEL, t.id)).length; done += dn;
+    return `<section class="grp"><div class="gh${g === 'post' ? ' post' : ''}">${esc(title)} <span class="cnt">${dn}/${list.length}</span></div>${list.map(t => {
+      const e = doneEntry(SEL, t.id);
+      const meta = e ? `${e.na ? 'Not needed today' : '✓ Done'} · ${esc(who(e.by))} · ${esc(new Date(e.at).toLocaleTimeString('en-IN', { hour: 'numeric', minute: '2-digit' }))}` : '';
+      return `<div class="task${e ? ' done' : ''}${e && e.na ? ' na' : ''}" data-id="${esc(t.id)}">
+        <button class="chk" type="button" role="checkbox" aria-checked="${e ? 'true' : 'false'}" aria-label="${esc(t.label)}" data-tick="${esc(t.id)}">✓</button>
+        <div class="tbody"><div class="tlabel">${esc(t.label)}</div>${t.hint ? `<div class="thint">${esc(t.hint)}</div>` : ''}${t.brief ? briefHTML(t.brief) : ''}${meta ? `<div class="tmeta">${meta}</div>` : ''}</div>
+        <div class="tact">${t.link ? `<a href="${esc(t.link)}">${esc(t.linkLabel || 'Open')} →</a>` : ''}<button class="na-btn" type="button" data-na="${esc(t.id)}">${e && e.na ? 'Needed' : 'N/A today'}</button></div>
+      </div>`;
+    }).join('')}</section>`;
+  }).join('');
+  // Keep any open <details> open across re-renders.
+  const open = [...document.querySelectorAll('#groups details[open]')].length > 0;
+  $('#groups').innerHTML = html;
+  if (open) document.querySelectorAll('#groups details').forEach(d => d.open = true);
+  $('#progNum').textContent = `${done} of ${tasks.length}`;
+  $('#progFill').style.width = (tasks.length ? Math.round(done / tasks.length * 100) : 0) + '%';
+  renderWeek();
+  if (full) {
+    const r = dayRec(SEL);
+    $('#fLeads').value = r.leads ?? ''; $('#fPostLink').value = r.postLink || ''; $('#fNote').value = r.note || '';
+  }
+}
+function renderWeek() {
+  $('#week').innerHTML = Array.from({ length: 7 }, (_, i) => addDays(SEL, i - 6)).map(iso => {
+    const r = DB.days[iso], pl = r && r.planned && r.planned.length ? r.planned : null;
+    const pct = pl ? Math.round(pl.filter(t => r.done && r.done[t.id]).length / pl.length * 100) : null;
+    return `<button class="wd${iso === SEL ? ' sel' : ''}${pct === 100 ? ' full' : ''}" type="button" data-go="${iso}">${esc(parseISO(iso).toLocaleDateString('en-IN', { weekday: 'short' }))}<b>${pct == null ? '–' : pct + '%'}</b></button>`;
+  }).join('');
+}
+function go(iso, fresh) {
+  SEL = iso;
+  $('#dayPick').value = iso;
+  const isToday = iso === todayISO();
+  $('#dayTitle').innerHTML = `${esc(parseISO(iso).toLocaleDateString('en-IN', { weekday: 'long' }))}<small>${esc(parseISO(iso).toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' }))}${isToday ? ' · today' : ''}</small>`;
+  $('#nextDay').disabled = false;
+  renderTasks(true);
+  // Opening today's list registers its plan, so the evening summary can tell "nobody opened it" from "opened but not finished".
+  if (isToday && !(dayRec(iso).planned && dayRec(iso).planned.length)) queue(opPlan(iso, plannedFor(iso)));
+}
+$('#groups').addEventListener('click', e => {
+  const tick = e.target.closest('[data-tick]'), na = e.target.closest('[data-na]');
+  const id = tick ? tick.dataset.tick : na ? na.dataset.na : null; if (!id) return;
+  const cur = doneEntry(SEL, id);
+  const on = tick ? !cur : !(cur && cur.na);   // N/A toggles N/A; the checkbox toggles done
+  const asNa = !!na && on;
+  queue(opTick(SEL, id, on, asNa, plannedFor(SEL))); renderTasks(false);
+});
+$('#week').addEventListener('click', e => { const b = e.target.closest('[data-go]'); if (b) go(b.dataset.go); });
+$('#prevDay').addEventListener('click', () => go(addDays(SEL, -1)));
+$('#nextDay').addEventListener('click', () => go(addDays(SEL, 1)));
+$('#todayBtn').addEventListener('click', () => go(todayISO()));
+$('#dayPick').addEventListener('change', e => { if (e.target.value) go(e.target.value); });
+function debounced(sel, key, conv) {
+  let t; $(sel).addEventListener('input', e => {
+    const iso = SEL, v = conv ? conv(e.target.value) : e.target.value;
+    clearTimeout(t); t = setTimeout(() => queue(opField(iso, key, v, plannedFor(iso))), 700);
+  });
+}
+debounced('#fLeads', 'leads', v => v === '' ? '' : Math.max(0, parseInt(v, 10) || 0));
+debounced('#fPostLink', 'postLink', v => v.trim());
+debounced('#fNote', 'note', v => v.trim());
+
+/* ---------- boot ---------- */
+(async function boot() {
+  if (!proxyToken) { location.href = 'login.html'; return; }
+  try { DB = normalize(await api('GET')); }
+  catch (e) { $('#loading').textContent = 'Could not load daily tasks: ' + e.message; return; }
+  try { const u = await api('GET', null, '/user-roles'); (u.users || []).forEach(x => { if (x.email) NAMES[x.email.toLowerCase()] = x.name || ''; }); } catch (e) {}
+  $('#loading').hidden = true; $('#app').hidden = false;
+  go(todayISO());
+})();
+</script>
+</body>
+</html>
