@@ -179,7 +179,7 @@
 
   <!-- User Access pane -->
   <div id="paneUsers" hidden>
-    <p class="sd">Map each Google login to a role and tick the modules (pages) they can open. <b>Admins</b> can change settings, the rate card and targets. <b>Coordinators</b> use the tools but can’t change those. mailyuvanesh@gmail.com is always an admin and can’t be locked out.</p>
+    <p class="sd"><b>Only the Google accounts listed here can sign in.</b> Give each one a role and tick the modules (pages) they can open. <b>Admins</b> can change settings, the rate card, targets and this list, and see every module. <b>Coordinators</b> see only their ticked modules. Removing someone or changing their role takes effect within a minute, even if they’re signed in. mailyuvanesh@gmail.com is always an admin and can’t be removed.</p>
     <div class="rc-table-wrap">
       <table class="rc-table" style="min-width:1040px">
         <thead><tr>
@@ -650,7 +650,7 @@ async function saveUsers(){
       if(res.status===401){ localStorage.removeItem('ryst_proxy_token'); window.location.href='login.html'; return; }
       else if(res.status===403) toast("Admins only — cannot save");
       else if(!res.ok) toast("Save failed ("+res.status+")");
-      else toast("User access saved · modules apply right away, role changes on next sign-in");
+      else toast("User access saved · takes effect within a minute");
     }catch(e){ toast("Cloud unreachable"); }
   }
   usersDraft=users.map(u=>({...u})); renderUsers();
