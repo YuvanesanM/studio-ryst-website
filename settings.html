@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Settings — Studio RYST</title>
 <meta name="robots" content="noindex, nofollow">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -31,6 +31,9 @@
   .cfg-tabs{display:flex;align-items:center;gap:2px;border-bottom:2px solid var(--line);padding:24px 32px 0;position:sticky;top:59px;background:var(--bg);z-index:5}
   .cfg-tab{background:transparent;border:none;border-bottom:2px solid transparent;margin-bottom:-2px;padding:10px 18px;font-size:13.5px;font-weight:500;color:var(--muted2);cursor:pointer;border-radius:8px 8px 0 0;transition:.15s;font-family:inherit}
   .cfg-tab:hover{color:var(--ink)}
+  .cfg-tabs{overflow-x:auto;scrollbar-width:none}
+  .cfg-tabs::-webkit-scrollbar{display:none}
+  .cfg-tab{white-space:nowrap;flex-shrink:0}
   .cfg-tab.active{color:var(--accent-d);font-weight:700;border-bottom-color:var(--accent)}
 
   /* ---- CONTENT ---- */
@@ -82,32 +85,20 @@
   .toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(20px);background:#1d211c;color:#fff;padding:12px 20px;border-radius:10px;font-size:13px;opacity:0;transition:.25s;z-index:60}
   .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 
-  /* ---- PIN GATE ---- */
-  #pinOverlay{position:fixed;inset:0;background:var(--bg);display:flex;align-items:center;justify-content:center;z-index:100}
-  #pinOverlay[hidden]{display:none}
-  .pin-card{background:var(--panel);border:1px solid var(--line);border-radius:20px;padding:36px 32px 28px;width:300px;text-align:center;box-shadow:0 8px 32px rgba(0,0,0,.1)}
-  .pin-card h3{margin:0 0 4px;font-size:20px;font-weight:700;color:var(--ink)}
-  .pin-card p{margin:0 0 24px;font-size:13px;color:var(--muted)}
-  .pin-dots{display:flex;justify-content:center;gap:14px;margin-bottom:24px}
-  .pin-dot{width:15px;height:15px;border-radius:50%;border:2px solid var(--accent);background:transparent;transition:.15s}
-  .pin-dot.filled{background:var(--accent)}
-  .pin-pad{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px}
-  .pin-key{background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:15px 0;font-size:19px;font-weight:600;cursor:pointer;color:var(--ink);transition:.12s}
-  .pin-key:hover{border-color:var(--accent);color:var(--accent-d)}
-  .pin-key:active{background:var(--accent);color:#fff;border-color:var(--accent)}
-  .pin-err{color:var(--danger);font-size:13px;min-height:18px;margin-top:-8px}
-  .pin-home{margin-top:16px}
-
   @media(max-width:680px){
     .cfg-tabs{padding:16px 14px 0}
     .cfg-body{padding:20px 14px 60px}
     .rc-table-wrap{border-radius:8px}
   }
+  .mod-chips{display:flex;flex-wrap:wrap;gap:5px;padding:4px 2px}
+  .mod-chip{display:inline-flex;align-items:center;gap:5px;font-size:12px;background:var(--panel2);border:1px solid var(--line);border-radius:20px;padding:3px 9px 3px 6px;cursor:pointer;white-space:nowrap}
+  .mod-chip input{margin:0;accent-color:var(--accent)}
   .admin-block{position:fixed;inset:0;z-index:60;background:var(--bg);display:none;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:24px;text-align:center}
   .admin-block.show{display:flex}
 </style>
+<link rel="stylesheet" href="assets/shell.css">
 </head>
-<body>
+<body data-shell="settings">
 
 <header class="bar">
   <img class="hdr-logo" id="hdrLogo" src="" alt="Studio RYST">
@@ -188,14 +179,15 @@
 
   <!-- User Access pane -->
   <div id="paneUsers" hidden>
-    <p class="sd">Map each Google login to a role. <b>Admins</b> can change settings, the rate card and targets. <b>Coordinators</b> use the tools but can’t change those. mailyuvanesh@gmail.com is always an admin and can’t be locked out.</p>
+    <p class="sd">Map each Google login to a role and tick the modules (pages) they can open. <b>Admins</b> can change settings, the rate card and targets. <b>Coordinators</b> use the tools but can’t change those. mailyuvanesh@gmail.com is always an admin and can’t be locked out.</p>
     <div class="rc-table-wrap">
-      <table class="rc-table" style="min-width:720px">
+      <table class="rc-table" style="min-width:1040px">
         <thead><tr>
           <th>Google email</th>
           <th style="width:150px">Name</th>
           <th class="c" style="width:150px">Role</th>
           <th style="width:190px">Telegram</th>
+          <th style="min-width:300px">Modules</th>
           <th style="width:36px"></th>
         </tr></thead>
         <tbody id="usersBody"></tbody>
@@ -234,29 +226,11 @@
 
 <div class="toast" id="toast"></div>
 
-<!-- PIN gate — shown on load, hidden after correct entry -->
-<div id="pinOverlay">
-  <div class="pin-card">
-    <h3>Settings</h3>
-    <p>Enter PIN to continue</p>
-    <div class="pin-dots">
-      <span class="pin-dot" id="pd0"></span>
-      <span class="pin-dot" id="pd1"></span>
-      <span class="pin-dot" id="pd2"></span>
-      <span class="pin-dot" id="pd3"></span>
-    </div>
-    <div class="pin-pad" id="pinPad"></div>
-    <div class="pin-err" id="pinErr"></div>
-    <div class="pin-home"><a class="btn" href="login.html">← Back to home</a></div>
-  </div>
-</div>
-
 <script>
 const PROXY_URL = 'https://ryst-109a-proxy.onrender.com/studio';
 const K_SET     = 'ryst_quote_settings';
 const FALLBACK_GST = 18;
 const ZONES     = ["Podcast", "Photography", "Culinary", "Multi-Zone"];
-const RC_PIN_HASH = "8e9b669109df89620b94f2387dc53206a82ddc71d658f8f7a2b3a9b417370d3e";
 
 const $ = s => document.querySelector(s);
 const esc = s => (s||"").toString().replace(/[&<>"]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
@@ -354,51 +328,17 @@ function myRole(){
 (async function boot(){
   if(!proxyToken){ window.location.href='login.html'; return; }
   if(myRole()!=='admin'){
-    document.getElementById('pinOverlay').hidden=true;
     document.getElementById('adminBlock').classList.add('show');
     return;
   }
+  // Settings is admin-only (here and on the proxy), so it opens straight away
+  // — no separate PIN. Deferred until the whole script has run.
+  window.addEventListener('DOMContentLoaded', ()=>loadPanel());
   // Validate token in background — if it expired redirect quietly
   fetch(PROXY_URL+'/quotes',{headers:{'X-Token':proxyToken}})
     .then(r=>{ if(r && r.status===401){ localStorage.removeItem('ryst_proxy_token'); window.location.href='login.html'; } })
     .catch(()=>{});
 })();
-
-/* ---------- PIN GATE ---------- */
-let _pinBuf = "";
-async function sha256(s){
-  const b=await crypto.subtle.digest("SHA-256",new TextEncoder().encode(s));
-  return Array.from(new Uint8Array(b)).map(x=>x.toString(16).padStart(2,"0")).join("");
-}
-(function buildPinPad(){
-  const pad=document.getElementById("pinPad"); if(!pad) return;
-  [1,2,3,4,5,6,7,8,9,"⌫",0,"✓"].forEach(k=>{
-    const b=document.createElement("button");
-    b.className="pin-key"; b.textContent=String(k); b.type="button";
-    b.addEventListener("click",()=>handlePinKey(String(k)));
-    pad.appendChild(b);
-  });
-})();
-function updatePinDots(){
-  for(let i=0;i<4;i++) document.getElementById("pd"+i).classList.toggle("filled",i<_pinBuf.length);
-}
-async function handlePinKey(k){
-  if(k==="⌫"){ _pinBuf=_pinBuf.slice(0,-1); updatePinDots(); return; }
-  if(k==="✓"){ await checkPin(); return; }
-  if(_pinBuf.length>=4) return;
-  _pinBuf+=k; updatePinDots();
-  if(_pinBuf.length===4) await checkPin();
-}
-async function checkPin(){
-  if(await sha256(_pinBuf)===RC_PIN_HASH){
-    document.getElementById("pinOverlay").hidden=true;
-    loadPanel();
-  } else {
-    document.getElementById("pinErr").textContent="Incorrect PIN";
-    for(let i=0;i<4;i++) document.getElementById("pd"+i).classList.add("filled");
-    setTimeout(()=>{ _pinBuf=""; updatePinDots(); document.getElementById("pinErr").textContent=""; },700);
-  }
-}
 
 /* ---------- TABS ---------- */
 function switchTab(tab){
@@ -411,7 +351,7 @@ function switchTab(tab){
 }
 document.querySelectorAll(".cfg-tab").forEach(b=>b.addEventListener("click",()=>switchTab(b.dataset.tab)));
 
-/* ---------- LOAD PANEL (after PIN) ---------- */
+/* ---------- LOAD PANEL ---------- */
 async function loadPanel(){
   // Fetch fresh rates from proxy; fall back to localStorage
   if(proxyToken){
@@ -613,6 +553,9 @@ function bindSettings(){
 /* ---------- USER ACCESS ---------- */
 const SUPER_ADMIN_EMAIL = 'mailyuvanesh@gmail.com';
 let usersDraft = [];
+// Pages each user can open (ids match the proxy's MODULE_IDS). modules:null
+// means all of them — including any added later. Admins always have all.
+const MODULES = [['schedule','Schedule'],['tasks','Daily tasks'],['quotes','Quotes'],['pipeline','Leads'],['equipment','Equipment'],['crew','Crew'],['growth','Growth report'],['reviews','Reviews']];
 // chatId -> {username, firstName, lastName, lastSeenAt} — everyone who has
 // ever messaged the bot, fed into the Telegram dropdown below so nobody
 // ever has to type/paste a raw numeric chat id.
@@ -628,7 +571,7 @@ async function loadUsers(){
       if(res.ok){
         const d=await res.json();
         if(Array.isArray(d.users)&&d.users.length)
-          usersDraft=d.users.map(u=>({email:(u.email||'').toLowerCase(),name:u.name||'',role:u.role==='admin'?'admin':'coordinator',telegramChatId:u.telegramChatId||''}));
+          usersDraft=d.users.map(u=>({email:(u.email||'').toLowerCase(),name:u.name||'',role:u.role==='admin'?'admin':'coordinator',telegramChatId:u.telegramChatId||'',modules:Array.isArray(u.modules)?u.modules.slice():null}));
       }
     }catch(e){}
   }
@@ -668,6 +611,8 @@ function renderUsers(){
             <option value="coordinator"${u.role!=='admin'?' selected':''}>Coordinator</option>
           </select></td>
       <td><select class="t" data-i="${i}" data-k="telegramChatId">${telegramOptionsHtml(u.telegramChatId)}</select></td>
+      <td>${u.role==='admin' ? '<span style="color:var(--muted2);font-size:12.5px;padding:0 6px">All modules (admin)</span>'
+        : `<div class="mod-chips">${MODULES.map(([id,label])=>`<label class="mod-chip"><input type="checkbox" data-mod="${id}" data-i="${i}"${!u.modules||u.modules.includes(id)?' checked':''}>${label}</label>`).join('')}</div>`}</td>
       <td>${isSuper?'<span title="Always an admin" style="color:var(--muted2)">🔒</span>':`<button class="rc-del" data-del="${i}" title="Remove">×</button>`}</td>`;
     body.appendChild(tr);
   });
@@ -677,15 +622,22 @@ function renderUsers(){
       usersDraft[i][k] = k==='email' ? e.target.value.trim().toLowerCase() : e.target.value;
     });
   });
+  body.querySelectorAll("[data-mod]").forEach(cb=>cb.addEventListener("change",e=>{
+    const i=+e.target.dataset.i;
+    const on=[...body.querySelectorAll(`[data-mod][data-i="${i}"]`)].filter(x=>x.checked).map(x=>x.dataset.mod);
+    usersDraft[i].modules = on.length===MODULES.length ? null : on;
+  }));
+  body.querySelectorAll('select[data-k="role"]').forEach(sel=>sel.addEventListener("change",()=>renderUsers()));
   body.querySelectorAll("[data-del]").forEach(b=>b.addEventListener("click",e=>{
     usersDraft.splice(+e.target.dataset.del,1); renderUsers();
   }));
 }
-function addUser(){ usersDraft.push({email:"",name:"",role:"coordinator",telegramChatId:""}); renderUsers(); }
+function addUser(){ usersDraft.push({email:"",name:"",role:"coordinator",telegramChatId:"",modules:null}); renderUsers(); }
 async function saveUsers(){
   const btn=document.getElementById("usersSave"); btn.disabled=true; btn.textContent="Saving…";
   let users=usersDraft
-    .map(u=>({email:(u.email||"").trim().toLowerCase(), name:(u.name||"").trim(), role:u.role==='admin'?'admin':'coordinator', telegramChatId:(u.telegramChatId||"").trim()}))
+    .map(u=>Object.assign({email:(u.email||"").trim().toLowerCase(), name:(u.name||"").trim(), role:u.role==='admin'?'admin':'coordinator', telegramChatId:(u.telegramChatId||"").trim()},
+      u.role!=='admin' && Array.isArray(u.modules) ? {modules:u.modules.slice()} : {}))
     .filter(u=>/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(u.email));
   const seen={}; users.forEach(u=>seen[u.email]=u); users=Object.values(seen);   // dedupe, last wins
   const sa=users.find(u=>u.email===SUPER_ADMIN_EMAIL);
@@ -698,7 +650,7 @@ async function saveUsers(){
       if(res.status===401){ localStorage.removeItem('ryst_proxy_token'); window.location.href='login.html'; return; }
       else if(res.status===403) toast("Admins only — cannot save");
       else if(!res.ok) toast("Save failed ("+res.status+")");
-      else toast("User access saved · applies on next sign-in");
+      else toast("User access saved · modules apply right away, role changes on next sign-in");
     }catch(e){ toast("Cloud unreachable"); }
   }
   usersDraft=users.map(u=>({...u})); renderUsers();
@@ -773,5 +725,6 @@ function toast(msg){
   setTimeout(()=>t.classList.remove("show"),2400);
 }
 </script>
+<script src="assets/shell.js"></script>
 </body>
 </html>

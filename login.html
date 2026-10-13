@@ -157,8 +157,10 @@
   }
 </style>
 <script src="https://accounts.google.com/gsi/client" async defer></script>
+<link rel="stylesheet" href="assets/shell.css">
+<script src="assets/shell.js"></script>
 </head>
-<body>
+<body data-shell="manual">
 
 <!-- ── LOGIN ── -->
 <div id="loginView" class="view">
@@ -259,6 +261,8 @@ function showHome(){
   document.getElementById('loginView').setAttribute('hidden','');
   document.getElementById('loginView').style.display='';
   document.getElementById('homeView').removeAttribute('hidden');
+  // This view is the app's Schedule page (dashboard.html is the home now).
+  if (window.RystShell) RystShell.mount({ page:'schedule', title:'Schedule', sub:'Calendar, every booked session and WhatsApp reminders', into:'.dash-wrap' });
   applyRoleView();
   checkFollowups();
   loadHomeCalendar();
@@ -718,7 +722,7 @@ async function handleGoogleLogin(credentialResponse) {
       if (data.email) localStorage.setItem('ryst_user_email', data.email);
       if (data.role)  localStorage.setItem('ryst_user_role', data.role);
       errEl.textContent = '';
-      showHome();
+      location.href = 'dashboard.html';
     } else {
       errEl.textContent = data.error || 'Access denied.';
     }
@@ -742,6 +746,8 @@ applyCustomLogo();
 // on home, and the tool pages re-validate when opened.
 (function bootAuth(){
   if(!proxyToken) return; // no token → stay on the login form
+  // Signed in: the dashboard is home; ?view=schedule is the Schedule page.
+  if(new URLSearchParams(location.search).get('view')!=='schedule'){ location.replace('dashboard.html'); return; }
   showHome();
   fetch(PROXY_URL+'/quotes',{headers:{'X-Token':proxyToken}}).then(res=>{
     if(res && res.status===401){

@@ -76,8 +76,9 @@
   .spin{width:34px;height:34px;border:3px solid var(--line);border-top-color:var(--accent);border-radius:50%;animation:sp 1s linear infinite}
   @keyframes sp{to{transform:rotate(360deg)}}
 </style>
+<link rel="stylesheet" href="assets/shell.css">
 </head>
-<body>
+<body data-shell="pipeline">
 <div class="wrap">
   <header class="top">
     <div class="ttl">Enquiry Sheet Import<small>Studio RYST · one-time migration tool</small></div>
@@ -299,5 +300,6 @@ $('#pushBtn').addEventListener('click', async ()=>{
 
 init();
 </script>
+<script src="assets/shell.js"></script>
 </body>
 </html>
