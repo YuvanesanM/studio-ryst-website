@@ -343,8 +343,7 @@ async function loadWaReminders(){
 // Optional (off by default, remembered per-browser): ticking "Show unpaid
 // quotes" overlays quotes that have a session date but aren't fully paid —
 // same subtotal/discount/GST math and "fully paid" definition quote.html's
-// own "Paid" badge uses, kept in sync with the server's GLOBAL_MAX_DISCOUNT_PCT
-// — so staff can spot upcoming sessions that still need a payment follow-up,
+// own "Paid" badge uses — so staff can spot upcoming sessions that still need a payment follow-up,
 // whether or not they've already been Confirmed and synced to the schedule.
 let showUnpaidQuotes = localStorage.getItem('ryst_show_unpaid_cal')==='1';
 function lineTotal(it){ return (parseFloat(it.price)||0)*(parseFloat(it.qty)||0); }
@@ -353,8 +352,7 @@ function quoteGrandTotal(q){
   const items=q.items||[];
   const sub=items.reduce((s,it)=>s+lineTotal(it),0);
   const gst=items.reduce((s,it)=>s+lineGst(it),0);
-  const maxDisc=Math.floor(sub*0.50); // global ceiling — matches the server's GLOBAL_MAX_DISCOUNT_PCT
-  const discount=Math.min(parseFloat(q.discount)||0, maxDisc);
+  const discount=Math.min(parseFloat(q.discount)||0, sub); // saved discounts are trusted; the limit is enforced when one is set
   return Math.round(sub+gst-discount);
 }
 function quotePaidTotal(q){ return (q.payments||[]).reduce((s,p)=>s+(Number(p.amount)||0),0); }

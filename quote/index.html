@@ -450,8 +450,7 @@ function grandTotalOf(q){
   const items = Array.isArray(q.items) ? q.items.filter(it=>it.desc||it.price) : [];
   const sub = items.reduce((s,it)=>s+lineTotal(it),0);
   const gst = items.reduce((s,it)=>s+lineGst(it),0);
-  const maxDisc = Math.floor(sub*0.50); // global ceiling — matches the server's GLOBAL_MAX_DISCOUNT_PCT
-  const discount = Math.min(parseFloat(q.discount)||0, maxDisc);
+  const discount = Math.min(parseFloat(q.discount)||0, sub); // saved discount is trusted; the limit is enforced when it is set
   return sub + gst - discount;
 }
 function fmtDate(iso){
@@ -487,8 +486,7 @@ function renderQuote(q){
 
   const sub = items.reduce((s,it)=>s+lineTotal(it),0);
   const gst = items.reduce((s,it)=>s+lineGst(it),0);
-  const maxDisc = Math.floor(sub*0.50); // global ceiling — matches the server's GLOBAL_MAX_DISCOUNT_PCT
-  const discount = Math.min(parseFloat(q.discount)||0, maxDisc);
+  const discount = Math.min(parseFloat(q.discount)||0, sub); // saved discount is trusted; the limit is enforced when it is set
   const grand = sub + gst - discount;
   const rates = [...new Set(items.filter(it=>lineTotal(it)>0).map(it=>parseFloat(it.gst)||0))];
   $('#tGstLbl').textContent = rates.length===1 ? `GST (${rates[0]}%)` : 'GST';
@@ -659,8 +657,7 @@ function buildPdfDoc(q){
 
   const sub = items.reduce((s,it)=>s+lineTotal(it),0);
   const gst = items.reduce((s,it)=>s+lineGst(it),0);
-  const maxDisc = Math.floor(sub*0.50); // global ceiling — matches the server's GLOBAL_MAX_DISCOUNT_PCT
-  const discount = Math.min(parseFloat(q.discount)||0, maxDisc);
+  const discount = Math.min(parseFloat(q.discount)||0, sub); // saved discount is trusted; the limit is enforced when it is set
   const tot = sub+gst-discount;
   const rates=[...new Set(items.filter(it=>lineTotal(it)>0).map(it=>parseFloat(it.gst)||0))];
   $('#pGstLbl').textContent = rates.length===1 ? `GST (${rates[0]}%)` : 'GST';

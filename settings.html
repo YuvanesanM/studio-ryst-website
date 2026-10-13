@@ -142,6 +142,9 @@
       </table>
     </div>
     <button class="rc-add" id="rcAdd">+ Add service</button>
+    <div class="gh-mini" style="margin-top:28px">Quote discount limit</div>
+    <label class="f" style="max-width:280px"><span>Maximum discount (% of pre-tax value)</span><input type="number" class="t" id="maxDiscPct" min="0" max="100" step="0.5" placeholder="50"></label>
+    <p class="hint" style="max-width:640px">The most a quote's discount can be, as a percentage of its pre-tax total. It applies on the quote page and on the server whenever a discount is set or increased. Quotes already saved keep the discount they have, so changing this never re-prices them. Saved with the rate card.</p>
     <div class="rc-foot">
       <button class="btn primary" id="rcSave">Save rate card</button>
     </div>
@@ -416,16 +419,19 @@ async function loadPanel(){
       const res=await fetch(PROXY_URL+'/rates',{headers:{'X-Token':proxyToken}});
       if(res.ok){
         const d=await res.json();
+        const mp=parseFloat(d.maxDiscountPct);
+        if(isFinite(mp)&&mp>=0&&mp<=100) settings.maxDiscountPct=mp;
         if(Array.isArray(d.rateCard)&&d.rateCard.length){
           settings.rateCard=normalizeRateCard(d.rateCard);
-          localStorage.setItem(K_SET,JSON.stringify(settings));
         }
+        localStorage.setItem(K_SET,JSON.stringify(settings));
       }
     }catch(e){}
   }
   applyLogo();
   rcDraft=settings.rateCard.map(c=>({...c}));
   renderRateCard();
+  document.getElementById("maxDiscPct").value=(settings.maxDiscountPct!=null?settings.maxDiscountPct:50);
   document.getElementById("setCompany").value=settings.company||"";
   document.getElementById("setBank").value=settings.bank||"";
   document.getElementById("setTerms").value=settings.terms||"";
@@ -488,6 +494,9 @@ function updateRcMargin(i){
 
 /* ---------- SAVE RATE CARD ---------- */
 async function saveRateCard(){
+  const maxDisc=parseFloat(document.getElementById("maxDiscPct").value);
+  if(!isFinite(maxDisc)||maxDisc<0||maxDisc>100){ toast("Maximum discount must be between 0 and 100"); document.getElementById("maxDiscPct").focus(); return; }
+  settings.maxDiscountPct=maxDisc;
   const btn=document.getElementById("rcSave");
   btn.disabled=true; btn.textContent="Saving…";
   settings.rateCard=normalizeRateCard(rcDraft
@@ -506,7 +515,7 @@ async function saveRateCard(){
     try{
       const res=await fetch(PROXY_URL+'/rates',{method:'PUT',
         headers:{'X-Token':proxyToken,'Content-Type':'application/json'},
-        body:JSON.stringify({version:1,rateCard:settings.rateCard})});
+        body:JSON.stringify({version:1,rateCard:settings.rateCard,maxDiscountPct:settings.maxDiscountPct})});
       if(res.status===401){ localStorage.removeItem('ryst_proxy_token'); window.location.href='login.html'; return; }
       if(!res.ok) toast("Saved locally — cloud sync failed ("+res.status+")");
       else toast("Rate card saved");
