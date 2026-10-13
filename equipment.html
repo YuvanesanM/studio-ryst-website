@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Equipment — Studio RYST</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#f3f4f1; --panel:#ffffff; --panel2:#f7f8f5;
+    --line:#e3e5e0; --accent:#3d9b69; --accent-d:#2f7d54; --accent-soft:#eaf4ee;
+    --ink:#1d211c; --muted:#5f655d; --muted2:#7d847b; --danger:#c0584b; --danger-soft:#fbeceb; --warn:#b7791f; --warn-soft:#fdf4e3;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;min-height:100%;background:var(--bg);color:var(--ink);font-family:"Outfit",system-ui,sans-serif;font-weight:400;-webkit-font-smoothing:antialiased}
+  button{font-family:inherit;cursor:pointer}
+  input,textarea,select{font-family:inherit}
+  [hidden]{display:none!important}
+
+  header.bar{display:flex;align-items:center;gap:10px;padding:10px 20px;background:var(--panel);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:10;height:59px}
+  header.bar img.hdr-logo{height:36px;object-fit:contain}
+  .bar-title{font-size:14px;font-weight:600;color:var(--ink);flex:1}
+  .btn{display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border-radius:9px;border:1px solid var(--line);background:var(--panel);font-size:13px;font-weight:500;color:var(--ink);text-decoration:none;transition:.15s;white-space:nowrap}
+  .btn:hover{border-color:var(--accent);color:var(--accent-d)}
+  .btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+  .btn.primary:hover{background:var(--accent-d);border-color:var(--accent-d);color:#fff}
+  .btn.danger:hover{border-color:var(--danger);color:var(--danger)}
+  .btn.sm{padding:6px 10px;font-size:12px}
+  .btn:disabled{opacity:.5;cursor:default}
+
+  .wrap{max-width:1180px;margin:0 auto;padding:24px 28px 80px}
+  .sd{color:var(--muted);font-size:13px;margin:0 0 16px}
+  .t{width:100%;border:1px solid var(--line);border-radius:9px;padding:9px 12px;font-size:13.5px;background:var(--panel);color:var(--ink);outline:none;transition:.15s}
+  .t:focus{border-color:var(--accent)}
+  .t.bad{border-color:var(--danger)}
+  textarea.t{resize:vertical;min-height:64px}
+  .f{display:flex;flex-direction:column;gap:5px;margin-bottom:12px;min-width:0}
+  .f>span{font-size:11.5px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.4px}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:0 14px}
+  .grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0 14px}
+  .gh{font-size:11px;letter-spacing:1.2px;text-transform:uppercase;color:var(--accent-d);font-weight:700;margin:22px 0 12px;display:flex;align-items:center;gap:8px}
+  .gh::after{content:"";flex:1;height:1px;background:var(--line)}
+  .hint{color:var(--muted2);font-size:12px;margin:3px 0 0}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px 20px}
+  .empty{background:var(--panel);border:1px dashed #cdd1cb;border-radius:14px;padding:36px 20px;text-align:center;color:var(--muted)}
+  .loading{padding:60px 0;text-align:center;color:var(--muted2)}
+
+  /* summary chips */
+  .chips{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:16px}
+  .chip{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:11px 14px;text-align:left;color:var(--ink)}
+  button.chip:hover{border-color:var(--accent)}
+  .chip.on{border-color:var(--accent);background:var(--accent-soft)}
+  .chip small{display:block;font-size:10.5px;color:var(--muted2);text-transform:uppercase;letter-spacing:.5px;font-weight:700}
+  .chip b{font-size:21px;font-weight:700}
+  .chip.alert b{color:var(--danger)}
+  .chip.warn b{color:var(--warn)}
+
+  .toolbar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:16px}
+  .toolbar .t{width:auto;min-width:130px}
+  .toolbar .grow{flex:1;min-width:180px;max-width:300px}
+  .toolbar .sp{flex:1}
+
+  /* cards */
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:14px}
+  .item{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px 16px;display:flex;flex-direction:column;gap:8px;cursor:pointer;text-align:left;font:inherit;color:inherit}
+  .item:hover{border-color:var(--accent)}
+  .item.retired{opacity:.55}
+  .item-top{display:flex;gap:10px;align-items:flex-start}
+  .item-name{font-weight:700;font-size:15px;line-height:1.25}
+  .item-sub{font-size:12px;color:var(--muted);margin-top:1px}
+  .pill{display:inline-block;font-size:10.5px;font-weight:700;letter-spacing:.3px;text-transform:uppercase;padding:3px 8px;border-radius:20px;background:var(--panel2);color:var(--muted);border:1px solid var(--line);white-space:nowrap}
+  .pill.ok{background:var(--accent-soft);color:var(--accent-d);border-color:#cfe6d8}
+  .pill.warn{background:var(--warn-soft);color:var(--warn);border-color:#f1dcb3}
+  .pill.bad{background:var(--danger-soft);color:var(--danger);border-color:#f0c9c5}
+  .item-meta{font-size:12.5px;color:var(--muted);display:flex;flex-direction:column;gap:2px}
+  .item-meta .late{color:var(--danger);font-weight:600}
+  .tags{display:flex;gap:6px;flex-wrap:wrap}
+
+  /* editor */
+  .ed-head{display:flex;align-items:center;gap:10px;margin-bottom:18px;flex-wrap:wrap}
+  .ed-head h2{margin:0;font-size:19px;flex:1;min-width:200px}
+  .loanbox{background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+  .loanbox .out-now{font-weight:600;font-size:13.5px;margin-bottom:8px}
+  .log{margin:0;padding:0;list-style:none;font-size:12.5px;color:var(--muted)}
+  .log li{padding:5px 0;border-bottom:1px solid var(--line)}
+  .log li:last-child{border-bottom:none}
+  .log b{color:var(--ink);font-weight:600}
+
+  /* check view */
+  .crow{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:center;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:11px 14px;margin-bottom:8px}
+  .crow.ok{border-color:#cfe6d8;background:var(--accent-soft)}
+  .crow.issue{border-color:#f1dcb3;background:var(--warn-soft)}
+  .crow-btns{display:flex;gap:6px}
+  .crow-issue{grid-column:1 / -1;display:grid;grid-template-columns:200px 1fr;gap:8px}
+  .seg{border:1px solid var(--line);background:#fff;border-radius:9px;padding:7px 12px;font-size:12.5px;font-weight:600;color:var(--muted)}
+  .seg.on-ok{background:var(--accent);border-color:var(--accent);color:#fff}
+  .seg.on-issue{background:var(--warn);border-color:var(--warn);color:#fff}
+  .cbar{position:sticky;bottom:0;background:var(--bg);padding:12px 0;display:flex;gap:10px;align-items:center;flex-wrap:wrap;border-top:1px solid var(--line);margin-top:10px}
+  .cbar .sp{flex:1}
+
+  .toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(20px);background:#1d211c;color:#fff;padding:12px 20px;border-radius:10px;font-size:13px;opacity:0;transition:.25s;z-index:60;pointer-events:none;max-width:90vw}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+  @media(max-width:700px){
+    .wrap{padding:16px 12px 70px}
+    .grid2,.grid3{grid-template-columns:1fr}
+    .crow-issue{grid-template-columns:1fr}
+    .toolbar .t{flex:1 1 140px}
+    .toolbar .grow{max-width:none}
+  }
+</style>
+</head>
+<body>
+
+<header class="bar">
+  <img class="hdr-logo" src="assets/logo-300.png" alt="Studio RYST">
+  <span class="bar-title">Equipment</span>
+  <a class="btn" href="daily-tasks.html">🗓 Daily</a>
+  <a class="btn" href="login.html">← Home</a>
+</header>
+
+<main class="wrap">
+  <div id="loading" class="loading">Loading…</div>
+
+  <!-- ===== LIST ===== -->
+  <section id="vList" hidden>
+    <p class="sd">Everything the studio owns — where it is, what shape it’s in, and who has it. Flag a problem and the owner is alerted on Telegram.</p>
+    <div class="chips" id="chips"></div>
+    <div class="toolbar">
+      <input class="t grow" id="q" placeholder="Search name, brand, serial…">
+      <select class="t" id="fZone"></select>
+      <select class="t" id="fCat"></select>
+      <select class="t" id="fCond"></select>
+      <span class="sp"></span>
+      <button class="btn" id="csv" type="button">Export CSV</button>
+      <button class="btn" id="startCheck" type="button">✓ Check a zone</button>
+      <button class="btn primary" id="addItem" type="button">+ Add item</button>
+    </div>
+    <div id="list"></div>
+  </section>
+
+  <!-- ===== EDITOR ===== -->
+  <section id="vEdit" hidden>
+    <div class="ed-head">
+      <h2 id="edTitle">Add equipment</h2>
+      <button class="btn" id="edCancel" type="button">Cancel</button>
+      <button class="btn primary" id="edSave" type="button">Save</button>
+    </div>
+    <div class="card">
+      <div class="gh" style="margin-top:0">Item</div>
+      <div class="grid2">
+        <label class="f"><span>Name *</span><input class="t" id="eName" autocomplete="off" placeholder="e.g. Sony FX3 camera body"></label>
+        <label class="f"><span>Category</span><select class="t" id="eCat"></select></label>
+        <label class="f"><span>Zone *</span><select class="t" id="eZone"></select></label>
+        <label class="f"><span>Where it’s kept</span><input class="t" id="eLoc" autocomplete="off" placeholder="e.g. Shelf 2, grey cabinet"></label>
+        <label class="f"><span>Brand</span><input class="t" id="eBrand" autocomplete="off"></label>
+        <label class="f"><span>Model</span><input class="t" id="eModel" autocomplete="off"></label>
+        <label class="f"><span>Serial number</span><input class="t" id="eSerial" autocomplete="off"><span class="hint" style="text-transform:none;font-weight:400;letter-spacing:0">Needed for insurance and theft reports.</span></label>
+        <label class="f"><span>Quantity</span><input class="t" id="eQty" type="number" min="1" step="1" inputmode="numeric" value="1"></label>
+      </div>
+
+      <div class="gh">Condition</div>
+      <div class="grid2">
+        <label class="f"><span>Condition</span><select class="t" id="eCond"></select></label>
+        <label class="f" id="eIssueWrap"><span>What’s wrong</span><input class="t" id="eIssue" autocomplete="off" placeholder="e.g. Left earcup crackles"></label>
+        <label class="f"><span>Last checked</span><input class="t" id="eChecked" type="date"></label>
+        <label class="f"><span>Next service due</span><input class="t" id="eService" type="date"></label>
+      </div>
+
+      <div class="gh">Purchase &amp; warranty</div>
+      <div class="grid3">
+        <label class="f"><span>Purchase date</span><input class="t" id="ePurchased" type="date"></label>
+        <label class="f"><span>Warranty until</span><input class="t" id="eWarranty" type="date"></label>
+        <label class="f" id="ePriceWrap"><span>Price each (₹)</span><input class="t" id="ePrice" inputmode="decimal" placeholder="0"></label>
+      </div>
+      <label class="f"><span>Invoice / photo link</span><input class="t" id="eLink" autocomplete="off" placeholder="Link to the invoice or a photo (Drive, etc.)"></label>
+
+      <div class="gh" id="loanHead">On loan / taken out</div>
+      <div class="loanbox" id="loanBox">
+        <div class="out-now" id="outNow"></div>
+        <div class="grid3" id="loanFields">
+          <label class="f" style="margin:0"><span>Taken by</span><input class="t" id="eOutTo" autocomplete="off" placeholder="Name"></label>
+          <label class="f" style="margin:0"><span>Due back</span><input class="t" id="eOutDue" type="date"></label>
+          <div style="display:flex;align-items:flex-end"><button class="btn" id="outBtn" type="button">Check out</button></div>
+        </div>
+      </div>
+
+      <div class="gh">Notes</div>
+      <label class="f"><textarea class="t" id="eNotes" rows="2" placeholder="Accessories included, quirks, who to call for repairs…"></textarea></label>
+
+      <div id="logWrap"><div class="gh">History</div><ul class="log" id="logList"></ul></div>
+      <div style="display:flex;gap:10px;margin-top:16px">
+        <button class="btn danger" id="edDelete" type="button" hidden>Delete item</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== ZONE CHECK ===== -->
+  <section id="vCheck" hidden>
+    <div class="ed-head">
+      <h2>Equipment check</h2>
+      <select class="t" id="ckZone" style="width:auto"></select>
+      <button class="btn" id="ckCancel" type="button">Cancel</button>
+    </div>
+    <p class="sd" id="ckHelp">Go through each item, test it, and tap OK — or Issue if something’s wrong. Saving stamps today as the last-checked date.</p>
+    <div id="ckList"></div>
+    <div class="cbar">
+      <span id="ckCount" class="hint"></span><span class="sp"></span>
+      <button class="btn" id="ckAllOk" type="button">Mark all OK</button>
+      <button class="btn primary" id="ckSave" type="button">Save check</button>
+    </div>
+  </section>
+</main>
+<div class="toast" id="toast"></div>
+
+<script>
+const PROXY_URL = 'https://ryst-109a-proxy.onrender.com/studio';
+let proxyToken = localStorage.getItem('ryst_proxy_token') || '';
+const ME = (localStorage.getItem('ryst_user_email') || '').toLowerCase();
+// Purchase prices are admin-only. The proxy strips them from coordinator reads
+// and restores them on coordinator saves; this just hides the fields.
+const IS_ADMIN = (() => {
+  try {
+    let p = (proxyToken.split('.')[0] || '').replace(/-/g, '+').replace(/_/g, '/');
+    p += '='.repeat((4 - p.length % 4) % 4);
+    const d = JSON.parse(atob(p));
+    if (d && d.role) return d.role === 'admin';
+  } catch (e) {}
+  return localStorage.getItem('ryst_user_role') === 'admin';
+})();
+
+const ZONES = ['Podcast', 'Photography', 'Kitchen', 'Common / IT'];
+const CATEGORIES = ['Camera', 'Lens', 'Audio', 'Lighting', 'Support (stands, tripods)', 'Computing / IT', 'Kitchen', 'Furniture', 'Set / backdrop', 'Other'];
+const CONDITIONS = ['Good', 'Needs attention', 'Needs repair', 'Out of service', 'Retired'];
+const PROBLEM = new Set(['Needs attention', 'Needs repair', 'Out of service']);
+const STALE_DAYS = 35, SERVICE_SOON = 30, WARRANTY_SOON = 60;
+
+const $ = s => document.querySelector(s);
+const esc = s => (s ?? '').toString().replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const num = v => { const n = parseFloat(v); return isFinite(n) ? n : 0; };
+const inr = n => Number(n || 0).toLocaleString('en-IN', { maximumFractionDigits: 0 });
+const pad = n => String(n).padStart(2, '0');
+const isoOf = d => d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate());
+const todayISO = () => isoOf(new Date());
+const parseISO = iso => new Date(iso + 'T00:00:00');
+const daysFrom = iso => Math.round((parseISO(iso) - parseISO(todayISO())) / 864e5);   // negative = in the past
+const fmtDate = iso => { if (!iso) return ''; const d = parseISO(iso); return isNaN(d) ? iso : d.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }); };
+const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
+function toast(msg) { const t = $('#toast'); t.textContent = msg; t.classList.add('show'); clearTimeout(toast._t); toast._t = setTimeout(() => t.classList.remove('show'), 2800); }
+const ago = iso => { if (!iso) return 'never'; const n = -daysFrom(iso); return n <= 0 ? 'today' : n === 1 ? 'yesterday' : n < 60 ? n + ' days ago' : fmtDate(iso); };
+
+/* ---------- data ---------- */
+let DB = { version: 1, items: [] };
+const normalize = d => ({ version: 1, items: Array.isArray(d && d.items) ? d.items : [] });
+async function api(method, body) {
+  const res = await fetch(PROXY_URL + '/equipment', {
+    method,
+    headers: Object.assign({ 'X-Token': proxyToken }, body ? { 'Content-Type': 'application/json' } : {}),
+    body: body ? JSON.stringify(body) : undefined,
+  });
+  if (res.status === 401) { localStorage.removeItem('ryst_proxy_token'); location.href = 'login.html'; throw new Error('Session expired'); }
+  const d = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(d.error || ('Server error ' + res.status));
+  return d;
+}
+// Read the latest copy, apply one change, write it back — so two people
+// editing different items never overwrite each other.
+let saving = false;
+async function mutate(fn) {
+  if (saving) throw new Error('Still saving — try again in a moment');
+  saving = true;
+  try {
+    const fresh = normalize(await api('GET'));
+    const r = fn(fresh);
+    await api('PUT', fresh);
+    DB = fresh;
+    return r;
+  } finally { saving = false; }
+}
+const byId = id => DB.items.find(i => i.id === id);
+const addLog = (it, text) => { it.log = (it.log || []).concat({ at: new Date().toISOString(), by: ME, text }).slice(-20); };
+
+/* ---------- derived ---------- */
+const isActive = i => i.condition !== 'Retired';
+const isProblem = i => PROBLEM.has(i.condition);
+const isOut = i => !!(i.out && i.out.to);
+const isDue = i => isActive(i) && ((i.nextService && daysFrom(i.nextService) <= SERVICE_SOON) || (i.warrantyUntil && daysFrom(i.warrantyUntil) >= 0 && daysFrom(i.warrantyUntil) <= WARRANTY_SOON));
+const isStale = i => isActive(i) && (!i.lastChecked || -daysFrom(i.lastChecked) > STALE_DAYS);
+const condClass = c => c === 'Good' ? 'ok' : c === 'Needs attention' ? 'warn' : c === 'Retired' ? '' : 'bad';
+
+/* ---------- list ---------- */
+let quick = '';   // '', 'problem', 'out', 'due', 'stale'
+function filtered() {
+  const q = $('#q').value.trim().toLowerCase(), z = $('#fZone').value, c = $('#fCat').value, k = $('#fCond').value;
+  return DB.items.filter(i =>
+    (k === 'active' ? isActive(i) : k === 'all' ? true : i.condition === k) &&
+    (!z || i.zone === z) && (!c || i.category === c) &&
+    (!quick || (quick === 'problem' ? isProblem(i) && isActive(i) : quick === 'out' ? isOut(i) : quick === 'due' ? isDue(i) : isStale(i))) &&
+    (!q || [i.name, i.brand, i.model, i.serial, i.location, i.notes].join(' ').toLowerCase().includes(q))
+  ).sort((a, b) => (a.zone || '').localeCompare(b.zone || '') || (a.name || '').localeCompare(b.name || ''));
+}
+function renderChips() {
+  const act = DB.items.filter(isActive);
+  const n = f => act.filter(f).length;
+  const value = act.reduce((s, i) => s + num(i.price) * (parseInt(i.qty, 10) || 1), 0);
+  const chip = (key, label, val, cls) => `<button class="chip${cls ? ' ' + cls : ''}${quick === key ? ' on' : ''}" type="button" data-quick="${key}"><small>${label}</small><b>${val}</b></button>`;
+  $('#chips').innerHTML =
+    `<div class="chip"><small>Active items</small><b>${act.reduce((s, i) => s + (parseInt(i.qty, 10) || 1), 0)}</b></div>` +
+    chip('problem', 'Needs attention', n(isProblem), n(isProblem) ? 'alert' : '') +
+    chip('out', 'On loan', n(isOut), '') +
+    chip('due', 'Service / warranty due', n(isDue), n(isDue) ? 'warn' : '') +
+    chip('stale', `Not checked in ${STALE_DAYS}+ days`, n(isStale), n(isStale) ? 'warn' : '') +
+    (IS_ADMIN ? `<div class="chip"><small>Purchase value</small><b>₹${inr(value)}</b></div>` : '');
+}
+function renderList() {
+  renderChips();
+  const list = filtered();
+  if (!list.length) { $('#list').innerHTML = `<div class="empty">${DB.items.length ? 'Nothing matches these filters.' : 'No equipment yet. Add your cameras, mics, lights and everything else — one item at a time.'}</div>`; return; }
+  $('#list').innerHTML = '<div class="grid">' + list.map(i => {
+    const loan = isOut(i) ? (i.out.due && daysFrom(i.out.due) < 0 ? `<span class="late">With ${esc(i.out.to)} — overdue since ${esc(fmtDate(i.out.due))}</span>` : `<span>With ${esc(i.out.to)}${i.out.due ? ' · due ' + esc(fmtDate(i.out.due)) : ''}</span>`) : '';
+    const tags = [isDue(i) ? '<span class="pill warn">Due soon</span>' : '', isStale(i) ? '<span class="pill">Check overdue</span>' : ''].join('');
+    return `<button class="item${i.condition === 'Retired' ? ' retired' : ''}" type="button" data-id="${esc(i.id)}">
+      <div class="item-top"><div style="flex:1;min-width:0"><div class="item-name">${esc(i.name)}${(parseInt(i.qty, 10) || 1) > 1 ? ' × ' + esc(i.qty) : ''}</div><div class="item-sub">${esc([i.brand, i.model].filter(Boolean).join(' '))}</div></div><span class="pill ${condClass(i.condition)}">${esc(i.condition || 'Good')}</span></div>
+      <div class="item-meta"><span>${esc(i.zone || '—')} · ${esc(i.category || '')}${i.location ? ' · ' + esc(i.location) : ''}</span>${isProblem(i) && i.issueNote ? `<span class="late">${esc(i.issueNote)}</span>` : ''}${loan}<span>Checked ${esc(ago(i.lastChecked))}</span></div>
+      ${tags ? `<div class="tags">${tags}</div>` : ''}</button>`;
+  }).join('') + '</div>';
+}
+function fillFilters() {
+  $('#fZone').innerHTML = '<option value="">All zones</option>' + ZONES.map(z => `<option>${esc(z)}</option>`).join('');
+  $('#fCat').innerHTML = '<option value="">All categories</option>' + CATEGORIES.map(z => `<option>${esc(z)}</option>`).join('');
+  $('#fCond').innerHTML = '<option value="active">Active</option><option value="all">All (incl. retired)</option>' + CONDITIONS.map(c => `<option>${esc(c)}</option>`).join('');
+}
+['#q', '#fZone', '#fCat', '#fCond'].forEach(s => $(s).addEventListener('input', renderList));
+$('#chips').addEventListener('click', e => { const b = e.target.closest('[data-quick]'); if (!b) return; quick = quick === b.dataset.quick ? '' : b.dataset.quick; renderList(); });
+$('#list').addEventListener('click', e => { const b = e.target.closest('[data-id]'); if (b) openEdit(byId(b.dataset.id)); });
+
+const VIEWS = ['vList', 'vEdit', 'vCheck'];
+function show(id) { VIEWS.forEach(v => $('#' + v).hidden = v !== id); window.scrollTo(0, 0); }
+
+/* ---------- csv ---------- */
+$('#csv').addEventListener('click', () => {
+  const cols = ['Name', 'Category', 'Zone', 'Brand', 'Model', 'Serial', 'Qty', 'Condition', 'Issue', 'Location', 'Purchase date'].concat(IS_ADMIN ? ['Price each'] : [], ['Warranty until', 'Next service', 'Last checked', 'Out with', 'Due back', 'Notes']);
+  const rows = DB.items.map(i => [i.name, i.category, i.zone, i.brand, i.model, i.serial, i.qty, i.condition, i.issueNote, i.location, i.purchaseDate].concat(IS_ADMIN ? [i.price] : [], [i.warrantyUntil, i.nextService, i.lastChecked, i.out && i.out.to, i.out && i.out.due, i.notes]));
+  const csv = [cols].concat(rows).map(r => r.map(v => '"' + String(v ?? '').replace(/"/g, '""') + '"').join(',')).join('\r\n');
+  const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob(['﻿' + csv], { type: 'text/csv' })); a.download = 'studio-ryst-equipment-' + todayISO() + '.csv';
+  document.body.appendChild(a); a.click(); a.remove();
+});
+
+/* ---------- editor ---------- */
+let cur = null, curOut = null, dirty = false;
+function fillSelects() {
+  $('#eCat').innerHTML = CATEGORIES.map(c => `<option>${esc(c)}</option>`).join('');
+  $('#eZone').innerHTML = '<option value="">Select zone…</option>' + ZONES.map(c => `<option>${esc(c)}</option>`).join('');
+  $('#eCond').innerHTML = CONDITIONS.map(c => `<option>${esc(c)}</option>`).join('');
+}
+function syncIssue() { $('#eIssueWrap').hidden = !PROBLEM.has($('#eCond').value); }
+function syncLoan() {
+  const out = curOut && curOut.to;
+  $('#outNow').textContent = out ? `With ${curOut.to}${curOut.due ? ' · due back ' + fmtDate(curOut.due) : ''} (since ${fmtDate(curOut.since)})` : 'In the studio.';
+  $('#outBtn').textContent = out ? 'Mark returned' : 'Check out';
+  $('#eOutTo').parentElement.hidden = !!out; $('#eOutDue').parentElement.hidden = !!out;
+}
+function openEdit(it) {
+  cur = it || null; curOut = it && it.out && it.out.to ? Object.assign({}, it.out) : null;
+  $('#edTitle').textContent = it ? it.name : 'Add equipment';
+  const v = (id, val) => { $(id).value = val ?? ''; };
+  v('#eName', it && it.name); $('#eCat').value = (it && it.category) || CATEGORIES[0]; $('#eZone').value = (it && it.zone) || '';
+  v('#eLoc', it && it.location); v('#eBrand', it && it.brand); v('#eModel', it && it.model); v('#eSerial', it && it.serial); v('#eQty', (it && it.qty) || 1);
+  $('#eCond').value = (it && it.condition) || 'Good'; v('#eIssue', it && it.issueNote); v('#eChecked', it && it.lastChecked); v('#eService', it && it.nextService);
+  v('#ePurchased', it && it.purchaseDate); v('#eWarranty', it && it.warrantyUntil); v('#ePrice', it && it.price); v('#eLink', it && it.link); v('#eNotes', it && it.notes);
+  v('#eOutTo', ''); v('#eOutDue', '');
+  $('#ePriceWrap').hidden = !IS_ADMIN;
+  $('#loanBox').hidden = $('#loanHead').hidden = !it;
+  $('#logWrap').hidden = !it || !(it.log || []).length;
+  $('#logList').innerHTML = ((it && it.log) || []).slice().reverse().map(l => `<li><b>${esc(fmtDate(l.at.slice(0, 10)))}</b> · ${esc((l.by || '').split('@')[0])} — ${esc(l.text)}</li>`).join('');
+  $('#edDelete').hidden = !it || !IS_ADMIN;
+  document.querySelectorAll('#vEdit .t').forEach(e => e.classList.remove('bad'));
+  syncIssue(); syncLoan(); dirty = false; show('vEdit'); $('#eName').focus();
+}
+$('#eCond').addEventListener('change', syncIssue);
+$('#vEdit').addEventListener('input', () => { dirty = true; });
+$('#outBtn').addEventListener('click', () => {
+  if (curOut) { curOut = null; }
+  else {
+    const to = $('#eOutTo').value.trim();
+    if (!to) { toast('Who is taking it?'); $('#eOutTo').focus(); return; }
+    curOut = { to, since: todayISO(), due: $('#eOutDue').value };
+  }
+  dirty = true; syncLoan();
+});
+function leave() { if (dirty && !confirm('Discard unsaved changes?')) return false; dirty = false; return true; }
+$('#edCancel').addEventListener('click', () => { if (leave()) { renderList(); show('vList'); } });
+$('#addItem').addEventListener('click', () => openEdit(null));
+$('#edSave').addEventListener('click', async () => {
+  const bad = [], need = (sel, ok) => { $(sel).classList.toggle('bad', !ok); if (!ok) bad.push(sel); };
+  need('#eName', $('#eName').value.trim()); need('#eZone', $('#eZone').value);
+  const qty = parseInt($('#eQty').value, 10); need('#eQty', qty >= 1);
+  if (bad.length) { toast(bad.includes('#eName') ? 'Give the item a name' : bad.includes('#eZone') ? 'Choose which zone it belongs to' : 'Quantity must be 1 or more'); $(bad[0]).focus(); return; }
+  const cond = $('#eCond').value;
+  const rec = {
+    name: $('#eName').value.trim(), category: $('#eCat').value, zone: $('#eZone').value, location: $('#eLoc').value.trim(),
+    brand: $('#eBrand').value.trim(), model: $('#eModel').value.trim(), serial: $('#eSerial').value.trim(), qty,
+    condition: cond, issueNote: PROBLEM.has(cond) ? $('#eIssue').value.trim() : '',
+    lastChecked: $('#eChecked').value, nextService: $('#eService').value,
+    purchaseDate: $('#ePurchased').value, warrantyUntil: $('#eWarranty').value, link: $('#eLink').value.trim(), notes: $('#eNotes').value.trim(),
+    out: curOut || null,
+  };
+  if (IS_ADMIN) rec.price = $('#ePrice').value.trim() === '' ? '' : num($('#ePrice').value);
+  const btn = $('#edSave'); btn.disabled = true; btn.textContent = 'Saving…';
+  try {
+    const savedId = await mutate(doc => {
+      const i = cur ? doc.items.findIndex(x => x.id === cur.id) : -1;
+      const old = i >= 0 ? doc.items[i] : null;
+      const next = Object.assign({}, old || { id: uid(), createdAt: new Date().toISOString(), createdBy: ME }, rec, { updatedAt: new Date().toISOString(), updatedBy: ME });
+      if (!old) addLog(next, 'Added');
+      else {
+        if ((old.condition || 'Good') !== next.condition) addLog(next, `Condition: ${old.condition || 'Good'} → ${next.condition}${next.issueNote ? ' — ' + next.issueNote : ''}`);
+        if (!(old.out && old.out.to) && next.out) addLog(next, `Taken by ${next.out.to}${next.out.due ? ', due back ' + fmtDate(next.out.due) : ''}`);
+        if (old.out && old.out.to && !next.out) addLog(next, `Returned by ${old.out.to}`);
+      }
+      if (i >= 0) doc.items[i] = next; else doc.items.push(next);
+      return next.id;
+    });
+    dirty = false; toast('Saved ' + rec.name); renderList(); show('vList');
+  } catch (e) { toast('Could not save: ' + e.message); }
+  finally { btn.disabled = false; btn.textContent = 'Save'; }
+});
+$('#edDelete').addEventListener('click', async () => {
+  if (!cur || !confirm(`Delete ${cur.name}? This can’t be undone. (To keep the history, set its condition to Retired instead.)`)) return;
+  try { await mutate(doc => { doc.items = doc.items.filter(x => x.id !== cur.id); }); dirty = false; toast('Deleted'); renderList(); show('vList'); }
+  catch (e) { toast('Could not delete: ' + e.message); }
+});
+
+/* ---------- zone check ---------- */
+let ck = {};   // id -> { st: 'ok'|'issue', cond, note }
+function ckItems() { return DB.items.filter(i => i.zone === $('#ckZone').value && isActive(i)).sort((a, b) => (a.name || '').localeCompare(b.name || '')); }
+function renderCheck() {
+  const items = ckItems();
+  if (!items.length) { $('#ckList').innerHTML = `<div class="empty">No active equipment in ${esc($('#ckZone').value)} yet.</div>`; }
+  else $('#ckList').innerHTML = items.map(i => {
+    const s = ck[i.id], prob = isProblem(i);
+    return `<div class="crow${s ? ' ' + s.st : ''}" data-id="${esc(i.id)}">
+      <div><div class="item-name">${esc(i.name)}${(parseInt(i.qty, 10) || 1) > 1 ? ' × ' + esc(i.qty) : ''} ${prob ? `<span class="pill ${condClass(i.condition)}">${esc(i.condition)}</span>` : ''}</div>
+        <div class="item-sub">${esc([[i.brand, i.model].filter(Boolean).join(' '), i.location, 'checked ' + ago(i.lastChecked), prob && i.issueNote].filter(Boolean).join(' · '))}</div></div>
+      <div class="crow-btns"><button class="seg${s && s.st === 'ok' ? ' on-ok' : ''}" type="button" data-st="ok">${prob ? 'Fixed' : 'OK'}</button><button class="seg${s && s.st === 'issue' ? ' on-issue' : ''}" type="button" data-st="issue">${prob ? 'Still an issue' : 'Issue'}</button></div>
+      ${s && s.st === 'issue' ? `<div class="crow-issue"><select class="t" data-cond>${['Needs attention', 'Needs repair', 'Out of service'].map(c => `<option${s.cond === c ? ' selected' : ''}>${c}</option>`).join('')}</select><input class="t" data-note placeholder="What’s wrong?" value="${esc(s.note)}"></div>` : ''}
+    </div>`;
+  }).join('');
+  const marked = items.filter(i => ck[i.id]).length;
+  $('#ckCount').textContent = `${marked} of ${items.length} checked`;
+  $('#ckSave').disabled = !marked;
+}
+function startCheck(zone) {
+  $('#ckZone').innerHTML = ZONES.map(z => `<option${z === zone ? ' selected' : ''}>${esc(z)}</option>`).join('');
+  ck = {}; renderCheck(); show('vCheck');
+}
+$('#startCheck').addEventListener('click', () => startCheck($('#fZone').value || ZONES[0]));
+$('#ckZone').addEventListener('change', () => { ck = {}; renderCheck(); });
+$('#ckCancel').addEventListener('click', () => { renderList(); show('vList'); });
+$('#ckAllOk').addEventListener('click', () => { ckItems().forEach(i => { if (!ck[i.id]) ck[i.id] = { st: 'ok' }; }); renderCheck(); });
+$('#ckList').addEventListener('click', e => {
+  const b = e.target.closest('[data-st]'); if (!b) return;
+  const id = b.closest('.crow').dataset.id, i = byId(id), st = b.dataset.st;
+  ck[id] = ck[id] && ck[id].st === st ? undefined : (st === 'ok' ? { st: 'ok' } : { st: 'issue', cond: isProblem(i) ? i.condition : 'Needs attention', note: isProblem(i) ? (i.issueNote || '') : '' });
+  if (!ck[id]) delete ck[id];
+  renderCheck();
+});
+$('#ckList').addEventListener('input', e => {
+  const row = e.target.closest('.crow'); if (!row || !ck[row.dataset.id]) return;
+  if (e.target.matches('[data-cond]')) ck[row.dataset.id].cond = e.target.value;
+  if (e.target.matches('[data-note]')) ck[row.dataset.id].note = e.target.value;
+});
+$('#ckSave').addEventListener('click', async () => {
+  const entries = Object.entries(ck); if (!entries.length) return;
+  const btn = $('#ckSave'); btn.disabled = true; btn.textContent = 'Saving…';
+  try {
+    await mutate(doc => {
+      const now = new Date().toISOString(), today = todayISO();
+      entries.forEach(([id, s]) => {
+        const it = doc.items.find(x => x.id === id); if (!it) return;
+        it.lastChecked = today; it.updatedAt = now; it.updatedBy = ME;
+        if (s.st === 'ok') { if (PROBLEM.has(it.condition)) { addLog(it, `Checked — fixed (was ${it.condition})`); it.condition = 'Good'; it.issueNote = ''; } else addLog(it, 'Checked — OK'); }
+        else {
+          const was = it.condition || 'Good'; it.condition = s.cond; it.issueNote = (s.note || '').trim();
+          addLog(it, was === s.cond ? `Checked — still ${s.cond}${it.issueNote ? ': ' + it.issueNote : ''}` : `Checked — ${was} → ${s.cond}${it.issueNote ? ': ' + it.issueNote : ''}`);
+        }
+      });
+    });
+    toast(`Check saved — ${entries.length} item${entries.length === 1 ? '' : 's'}`); ck = {}; renderList(); show('vList');
+  } catch (e) { toast('Could not save: ' + e.message); }
+  finally { btn.disabled = false; btn.textContent = 'Save check'; }
+});
+
+/* ---------- boot ---------- */
+window.addEventListener('beforeunload', e => { if (dirty) { e.preventDefault(); e.returnValue = ''; } });
+(async function boot() {
+  if (!proxyToken) { location.href = 'login.html'; return; }
+  fillFilters(); fillSelects();
+  try { DB = normalize(await api('GET')); }
+  catch (e) { $('#loading').textContent = 'Could not load equipment: ' + e.message; return; }
+  $('#loading').hidden = true;
+  const qs = new URLSearchParams(location.search);
+  if (qs.get('filter') === 'due') quick = 'due';
+  renderList();
+  if (qs.get('check')) startCheck(ZONES.includes(qs.get('zone')) ? qs.get('zone') : ZONES[0]); else show('vList');
+})();
+</script>
+</body>
+</html>
