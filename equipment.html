@@ -81,8 +81,6 @@
   /* editor */
   .ed-head{display:flex;align-items:center;gap:10px;margin-bottom:18px;flex-wrap:wrap}
   .ed-head h2{margin:0;font-size:19px;flex:1;min-width:200px}
-  .loanbox{background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:12px 14px}
-  .loanbox .out-now{font-weight:600;font-size:13.5px;margin-bottom:8px}
   .log{margin:0;padding:0;list-style:none;font-size:12.5px;color:var(--muted)}
   .log li{padding:5px 0;border-bottom:1px solid var(--line)}
   .log li:last-child{border-bottom:none}
@@ -126,7 +124,7 @@
 
   <!-- ===== LIST ===== -->
   <section id="vList" hidden>
-    <p class="sd">Everything the studio owns — where it is, what shape it’s in, and who has it. Flag a problem and the owner is alerted on Telegram.</p>
+    <p class="sd">Everything the studio owns — where it is and what shape it’s in. Flag a problem and the owner is alerted on Telegram.</p>
     <div class="chips" id="chips"></div>
     <div class="toolbar">
       <input class="t grow" id="q" placeholder="Search name, brand, serial…">
@@ -176,16 +174,6 @@
         <label class="f" id="ePriceWrap"><span>Price each (₹)</span><input class="t" id="ePrice" inputmode="decimal" placeholder="0"></label>
       </div>
       <label class="f"><span>Invoice / photo link</span><input class="t" id="eLink" autocomplete="off" placeholder="Link to the invoice or a photo (Drive, etc.)"></label>
-
-      <div class="gh" id="loanHead">On loan / taken out</div>
-      <div class="loanbox" id="loanBox">
-        <div class="out-now" id="outNow"></div>
-        <div class="grid3" id="loanFields">
-          <label class="f" style="margin:0"><span>Taken by</span><input class="t" id="eOutTo" autocomplete="off" placeholder="Name"></label>
-          <label class="f" style="margin:0"><span>Due back</span><input class="t" id="eOutDue" type="date"></label>
-          <div style="display:flex;align-items:flex-end"><button class="btn" id="outBtn" type="button">Check out</button></div>
-        </div>
-      </div>
 
       <div class="gh">Notes</div>
       <label class="f"><textarea class="t" id="eNotes" rows="2" placeholder="Accessories included, quirks, who to call for repairs…"></textarea></label>
@@ -285,19 +273,18 @@ const addLog = (it, text) => { it.log = (it.log || []).concat({ at: new Date().t
 /* ---------- derived ---------- */
 const isActive = i => i.condition !== 'Retired';
 const isProblem = i => PROBLEM.has(i.condition);
-const isOut = i => !!(i.out && i.out.to);
 const isDue = i => isActive(i) && ((i.nextService && daysFrom(i.nextService) <= SERVICE_SOON) || (i.warrantyUntil && daysFrom(i.warrantyUntil) >= 0 && daysFrom(i.warrantyUntil) <= WARRANTY_SOON));
 const isStale = i => isActive(i) && (!i.lastChecked || -daysFrom(i.lastChecked) > STALE_DAYS);
 const condClass = c => c === 'Good' ? 'ok' : c === 'Needs attention' ? 'warn' : c === 'Retired' ? '' : 'bad';
 
 /* ---------- list ---------- */
-let quick = '';   // '', 'problem', 'out', 'due', 'stale'
+let quick = '';   // '', 'problem', 'due', 'stale'
 function filtered() {
   const q = $('#q').value.trim().toLowerCase(), z = $('#fZone').value, c = $('#fCat').value, k = $('#fCond').value;
   return DB.items.filter(i =>
     (k === 'active' ? isActive(i) : k === 'all' ? true : i.condition === k) &&
     (!z || i.zone === z) && (!c || i.category === c) &&
-    (!quick || (quick === 'problem' ? isProblem(i) && isActive(i) : quick === 'out' ? isOut(i) : quick === 'due' ? isDue(i) : isStale(i))) &&
+    (!quick || (quick === 'problem' ? isProblem(i) && isActive(i) : quick === 'due' ? isDue(i) : isStale(i))) &&
     (!q || [i.name, i.brand, i.model, i.serial, i.location, i.notes].join(' ').toLowerCase().includes(q))
   ).sort((a, b) => (a.zone || '').localeCompare(b.zone || '') || (a.name || '').localeCompare(b.name || ''));
 }
@@ -309,7 +296,6 @@ function renderChips() {
   $('#chips').innerHTML =
     `<div class="chip"><small>Active items</small><b>${act.reduce((s, i) => s + (parseInt(i.qty, 10) || 1), 0)}</b></div>` +
     chip('problem', 'Needs attention', n(isProblem), n(isProblem) ? 'alert' : '') +
-    chip('out', 'On loan', n(isOut), '') +
     chip('due', 'Service / warranty due', n(isDue), n(isDue) ? 'warn' : '') +
     chip('stale', `Not checked in ${STALE_DAYS}+ days`, n(isStale), n(isStale) ? 'warn' : '') +
     (IS_ADMIN ? `<div class="chip"><small>Purchase value</small><b>₹${inr(value)}</b></div>` : '');
@@ -319,11 +305,10 @@ function renderList() {
   const list = filtered();
   if (!list.length) { $('#list').innerHTML = `<div class="empty">${DB.items.length ? 'Nothing matches these filters.' : 'No equipment yet. Add your cameras, mics, lights and everything else — one item at a time.'}</div>`; return; }
   $('#list').innerHTML = '<div class="grid">' + list.map(i => {
-    const loan = isOut(i) ? (i.out.due && daysFrom(i.out.due) < 0 ? `<span class="late">With ${esc(i.out.to)} — overdue since ${esc(fmtDate(i.out.due))}</span>` : `<span>With ${esc(i.out.to)}${i.out.due ? ' · due ' + esc(fmtDate(i.out.due)) : ''}</span>`) : '';
     const tags = [isDue(i) ? '<span class="pill warn">Due soon</span>' : '', isStale(i) ? '<span class="pill">Check overdue</span>' : ''].join('');
     return `<button class="item${i.condition === 'Retired' ? ' retired' : ''}" type="button" data-id="${esc(i.id)}">
       <div class="item-top"><div style="flex:1;min-width:0"><div class="item-name">${esc(i.name)}${(parseInt(i.qty, 10) || 1) > 1 ? ' × ' + esc(i.qty) : ''}</div><div class="item-sub">${esc([i.brand, i.model].filter(Boolean).join(' '))}</div></div><span class="pill ${condClass(i.condition)}">${esc(i.condition || 'Good')}</span></div>
-      <div class="item-meta"><span>${esc(i.zone || '—')} · ${esc(i.category || '')}${i.location ? ' · ' + esc(i.location) : ''}</span>${isProblem(i) && i.issueNote ? `<span class="late">${esc(i.issueNote)}</span>` : ''}${loan}<span>Checked ${esc(ago(i.lastChecked))}</span></div>
+      <div class="item-meta"><span>${esc(i.zone || '—')} · ${esc(i.category || '')}${i.location ? ' · ' + esc(i.location) : ''}</span>${isProblem(i) && i.issueNote ? `<span class="late">${esc(i.issueNote)}</span>` : ''}<span>Checked ${esc(ago(i.lastChecked))}</span></div>
       ${tags ? `<div class="tags">${tags}</div>` : ''}</button>`;
   }).join('') + '</div>';
 }
@@ -341,55 +326,38 @@ function show(id) { VIEWS.forEach(v => $('#' + v).hidden = v !== id); window.scr
 
 /* ---------- csv ---------- */
 $('#csv').addEventListener('click', () => {
-  const cols = ['Name', 'Category', 'Zone', 'Brand', 'Model', 'Serial', 'Qty', 'Condition', 'Issue', 'Location', 'Purchase date'].concat(IS_ADMIN ? ['Price each'] : [], ['Warranty until', 'Next service', 'Last checked', 'Out with', 'Due back', 'Notes']);
-  const rows = DB.items.map(i => [i.name, i.category, i.zone, i.brand, i.model, i.serial, i.qty, i.condition, i.issueNote, i.location, i.purchaseDate].concat(IS_ADMIN ? [i.price] : [], [i.warrantyUntil, i.nextService, i.lastChecked, i.out && i.out.to, i.out && i.out.due, i.notes]));
+  const cols = ['Name', 'Category', 'Zone', 'Brand', 'Model', 'Serial', 'Qty', 'Condition', 'Issue', 'Location', 'Purchase date'].concat(IS_ADMIN ? ['Price each'] : [], ['Warranty until', 'Next service', 'Last checked', 'Notes']);
+  const rows = DB.items.map(i => [i.name, i.category, i.zone, i.brand, i.model, i.serial, i.qty, i.condition, i.issueNote, i.location, i.purchaseDate].concat(IS_ADMIN ? [i.price] : [], [i.warrantyUntil, i.nextService, i.lastChecked, i.notes]));
   const csv = [cols].concat(rows).map(r => r.map(v => '"' + String(v ?? '').replace(/"/g, '""') + '"').join(',')).join('\r\n');
   const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob(['﻿' + csv], { type: 'text/csv' })); a.download = 'studio-ryst-equipment-' + todayISO() + '.csv';
   document.body.appendChild(a); a.click(); a.remove();
 });
 
 /* ---------- editor ---------- */
-let cur = null, curOut = null, dirty = false;
+let cur = null, dirty = false;
 function fillSelects() {
   $('#eCat').innerHTML = CATEGORIES.map(c => `<option>${esc(c)}</option>`).join('');
   $('#eZone').innerHTML = '<option value="">Select zone…</option>' + ZONES.map(c => `<option>${esc(c)}</option>`).join('');
   $('#eCond').innerHTML = CONDITIONS.map(c => `<option>${esc(c)}</option>`).join('');
 }
 function syncIssue() { $('#eIssueWrap').hidden = !PROBLEM.has($('#eCond').value); }
-function syncLoan() {
-  const out = curOut && curOut.to;
-  $('#outNow').textContent = out ? `With ${curOut.to}${curOut.due ? ' · due back ' + fmtDate(curOut.due) : ''} (since ${fmtDate(curOut.since)})` : 'In the studio.';
-  $('#outBtn').textContent = out ? 'Mark returned' : 'Check out';
-  $('#eOutTo').parentElement.hidden = !!out; $('#eOutDue').parentElement.hidden = !!out;
-}
 function openEdit(it) {
-  cur = it || null; curOut = it && it.out && it.out.to ? Object.assign({}, it.out) : null;
+  cur = it || null;
   $('#edTitle').textContent = it ? it.name : 'Add equipment';
   const v = (id, val) => { $(id).value = val ?? ''; };
   v('#eName', it && it.name); $('#eCat').value = (it && it.category) || CATEGORIES[0]; $('#eZone').value = (it && it.zone) || '';
   v('#eLoc', it && it.location); v('#eBrand', it && it.brand); v('#eModel', it && it.model); v('#eSerial', it && it.serial); v('#eQty', (it && it.qty) || 1);
   $('#eCond').value = (it && it.condition) || 'Good'; v('#eIssue', it && it.issueNote); v('#eChecked', it && it.lastChecked); v('#eService', it && it.nextService);
   v('#ePurchased', it && it.purchaseDate); v('#eWarranty', it && it.warrantyUntil); v('#ePrice', it && it.price); v('#eLink', it && it.link); v('#eNotes', it && it.notes);
-  v('#eOutTo', ''); v('#eOutDue', '');
   $('#ePriceWrap').hidden = !IS_ADMIN;
-  $('#loanBox').hidden = $('#loanHead').hidden = !it;
   $('#logWrap').hidden = !it || !(it.log || []).length;
   $('#logList').innerHTML = ((it && it.log) || []).slice().reverse().map(l => `<li><b>${esc(fmtDate(l.at.slice(0, 10)))}</b> · ${esc((l.by || '').split('@')[0])} — ${esc(l.text)}</li>`).join('');
   $('#edDelete').hidden = !it || !IS_ADMIN;
   document.querySelectorAll('#vEdit .t').forEach(e => e.classList.remove('bad'));
-  syncIssue(); syncLoan(); dirty = false; show('vEdit'); $('#eName').focus();
+  syncIssue(); dirty = false; show('vEdit'); $('#eName').focus();
 }
 $('#eCond').addEventListener('change', syncIssue);
 $('#vEdit').addEventListener('input', () => { dirty = true; });
-$('#outBtn').addEventListener('click', () => {
-  if (curOut) { curOut = null; }
-  else {
-    const to = $('#eOutTo').value.trim();
-    if (!to) { toast('Who is taking it?'); $('#eOutTo').focus(); return; }
-    curOut = { to, since: todayISO(), due: $('#eOutDue').value };
-  }
-  dirty = true; syncLoan();
-});
 function leave() { if (dirty && !confirm('Discard unsaved changes?')) return false; dirty = false; return true; }
 $('#edCancel').addEventListener('click', () => { if (leave()) { renderList(); show('vList'); } });
 $('#addItem').addEventListener('click', () => openEdit(null));
@@ -405,7 +373,6 @@ $('#edSave').addEventListener('click', async () => {
     condition: cond, issueNote: PROBLEM.has(cond) ? $('#eIssue').value.trim() : '',
     lastChecked: $('#eChecked').value, nextService: $('#eService').value,
     purchaseDate: $('#ePurchased').value, warrantyUntil: $('#eWarranty').value, link: $('#eLink').value.trim(), notes: $('#eNotes').value.trim(),
-    out: curOut || null,
   };
   if (IS_ADMIN) rec.price = $('#ePrice').value.trim() === '' ? '' : num($('#ePrice').value);
   const btn = $('#edSave'); btn.disabled = true; btn.textContent = 'Saving…';
@@ -417,8 +384,6 @@ $('#edSave').addEventListener('click', async () => {
       if (!old) addLog(next, 'Added');
       else {
         if ((old.condition || 'Good') !== next.condition) addLog(next, `Condition: ${old.condition || 'Good'} → ${next.condition}${next.issueNote ? ' — ' + next.issueNote : ''}`);
-        if (!(old.out && old.out.to) && next.out) addLog(next, `Taken by ${next.out.to}${next.out.due ? ', due back ' + fmtDate(next.out.due) : ''}`);
-        if (old.out && old.out.to && !next.out) addLog(next, `Returned by ${old.out.to}`);
       }
       if (i >= 0) doc.items[i] = next; else doc.items.push(next);
       return next.id;
