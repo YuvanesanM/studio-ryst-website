@@ -194,7 +194,8 @@
       </table>
     </div>
     <button class="rc-add" id="userAdd">+ Add user</button>
-    <p class="sd" style="margin:14px 0 0">To link Telegram: have that person open the bot and send it any message (e.g. <code>/start</code>) — they'll show up in the dropdown above within a few seconds. <button type="button" id="telegramRefreshBtn" style="border:none;background:none;color:var(--accent-d);font-weight:600;font-size:inherit;cursor:pointer;padding:0;text-decoration:underline">Refresh list</button></p>
+    <p class="sd" style="margin:14px 0 0">To link Telegram: have that person open the bot and send it any message (e.g. <code>/start</code>) — they'll show up in the dropdown above within a few seconds. <button type="button" id="telegramRefreshBtn" style="border:none;background:none;color:var(--accent-d);font-weight:600;font-size:inherit;cursor:pointer;padding:0;text-decoration:underline">Refresh list</button> · <button type="button" id="telegramTestBtn" style="border:none;background:none;color:var(--accent-d);font-weight:600;font-size:inherit;cursor:pointer;padding:0;text-decoration:underline">Send test message</button></p>
+    <div id="tgTestOut" class="sd" style="margin:10px 0 0;display:none;white-space:pre-line;padding:10px 12px;border:1px solid var(--line, #ddd);border-radius:10px"></div>
     <div class="rc-foot">
       <button class="btn primary" id="usersSave">Save user access</button>
     </div>
@@ -545,6 +546,22 @@ function bindSettings(){
   document.getElementById("logoFile").addEventListener("change",e=>pickImage(e,"logo","#logoPrev"));
   document.getElementById("qrFile").addEventListener("change",e=>pickImage(e,"qr","#qrPrev"));
   document.getElementById("userAdd").addEventListener("click",addUser);
+  document.getElementById("telegramTestBtn").addEventListener("click",async()=>{
+    const out=document.getElementById("tgTestOut"); out.style.display="block"; out.textContent="Sending…";
+    try{
+      const res=await fetch(PROXY_URL+'/telegram-test',{method:'POST',headers:{'X-Token':proxyToken}});
+      const d=await res.json().catch(()=>({}));
+      if(!res.ok){ out.textContent="Couldn't run the test: "+(d.error||res.status); return; }
+      if(!d.configured){ out.textContent="The bot token isn't set on this server ("+d.server+"). Add STUDIO_TELEGRAM_BOT_TOKEN on Render and redeploy."; return; }
+      const lines=[];
+      if(!d.results.length) lines.push("Nobody has a Telegram chat linked yet — pick one in the Telegram column above and Save.");
+      d.results.forEach(r=>lines.push((r.ok?"✅ ":"❌ ")+r.name+(r.ok?" — sent":" — "+r.error)));
+      const w=d.webhook||{};
+      if(w.url && w.url.indexOf(d.server)!==0) lines.push("⚠️ The bot is connected to another server ("+w.url.split('/studio')[0]+"). Suspend the old server and restart this one.");
+      if(w.lastError) lines.push("⚠️ Bot last error: "+w.lastError);
+      out.textContent=lines.join("\n");
+    }catch(e){ out.textContent="Couldn't reach the server."; }
+  });
   document.getElementById("telegramRefreshBtn").addEventListener("click",async()=>{ await loadTelegramStarters(); renderUsers(); toast("Telegram list refreshed"); });
   document.getElementById("usersSave").addEventListener("click",saveUsers);
   document.getElementById("tplSave").addEventListener("click",saveTemplates);
