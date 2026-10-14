@@ -167,6 +167,16 @@
       <div class="val" id="kCrew">—</div>
       <div class="sub" id="kCrewSub"></div>
     </div>
+    <div class="kpi">
+      <div class="lbl">Expenses</div>
+      <div class="val" id="kExp">—</div>
+      <div class="sub" id="kExpSub"></div>
+    </div>
+    <div class="kpi hero">
+      <div class="lbl">Profit</div>
+      <div class="val" id="kProfit">—</div>
+      <div class="sub" id="kProfitSub"></div>
+    </div>
   </div>
 
   <div class="grid">
@@ -248,7 +258,9 @@ const zColor=z=>ZONE_COLORS[z]||'var(--muted2)';
 let QUOTES=[], SESSIONS=[], SALES=[], PERIOD='this-month', OPHOURS=12;
 // Crew (freelancer) invoices from freelancers.html — CREW holds the paid
 // ones, dated by when they were paid; unpaid ones only feed CREW_DUE.
-let CREW=[], CREW_DUE=0, CREW_DUE_N=0;
+let CREW=[], CREW_DUE=0, CREW_DUE_N=0, CREW_OK=false;
+// Studio expenses (expenses.html); null when this user can't see them.
+let EXPENSES=null;
 // Daily Instagram-follower / Google-review counts from the Daily Tasks page.
 let SOCIAL={followers:[], reviews:[]};
 
@@ -275,7 +287,8 @@ async function load(){
   $('#loader').className='';
   try{
     // Crew data is optional — the report still loads if it can't be read.
-    const [q,s,c,dt,so]=await Promise.all([api('/quotes'), api('/schedule'), api('/freelancers').catch(()=>null), api('/daily-tasks').catch(()=>null), api('/social-stats').catch(()=>null)]);
+    const [q,s,c,dt,so,ex]=await Promise.all([api('/quotes'), api('/schedule'), api('/freelancers').catch(()=>null), api('/daily-tasks').catch(()=>null), api('/social-stats').catch(()=>null), api('/expenses').catch(()=>null)]);
+    CREW_OK=!!c; EXPENSES=ex&&Array.isArray(ex.expenses)?ex.expenses:null;
     QUOTES=Array.isArray(q.quotes)?q.quotes:[];
     SESSIONS=Array.isArray(s.sessions)?s.sessions:[];
     SALES=buildSaleRecords();
@@ -447,6 +460,7 @@ function render(){
   renderUtil(book, r);
   renderTopCustomers(curS);
   renderCrew(r, rp);
+  renderProfit(r, rp, sales, pSales);
   renderSocial(r);
   renderInvoices(curS);
   renderROI();
@@ -544,6 +558,18 @@ function renderTopCustomers(curS){
   $('#topCust').innerHTML = hbarsHTML(entries, money);
 }
 
+// Profit = sales (ex-GST, paid in full) − crew payments − expenses, for the period.
+function renderProfit(r, rp, sales, pSales){
+  const sumIn=(list,rg,get)=>list.filter(x=>inRange(x.date,rg)).reduce((s,x)=>s+get(x),0);
+  const exp=EXPENSES?sumIn(EXPENSES,r,x=>Number(x.amount)||0):0, pExp=EXPENSES?sumIn(EXPENSES,rp,x=>Number(x.amount)||0):0;
+  const crew=sumIn(CREW,r,x=>x.amount), pCrew=sumIn(CREW,rp,x=>x.amount);
+  $('#kExp').textContent=EXPENSES?money(exp):'—';
+  $('#kExpSub').innerHTML=EXPENSES?deltaHTML(exp,pExp,true)+`<span>${EXPENSES.filter(x=>inRange(x.date,r)).length} entries</span>`:'<span>No access to Expenses</span>';
+  const profit=sales-crew-exp, pProfit=pSales-pCrew-pExp;
+  $('#kProfit').textContent=money(profit);
+  const missing=[!CREW_OK&&'crew',!EXPENSES&&'expenses'].filter(Boolean);
+  $('#kProfitSub').innerHTML=(PERIOD==='all'||!pProfit?'':deltaHTML(profit,Math.abs(pProfit)))+`<span>${sales?Math.round(profit/sales*100)+'% of sales':'sales − crew − expenses'}</span>`+(missing.length?`<span>· excl. ${missing.join(' & ')}</span>`:'');
+}
 function renderCrew(r, rp){
   const cur=CREW.filter(x=>inRange(x.date,r)), prev=CREW.filter(x=>inRange(x.date,rp));
   const total=cur.reduce((s,x)=>s+x.amount,0), pTotal=prev.reduce((s,x)=>s+x.amount,0);

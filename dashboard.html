@@ -33,7 +33,7 @@
   .btn.primary:hover{background:var(--accent-d);color:#fff}
 
   /* KPI tiles */
-  .kpis{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:12px;margin-bottom:16px}
+  .kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(148px,1fr));gap:12px;margin-bottom:16px}
   .kpi{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px 16px;text-decoration:none;display:flex;flex-direction:column;min-width:0;transition:border-color .15s,transform .15s}
   /* mini trend inside a tile */
   .kv{margin-top:auto;padding-top:10px}
@@ -111,7 +111,7 @@
   .qa a:hover{border-color:var(--accent);color:var(--accent-d)}
   .qa .e{font-size:17px}
 
-  @media(max-width:1280px){ .kpis{grid-template-columns:repeat(3,minmax(0,1fr))} }
+  @media(max-width:1280px){ .kpis{grid-template-columns:repeat(4,minmax(0,1fr))} }
   @media(max-width:1080px){ .grid{grid-template-columns:1fr} }
   @media(max-width:640px){
     .page{padding:16px 12px 24px}
@@ -186,6 +186,7 @@ const qGrand = q => Math.round(qNet(q) + qGst(q));
 const qPaid = q => (q.payments || []).reduce((s, p) => s + (Number(p.amount) || 0), 0);
 const qDate = q => q.date || (q.savedAt ? new Date(q.savedAt).toISOString().slice(0, 10) : '');
 
+let EXP = null; // studio expenses (expenses.html)
 let ME = null, Q = [], S = [], TD = null, SO = null, LEADS = null, EQ = null, CREW = null;
 const can = m => !ME || ME.role === 'admin' || (ME.modules || []).includes(m);
 
@@ -266,11 +267,18 @@ function render() {
   const weekViz = miniBars(upDays.map(x => x.list.length), upDays.map(x => `${dayLabel(x.d)}: ${x.list.length} session${x.list.length === 1 ? '' : 's'}`), -1) + `<div class="ax"><span>${esc(parseISO(upDays[0].d).toLocaleDateString('en-IN', { weekday: 'short' }))}</span><span>${esc(parseISO(upDays[6].d).toLocaleDateString('en-IN', { weekday: 'short' }))}</span></div>`;
   const tiles = [];
   if (can('schedule')) {
-    tiles.push(tile('hero', 'login.html?view=schedule', 'Today', tSess.length + (tSess.length === 1 ? ' session' : ' sessions'),
+    tiles.push(tile('hero', 'login.html?view=schedule', 'Sessions today', String(tSess.length),
       nextUp ? `Next ${esc(fmt12(nextUp.start))} · ${esc(ZL[zk(nextUp.zone)] || nextUp.zone || '')}` : tSess.length ? 'All done for today' : 'Nothing booked'));
-    tiles.push(tile('', 'login.html?view=schedule', 'Next 7 days', upCount + (upCount === 1 ? ' session' : ' sessions'), `${Math.round(upHours * 10) / 10} h booked`, weekViz));
+    tiles.push(tile('', 'login.html?view=schedule', 'Next 7 days', String(upCount), `${upCount === 1 ? 'session' : 'sessions'} · ${Math.round(upHours * 10) / 10} h`, weekViz));
   }
-  if (can('growth')) tiles.push(tile('', 'report.html', 'Sales this month', money(revNow), revPct == null ? (revLast ? '' : 'ex-GST, paid in full') : `${chip(revPct, '%')}<span>vs ${compact(revLast)} last month</span>`, salesViz));
+  if (can('growth')) tiles.push(tile('', 'report.html', 'Sales', money(revNow), revPct == null ? (revLast ? '' : 'ex-GST, paid in full') : `${chip(revPct, '%')}<span>vs ${compact(revLast)} last month</span>`, salesViz));
+  if (can('expenses') && EXP) {
+    const ex = Array.isArray(EXP.expenses) ? EXP.expenses : [], expIn = m => ex.filter(x => (x.date || '').slice(0, 7) === m).reduce((s, x) => s + (Number(x.amount) || 0), 0);
+    const eNow = expIn(month), eLast = expIn(lastMonth), ePct = eLast ? Math.round((eNow - eLast) / eLast * 100) : null;
+    const eChip = ePct == null ? '' : `<span class="chip ${ePct > 0 ? 'down' : ePct < 0 ? 'up' : ''}">${ePct > 0 ? '▲ +' : ePct < 0 ? '▼ ' : ''}${Math.abs(ePct)}%</span>`;
+    tiles.push(tile('', 'expenses.html', 'Expenses', money(eNow), eChip + `<span>vs ${compact(eLast)} last month</span>`,
+      miniBars(months.map(expIn), months.map(m => `${mShort(m)}: ${money(expIn(m))}`), 5) + `<div class="ax"><span>${mShort(months[0])}</span><span>6 months</span><span>${mShort(month)}</span></div>`));
+  }
   if (can('quotes')) tiles.push(tile('', 'quote.html', 'Balance due', money(dueTotal), due.length ? `${due.length} confirmed booking${due.length === 1 ? '' : 's'}` : 'Nothing outstanding'));
   tiles.push(tile('', 'https://www.instagram.com/studio.ryst', 'Instagram', fol.length ? fmtN(fol[fol.length - 1].v) : '—',
     fol.length ? `${chip(deltaSince(fol, 7))}<span>${deltaSince(fol, 7) == null ? 'tracking started' : 'this week'}</span>` : 'First reading pending', sparkMini(fol, '#3d9b69')));
@@ -391,7 +399,8 @@ async function load() {
   const [q, s, td, so, leads, eq, crew] = await Promise.all([
     opt('/quotes'), opt('/schedule'), can('tasks') ? opt('/daily-tasks') : null, opt('/social-stats'),
     can('pipeline') ? opt('/leads') : null, can('equipment') ? opt('/equipment') : null, can('crew') ? opt('/freelancers') : null,
-  ]);
+    can('expenses') ? opt('/expenses') : null,
+  ]).then(a => { EXP = a[7] || EXP; return a; });
   if (q) Q = Array.isArray(q.quotes) ? q.quotes : [];
   if (s) S = Array.isArray(s.sessions) ? s.sessions : [];
   TD = td && td.days ? td : (td === null && TD) || TD; SO = so || SO; LEADS = leads || LEADS; EQ = eq || EQ; CREW = crew || CREW;
