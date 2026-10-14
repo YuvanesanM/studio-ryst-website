@@ -135,6 +135,7 @@
 <div id="loader"><div class="spin"></div><div id="loaderMsg">Loading reviews…</div></div>
 <div id="toast"></div>
 <script>
+function localISO(d){ d=d?new Date(d):new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
 const PROXY_URL='https://ryst-quss.onrender.com/studio';
 const TOKEN=localStorage.getItem('ryst_proxy_token')||'';
 if(!TOKEN){ window.location.href='login.html'; }
@@ -190,7 +191,7 @@ function paidTotal(q){ return (q.payments||[]).reduce((s,p)=>s+(Number(p.amount)
 // flight/collected for it, kept visible regardless so history never
 // disappears if its payment record is later edited.
 function sessions(){
-  const today = new Date().toISOString().slice(0,10);
+  const today = localISO();
   return QUOTES.filter(q=> q.sessionDate && (q.feedbackSentAt || (q.feedback&&q.feedback.rating) || (q.sessionDate<=today && paidTotal(q)>0)));
 }
 function statusOf(q){

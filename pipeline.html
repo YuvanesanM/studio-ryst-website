@@ -368,6 +368,7 @@
 <div id="toast"></div>
 
 <script>
+function localISO(d){ d=d?new Date(d):new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
 const PROXY_URL='https://ryst-quss.onrender.com/studio';
 const TOKEN=localStorage.getItem('ryst_proxy_token')||'';
 if(!TOKEN){ window.location.href='login.html'; }
@@ -476,7 +477,7 @@ function monthOf(dstr){
   return '';
 }
 // ── Follow-ups ──
-function todayISO(){ return new Date().toISOString().slice(0,10); }
+function todayISO(){ return localISO(); }
 // Short "created" label for a lead row — day+month normally, day+month+year
 // once it's from an earlier calendar year (leads accumulate for a while, and
 // a bare "3 Jan" reads as this year unless it isn't).
@@ -764,7 +765,7 @@ $('#leads').addEventListener('click',async e=>{
   const base=followupISO(l); const tISO=todayISO();
   const from=(base && base>tISO) ? base : tISO;
   const d=new Date(from+'T00:00:00'); d.setDate(d.getDate()+2);
-  const rec={...l, followup:d.toISOString().slice(0,10), updatedAt:Date.now()};
+  const rec={...l, followup:localISO(d), updatedAt:Date.now()};
   await saveLeads(upsertLead(rec), 'Follow-up pushed +2 days');
 });
 
@@ -854,7 +855,7 @@ function pcId(){ return 'L'+Date.now().toString(36)+Math.floor(Math.random()*1e4
 function fillSelect(sel,vals,val){ sel.innerHTML=vals.map(v=>`<option${v===val?' selected':''}>${esc(v)}</option>`).join(''); }
 function toISO(d){ if(!d)return''; let m; if((m=/^(\d{1,2})[\/-](\d{1,2})[\/-](\d{4})/.exec(d))) return `${m[3]}-${String(+m[2]).padStart(2,'0')}-${String(+m[1]).padStart(2,'0')}`; if(/^\d{4}-\d{2}-\d{2}/.test(d)) return d.slice(0,10); return ''; }
 
-function defaultFollowupISO(){ const d=new Date(); d.setDate(d.getDate()+2); return d.toISOString().slice(0,10); }
+function defaultFollowupISO(){ const d=new Date(); d.setDate(d.getDate()+2); return localISO(d); }
 
 async function openLead(l){
   editingId = l ? l.id : null;

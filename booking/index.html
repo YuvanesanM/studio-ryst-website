@@ -484,7 +484,7 @@ footer{border-top:1px solid var(--line);padding:64px 0 30px;margin-top:0}
   // Default date = tomorrow, min = today
   var dateInp = $('#fDate');
   var today = new Date(); var tomorrow = new Date(today.getTime()+86400000);
-  function iso(d){ return d.toISOString().slice(0,10); }
+  function iso(d){ return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
   dateInp.min = iso(today);
   dateInp.value = iso(tomorrow);
 
