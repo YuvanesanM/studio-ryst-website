@@ -238,6 +238,7 @@
 <div id="toast"></div>
 
 <script>
+function localISO(d){ d=d?new Date(d):new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
 const PROXY_URL = 'https://ryst-quss.onrender.com/studio';
 const TOKEN = localStorage.getItem('ryst_proxy_token') || '';
 if(!TOKEN){ window.location.href='login.html'; }
@@ -304,7 +305,7 @@ function qSub(q){ return (q.items||[]).reduce((s,it)=>s+(parseFloat(it.price)||0
 function qGst(q){ return (q.items||[]).reduce((s,it)=>s+((parseFloat(it.price)||0)*(parseFloat(it.qty)||0))*(parseFloat(it.gst)||0)/100,0); }
 function qNet(q){ const sub=qSub(q); const disc=Math.min(parseFloat(q.discount)||0, sub); return sub-disc; }
 function qGrandTotal(q){ return Math.round(qNet(q)+qGst(q)); }
-function qDate(q){ return (q.date || (q.savedAt? new Date(q.savedAt).toISOString().slice(0,10):'')) || ''; }
+function qDate(q){ return (q.date || (q.savedAt? localISO(q.savedAt):'')) || ''; }
 function qMonth(q){ return qDate(q).slice(0,7); }
 
 // ── Sales records: quotes only, and only the ones actually PAID IN FULL —

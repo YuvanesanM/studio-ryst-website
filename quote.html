@@ -430,6 +430,7 @@
 
 
 <script>
+function localISO(d){ d=d?new Date(d):new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
 /* =========================================================================
    CONFIG
    ========================================================================= */
@@ -749,7 +750,7 @@ function updateSchedStatus(conflictText){
 /* ---------- PAYMENTS → Confirmed status ----------
    An advance or full payment automatically marks the quote Confirmed —
    there's no manual status toggle, so it can never drift from reality. */
-function todayISOq(){ return new Date().toISOString().slice(0,10); }
+function todayISOq(){ return localISO(); }
 function renderQPayments(){
   const box=$("#qPaymentsList"); if(!box) return;
   if(!qPaymentsDraft.length){
@@ -1005,7 +1006,7 @@ function bind(){
 function newQuote(){
   editingKey=null; syncPdfBtn(); clearLeadLink();
   curCreatedBy=null; curLastEditedBy=null;
-  curQno=nextQuoteNo(); curDateISO=new Date().toISOString().slice(0,10);
+  curQno=nextQuoteNo(); curDateISO=localISO();
   curShareToken=genToken(); curSharedAt=null; renderClientResp(null);
   $("#qno").value=curQno; $("#qdate").value=fmtDate(curDateISO);
   $("#invoiceNo").value="";
