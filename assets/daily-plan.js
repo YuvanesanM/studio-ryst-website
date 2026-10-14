@@ -74,9 +74,7 @@ function tasksFor(iso) {
   add('opening', 'o_sched', '📅 Check today’s bookings', { hint: 'Zone, start time and payment for every session today.', link: 'login.html?view=schedule', linkLabel: 'Schedule' });
   add('opening', 'o_ready', '✨ Get the studio ready', { hint: 'Reset the zones booked today — sofas straight, mics wiped, backdrop clean, kitchen counters clear — then AC, lights and the TV counter on.' });
   add('opening', 'o_welcome', '👋 Send tomorrow’s welcomes', { hint: 'One WhatsApp for each client booked tomorrow. The Schedule page has a button for each.', link: 'login.html?view=schedule', linkLabel: 'Schedule' });
-  // Only the numbers that aren't recorded automatically (see DAILY_AUTO) are asked for; none left → no task.
-  const manual = [!DAILY_AUTO.instagram && 'Instagram followers', !DAILY_AUTO.google && 'Google reviews'].filter(Boolean);
-  if (manual.length) add('opening', 'o_counts', '📈 Log today’s ' + manual.join(' & '), { counts: true, hint: 'Type the number' + (manual.length > 1 ? 's' : '') + ' exactly as shown right now. Same time each day keeps the growth chart honest.' });
+  // Instagram followers and Google reviews are recorded by the server automatically — no manual entry.
 
   add('during', 'o_photo', '📸 Snap photos & clips for socials', { hint: '“Ready” shots of each zone, plus 2–3 behind-the-scenes clips during sessions — only with the client’s OK.' });
   add('during', 'a_feedback', '⭐ Ask today’s clients for a review', { hint: 'Send the feedback WhatsApp once a session ends. The Schedule page has a button for each.', link: 'login.html?view=schedule', linkLabel: 'Schedule' });
