@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Expenses — Studio RYST</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/shell.css">
+<style>
+  :root{--bg:#f3f4f1;--panel:#fff;--panel2:#f7f8f5;--line:#e3e5e0;--accent:#3d9b69;--accent-d:#2f7d54;--accent-soft:#eaf4ee;--ink:#1d211c;--muted:#5f655d;--muted2:#7d847b;--danger:#c0584b;--danger-soft:#fbeceb}
+  *{box-sizing:border-box}
+  html,body{margin:0;min-height:100%;background:var(--bg);color:var(--ink);font-family:"Outfit",system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+  button,input,select,textarea{font-family:inherit}
+  [hidden]{display:none!important}
+  .wrap{max-width:1120px;margin:0 auto;padding:24px 28px 80px}
+  .top{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:16px}
+  .top h1{margin:0;font-size:22px;font-weight:700;flex:1;min-width:160px}
+  .btn{display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border-radius:9px;border:1px solid var(--line);background:var(--panel);font-size:13px;font-weight:600;color:var(--ink);cursor:pointer;white-space:nowrap;text-decoration:none}
+  .btn:hover{border-color:var(--accent);color:var(--accent-d)}
+  .btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+  .btn.danger:hover{border-color:var(--danger);color:var(--danger)}
+  .btn:disabled{opacity:.5;cursor:default}
+  .month{display:flex;align-items:center;gap:6px}
+  .month b{min-width:130px;text-align:center;font-size:14.5px}
+  .nav{width:34px;height:34px;border-radius:9px;border:1px solid var(--line);background:var(--panel);font-size:16px;cursor:pointer}
+  .t{width:100%;border:1px solid var(--line);border-radius:9px;padding:9px 12px;font-size:13.5px;background:var(--panel);color:var(--ink);outline:none}
+  .t:focus{border-color:var(--accent)} .t.bad{border-color:var(--danger)}
+  textarea.t{resize:vertical;min-height:60px}
+  .sum{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,2fr);gap:14px;margin-bottom:16px}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px 18px;min-width:0}
+  .lbl{font-size:11px;font-weight:700;color:var(--muted2);letter-spacing:.6px;text-transform:uppercase}
+  .big{font-size:30px;font-weight:700;letter-spacing:-.5px;margin-top:6px}
+  .chip{font-size:11.5px;font-weight:700;padding:2px 8px;border-radius:20px;background:var(--panel2);color:var(--muted)}
+  .chip.up{background:var(--danger-soft);color:var(--danger)} .chip.down{background:#e3f3ea;color:var(--accent-d)}
+  .subl{font-size:12.5px;color:var(--muted);margin-top:6px;display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+  .cats{display:flex;flex-direction:column;gap:7px;margin-top:10px}
+  .cat{display:grid;grid-template-columns:150px minmax(0,1fr) 90px;gap:10px;align-items:center;font-size:12.5px;cursor:pointer}
+  .cat .bar{height:8px;background:var(--panel2);border-radius:10px;overflow:hidden}
+  .cat .bar i{display:block;height:100%;background:var(--accent);border-radius:10px}
+  .cat .amt{text-align:right;font-weight:600}
+  .cat.on .nm{color:var(--accent-d);font-weight:700}
+  .tools{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px;align-items:center}
+  .tools .t{width:auto;min-width:160px}
+  .tools .sp{flex:1}
+  .recur{background:#fff8e8;border:1px solid #f1dcb3;color:#8a5a12;border-radius:12px;padding:10px 14px;font-size:13px;display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px}
+  .list{background:var(--panel);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+  .row{display:grid;grid-template-columns:90px minmax(0,1fr) 150px 120px 110px;gap:12px;align-items:center;padding:11px 16px;border-top:1px solid var(--line);cursor:pointer;font-size:13.5px}
+  .row:first-child{border-top:none}
+  .row:hover{background:var(--accent-soft)}
+  .row.head{cursor:default;background:var(--panel2);font-size:11px;font-weight:700;color:var(--muted2);text-transform:uppercase;letter-spacing:.5px}
+  .row.head:hover{background:var(--panel2)}
+  .row .d{color:var(--muted)} .row .r{text-align:right;font-weight:700}
+  .row .desc b{display:block;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .row .desc small{color:var(--muted2);font-size:12px}
+  .pill{display:inline-block;font-size:11px;font-weight:700;padding:3px 9px;border-radius:20px;background:var(--panel2);border:1px solid var(--line);color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+  .empty{padding:34px 16px;text-align:center;color:var(--muted)}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:0 14px}
+  .f{display:flex;flex-direction:column;gap:5px;margin-bottom:12px}
+  .f>span{font-size:11.5px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.4px}
+  .chk{display:flex;gap:8px;align-items:center;font-size:13.5px;margin:4px 0 14px}
+  .toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(20px);background:#1d211c;color:#fff;padding:12px 20px;border-radius:10px;font-size:13px;opacity:0;transition:.25s;z-index:60;pointer-events:none}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+  .loading{padding:60px 0;text-align:center;color:var(--muted2)}
+  @media(max-width:820px){
+    .wrap{padding:16px 12px 70px}
+    .sum{grid-template-columns:1fr}
+    .row{grid-template-columns:minmax(0,1fr) auto;gap:2px 10px}
+    .row.head{display:none}
+    .row .d{grid-row:2;font-size:12px} .row .cg{grid-row:2;grid-column:2;text-align:right} .row .md{display:none}
+    .row .r{grid-row:1;grid-column:2}
+    .cat{grid-template-columns:110px minmax(0,1fr) 80px}
+    .grid2{grid-template-columns:1fr}
+  }
+</style>
+</head>
+<body data-shell="expenses">
+<main class="wrap">
+  <div id="loading" class="loading">Loading…</div>
+
+  <section id="vList" hidden>
+    <div class="top">
+      <h1>Expenses</h1>
+      <div class="month"><button class="nav" id="mPrev" type="button" aria-label="Previous month">‹</button><b id="mLabel"></b><button class="nav" id="mNext" type="button" aria-label="Next month">›</button></div>
+      <button class="btn" id="csv" type="button">Export CSV</button>
+      <button class="btn primary" id="add" type="button">+ Add expense</button>
+    </div>
+    <div class="sum">
+      <div class="card"><div class="lbl">Spent this month</div><div class="big" id="total">₹0</div><div class="subl" id="totalSub"></div></div>
+      <div class="card"><div class="lbl">By category</div><div class="cats" id="cats"></div></div>
+    </div>
+    <div class="recur" id="recur" hidden></div>
+    <div class="tools">
+      <input class="t" id="q" placeholder="Search description, vendor…">
+      <select class="t" id="fCat"></select>
+      <span class="sp"></span>
+    </div>
+    <div class="list" id="list"></div>
+  </section>
+
+  <section id="vEdit" hidden>
+    <div class="top"><h1 id="edTitle">Add expense</h1><button class="btn" id="cancel" type="button">Cancel</button><button class="btn primary" id="save" type="button">Save</button></div>
+    <div class="card">
+      <div class="grid2">
+        <label class="f"><span>Date *</span><input class="t" id="eDate" type="date"></label>
+        <label class="f"><span>Amount (₹) *</span><input class="t" id="eAmt" inputmode="decimal" placeholder="0"></label>
+        <label class="f"><span>Category *</span><select class="t" id="eCat"></select></label>
+        <label class="f"><span>Payment mode</span><select class="t" id="eMode"><option>UPI</option><option>Bank transfer</option><option>Cash</option><option>Card</option><option>Cheque</option></select></label>
+      </div>
+      <label class="f"><span>What for *</span><input class="t" id="eDesc" placeholder="e.g. October rent, AC service, coffee & water"></label>
+      <div class="grid2">
+        <label class="f"><span>Paid to</span><input class="t" id="eVendor" placeholder="Vendor / person"></label>
+        <label class="f"><span>Paid by</span><input class="t" id="ePaidBy" placeholder="Who paid"></label>
+      </div>
+      <label class="f"><span>Bill / receipt link</span><input class="t" id="eLink" placeholder="Link to the bill or a photo of it (Drive, etc.)"></label>
+      <label class="chk"><input type="checkbox" id="eRecur"> Repeats every month (rent, salaries, internet…) — you’ll be offered it next month</label>
+      <label class="f"><span>Notes</span><textarea class="t" id="eNotes" rows="2"></textarea></label>
+      <button class="btn danger" id="del" type="button" hidden>Delete expense</button>
+    </div>
+  </section>
+</main>
+<div class="toast" id="toast"></div>
+
+<script>
+const PROXY_URL = 'https://ryst-109a-proxy.onrender.com/studio';
+const TOKEN = localStorage.getItem('ryst_proxy_token') || '';
+if (!TOKEN) location.href = 'login.html';
+const ME = (localStorage.getItem('ryst_user_email') || '').toLowerCase();
+const IS_ADMIN = (() => { try { let p = (TOKEN.split('.')[0] || '').replace(/-/g, '+').replace(/_/g, '/'); p += '='.repeat((4 - p.length % 4) % 4); return JSON.parse(atob(p)).role === 'admin'; } catch (e) { return false; } })();
+const CATS = ['Rent', 'Electricity', 'Internet & phone', 'Salaries', 'Consumables', 'Maintenance & repairs', 'Equipment', 'Marketing & ads', 'Software & subscriptions', 'Travel & transport', 'Food & refreshments', 'Taxes & fees', 'Other'];
+const $ = s => document.querySelector(s);
+const esc = s => (s ?? '').toString().replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const money = n => '₹' + Number(n || 0).toLocaleString('en-IN', { maximumFractionDigits: 2 });
+const pad = n => String(n).padStart(2, '0');
+const isoOf = d => d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate());
+const todayISO = () => isoOf(new Date());
+const fmtDay = iso => new Date(iso + 'T00:00:00').toLocaleDateString('en-IN', { day: 'numeric', month: 'short' });
+const monthLabel = ym => new Date(ym + '-01T00:00:00').toLocaleDateString('en-IN', { month: 'long', year: 'numeric' });
+const shiftMonth = (ym, n) => { const d = new Date(ym + '-01T00:00:00'); d.setMonth(d.getMonth() + n); return isoOf(d).slice(0, 7); };
+const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
+function toast(m) { const t = $('#toast'); t.textContent = m; t.classList.add('show'); clearTimeout(toast._t); toast._t = setTimeout(() => t.classList.remove('show'), 2600); }
+
+let DB = { version: 1, expenses: [] }, MONTH = todayISO().slice(0, 7), CAT = '', cur = null, dirty = false;
+const normalize = d => ({ version: 1, expenses: Array.isArray(d && d.expenses) ? d.expenses : [] });
+async function api(method, body) {
+  const r = await fetch(PROXY_URL + '/expenses', { method, headers: Object.assign({ 'X-Token': TOKEN }, body ? { 'Content-Type': 'application/json' } : {}), body: body ? JSON.stringify(body) : undefined });
+  if (r.status === 401) { localStorage.removeItem('ryst_proxy_token'); location.href = 'login.html'; throw new Error('Session expired'); }
+  const d = await r.json().catch(() => ({}));
+  if (!r.ok) throw new Error(d.error || 'Server error ' + r.status);
+  return d;
+}
+// Re-read, apply one change, write back — two people adding at once never clash.
+let saving = false;
+async function mutate(fn) {
+  if (saving) throw new Error('Still saving — try again in a moment');
+  saving = true;
+  try { const fresh = normalize(await api('GET')); fn(fresh); await api('PUT', fresh); DB = fresh; }
+  finally { saving = false; }
+}
+const inMonth = (ym) => DB.expenses.filter(x => (x.date || '').slice(0, 7) === ym);
+const sumOf = list => list.reduce((s, x) => s + (Number(x.amount) || 0), 0);
+
+function render() {
+  $('#mLabel').textContent = monthLabel(MONTH);
+  const list = inMonth(MONTH), total = sumOf(list), last = sumOf(inMonth(shiftMonth(MONTH, -1)));
+  $('#total').textContent = money(total);
+  const pct = last ? Math.round((total - last) / last * 100) : null;
+  $('#totalSub').innerHTML = `<span>${list.length} expense${list.length === 1 ? '' : 's'}</span>` + (pct == null ? '' : `<span class="chip ${pct > 0 ? 'up' : pct < 0 ? 'down' : ''}">${pct > 0 ? '▲ ' : pct < 0 ? '▼ ' : ''}${Math.abs(pct)}%</span><span>vs ${money(last)} last month</span>`);
+  const byCat = {}; list.forEach(x => byCat[x.category || 'Other'] = (byCat[x.category || 'Other'] || 0) + (Number(x.amount) || 0));
+  const cats = Object.entries(byCat).sort((a, b) => b[1] - a[1]), mx = Math.max(1, ...cats.map(c => c[1]));
+  $('#cats').innerHTML = cats.length ? cats.map(([c, v]) => `<div class="cat${CAT === c ? ' on' : ''}" data-cat="${esc(c)}" title="Show only ${esc(c)}"><span class="nm">${esc(c)}</span><span class="bar"><i style="width:${Math.max(3, v / mx * 100)}%"></i></span><span class="amt">${money(v)}</span></div>`).join('') : '<div class="empty" style="padding:10px 0;text-align:left">Nothing spent this month yet.</div>';
+  // recurring from last month not yet added this month
+  const have = new Set(list.map(x => x.recurKey).filter(Boolean));
+  const due = inMonth(shiftMonth(MONTH, -1)).filter(x => x.recurring && !have.has(x.recurKey || x.id));
+  $('#recur').hidden = !due.length || MONTH > todayISO().slice(0, 7);
+  $('#recur').innerHTML = due.length ? `🔁 <b>${due.length} monthly expense${due.length === 1 ? '' : 's'}</b> from last month not added yet (${esc(due.map(x => x.description).join(', '))}). <button class="btn" id="addRecur" type="button">Add for ${esc(monthLabel(MONTH))}</button>` : '';
+  const q = $('#q').value.trim().toLowerCase();
+  const rows = list.filter(x => (!CAT || (x.category || 'Other') === CAT) && (!q || [x.description, x.vendor, x.paidBy, x.notes].join(' ').toLowerCase().includes(q)))
+    .sort((a, b) => (b.date || '').localeCompare(a.date || '') || (b.createdAt || '').localeCompare(a.createdAt || ''));
+  $('#list').innerHTML = rows.length ? `<div class="row head"><span>Date</span><span>What for</span><span>Category</span><span>Mode</span><span class="r">Amount</span></div>` + rows.map(x => `<div class="row" data-id="${esc(x.id)}"><span class="d">${esc(fmtDay(x.date))}</span><span class="desc"><b>${esc(x.description)}${x.recurring ? ' 🔁' : ''}</b>${x.vendor ? `<small>${esc(x.vendor)}</small>` : ''}</span><span class="cg"><span class="pill">${esc(x.category || 'Other')}</span></span><span class="md">${esc(x.mode || '')}</span><span class="r">${money(x.amount)}</span></div>`).join('')
+    : `<div class="empty">${list.length ? 'Nothing matches.' : 'No expenses in ' + esc(monthLabel(MONTH)) + '. Tap “+ Add expense” to log one.'}</div>`;
+}
+function fillCats() {
+  $('#fCat').innerHTML = '<option value="">All categories</option>' + CATS.map(c => `<option>${esc(c)}</option>`).join('');
+  $('#eCat').innerHTML = '<option value="">Choose…</option>' + CATS.map(c => `<option>${esc(c)}</option>`).join('');
+}
+$('#mPrev').onclick = () => { MONTH = shiftMonth(MONTH, -1); render(); };
+$('#mNext').onclick = () => { MONTH = shiftMonth(MONTH, 1); render(); };
+$('#q').oninput = render;
+$('#fCat').onchange = e => { CAT = e.target.value; render(); };
+$('#cats').onclick = e => { const c = e.target.closest('[data-cat]'); if (!c) return; CAT = CAT === c.dataset.cat ? '' : c.dataset.cat; $('#fCat').value = CAT; render(); };
+$('#list').onclick = e => { const r = e.target.closest('.row[data-id]'); if (r) openEdit(DB.expenses.find(x => x.id === r.dataset.id)); };
+$('#recur').onclick = async e => {
+  if (!e.target.closest('#addRecur')) return;
+  const prev = inMonth(shiftMonth(MONTH, -1)).filter(x => x.recurring), btn = e.target; btn.disabled = true;
+  try {
+    let n = 0;
+    await mutate(doc => {
+      const have = new Set(doc.expenses.filter(x => (x.date || '').slice(0, 7) === MONTH).map(x => x.recurKey).filter(Boolean));
+      prev.forEach(x => {
+        const key = x.recurKey || x.id; if (have.has(key)) return;
+        const day = Math.min(Number((x.date || '').slice(8, 10)) || 1, new Date(Number(MONTH.slice(0, 4)), Number(MONTH.slice(5, 7)), 0).getDate());
+        doc.expenses.push(Object.assign({}, x, { id: uid(), date: MONTH + '-' + pad(day), recurKey: key, link: '', notes: '', createdAt: new Date().toISOString(), createdBy: ME, updatedAt: undefined, updatedBy: undefined }));
+        n++;
+      });
+    });
+    toast(`Added ${n} monthly expense${n === 1 ? '' : 's'} — edit any amount that changed`); render();
+  } catch (err) { toast('Could not add: ' + err.message); btn.disabled = false; }
+};
+$('#csv').onclick = () => {
+  const rows = inMonth(MONTH).sort((a, b) => a.date.localeCompare(b.date));
+  const cols = ['Date', 'Category', 'What for', 'Paid to', 'Amount', 'Mode', 'Paid by', 'Bill link', 'Notes'];
+  const csv = [cols].concat(rows.map(x => [x.date, x.category, x.description, x.vendor, x.amount, x.mode, x.paidBy, x.link, x.notes])).map(r => r.map(v => '"' + String(v ?? '').replace(/"/g, '""') + '"').join(',')).join('\r\n');
+  const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob(['﻿' + csv], { type: 'text/csv' })); a.download = `studio-ryst-expenses-${MONTH}.csv`; document.body.appendChild(a); a.click(); a.remove();
+};
+
+function show(v) { $('#vList').hidden = v !== 'list'; $('#vEdit').hidden = v !== 'edit'; window.scrollTo(0, 0); }
+function openEdit(x) {
+  cur = x || null;
+  $('#edTitle').textContent = x ? 'Edit expense' : 'Add expense';
+  $('#eDate').value = x ? x.date : (MONTH === todayISO().slice(0, 7) ? todayISO() : MONTH + '-01');
+  $('#eAmt').value = x ? x.amount : ''; $('#eCat').value = x ? x.category || '' : ''; $('#eMode').value = x ? x.mode || 'UPI' : 'UPI';
+  $('#eDesc').value = x ? x.description || '' : ''; $('#eVendor').value = x ? x.vendor || '' : ''; $('#ePaidBy').value = x ? x.paidBy || '' : '';
+  $('#eLink').value = x ? x.link || '' : ''; $('#eRecur').checked = !!(x && x.recurring); $('#eNotes').value = x ? x.notes || '' : '';
+  $('#del').hidden = !x || !IS_ADMIN;
+  document.querySelectorAll('#vEdit .t').forEach(e => e.classList.remove('bad'));
+  dirty = false; show('edit'); $('#eAmt').focus();
+}
+$('#vEdit').addEventListener('input', () => { dirty = true; });
+$('#add').onclick = () => openEdit(null);
+$('#cancel').onclick = () => { if (dirty && !confirm('Discard changes?')) return; dirty = false; render(); show('list'); };
+$('#save').onclick = async () => {
+  const amt = Number(String($('#eAmt').value).replace(/[,₹\s]/g, ''));
+  const bad = [];
+  if (!$('#eDate').value) bad.push('#eDate');
+  if (!(amt > 0)) bad.push('#eAmt');
+  if (!$('#eCat').value) bad.push('#eCat');
+  if (!$('#eDesc').value.trim()) bad.push('#eDesc');
+  document.querySelectorAll('#vEdit .t').forEach(e => e.classList.toggle('bad', bad.includes('#' + e.id)));
+  if (bad.length) { toast('Fill in date, amount, category and what it was for'); $(bad[0]).focus(); return; }
+  const rec = { date: $('#eDate').value, amount: Math.round(amt * 100) / 100, category: $('#eCat').value, mode: $('#eMode').value, description: $('#eDesc').value.trim(),
+    vendor: $('#eVendor').value.trim(), paidBy: $('#ePaidBy').value.trim(), link: $('#eLink').value.trim(), recurring: $('#eRecur').checked, notes: $('#eNotes').value.trim() };
+  const btn = $('#save'); btn.disabled = true; btn.textContent = 'Saving…';
+  try {
+    await mutate(doc => {
+      const now = new Date().toISOString(), i = cur ? doc.expenses.findIndex(x => x.id === cur.id) : -1;
+      if (i >= 0) doc.expenses[i] = Object.assign({}, doc.expenses[i], rec, { updatedAt: now, updatedBy: ME });
+      else doc.expenses.push(Object.assign({ id: uid(), createdAt: now, createdBy: ME }, rec));
+    });
+    dirty = false; MONTH = rec.date.slice(0, 7); toast('Saved ' + money(rec.amount)); render(); show('list');
+  } catch (e) { toast('Could not save: ' + e.message); }
+  finally { btn.disabled = false; btn.textContent = 'Save'; }
+};
+$('#del').onclick = async () => {
+  if (!cur || !confirm(`Delete “${cur.description}” (${money(cur.amount)})?`)) return;
+  try { await mutate(doc => { doc.expenses = doc.expenses.filter(x => x.id !== cur.id); }); dirty = false; toast('Deleted'); render(); show('list'); }
+  catch (e) { toast('Could not delete: ' + e.message); }
+};
+window.addEventListener('beforeunload', e => { if (dirty) { e.preventDefault(); e.returnValue = ''; } });
+
+(async function boot() {
+  fillCats();
+  try { DB = normalize(await api('GET')); }
+  catch (e) { $('#loading').textContent = 'Could not load expenses: ' + e.message; return; }
+  $('#loading').hidden = true; render(); show('list');
+})();
+</script>
+<script src="assets/shell.js"></script>
+</body>
+</html>

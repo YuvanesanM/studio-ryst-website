@@ -184,6 +184,7 @@
 <link rel="stylesheet" href="assets/shell.css">
 </head>
 <body data-shell="crew">
+<script>if (location.hash === '#invoices') document.body.dataset.shell = 'crewinv';</script>
 
 <header class="bar">
   <img class="hdr-logo" src="assets/logo-300.png" alt="Studio RYST">
@@ -475,6 +476,9 @@ function show(id) {
   VIEWS.forEach(v => $('#' + v).hidden = v !== id);
   const tab = id.startsWith('vBill') ? 'bills' : 'crew';
   document.querySelectorAll('.cfg-tab').forEach(t => t.classList.toggle('active', t.dataset.tab === tab));
+  // Crew and Crew invoices are separate sidebar items on this one page.
+  if (window.RystShell && RystShell.setPage) RystShell.setPage(tab === 'bills' ? 'crewinv' : 'crew');
+  const h = tab === 'bills' ? '#invoices' : '#crew'; if (location.hash !== h) history.replaceState(null, '', h);
   window.scrollTo(0, 0);
 }
 document.querySelectorAll('.cfg-tab').forEach(t => t.addEventListener('click', () => {
@@ -948,8 +952,10 @@ $('#billWa').addEventListener('click', () => {
   try { DB = normalize(await api('GET')); }
   catch (e) { $('#loading').textContent = 'Could not load freelancers: ' + e.message; return; }
   $('#loading').hidden = true;
-  renderCrew(); show('vCrew');
+  openFromHash();
+  window.addEventListener('hashchange', () => { if (confirmLeave()) openFromHash(); });
 })();
+function openFromHash() { if (location.hash === '#invoices') { renderBills(); show('vBills'); } else { renderCrew(); show('vCrew'); } }
 </script>
 <script src="assets/shell.js"></script>
 </body>

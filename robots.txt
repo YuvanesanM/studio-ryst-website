@@ -13,5 +13,6 @@ Disallow: /freelancers.html
 Disallow: /daily-tasks.html
 Disallow: /equipment.html
 Disallow: /dashboard.html
+Disallow: /expenses.html
 
 Sitemap: https://studio.ryst.in/sitemap.xml

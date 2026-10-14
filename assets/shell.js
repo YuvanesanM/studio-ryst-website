@@ -21,6 +21,8 @@
     tv: '<rect x="2.5" y="4" width="19" height="13" rx="2"/><path d="M8 21h8M12 17v4"/>',
     globe: '<circle cx="12" cy="12" r="9.5"/><path d="M2.5 12h19M12 2.5a14.5 14.5 0 0 1 0 19M12 2.5a14.5 14.5 0 0 0 0 19"/>',
     logout: '<path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/>',
+    receipt: '<path d="M5 2.5h14v19l-3-2-2 2-2-2-2 2-2-2-3 2z"/><path d="M9 8h6M9 12h6M9 16h3"/>',
+    wallet: '<path d="M20 7.5V6a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h13a2 2 0 0 0 2-2v-1.5"/><path d="M21 9.5h-5a2.5 2.5 0 0 0 0 5h5z"/>',
     menu: '<path d="M4 6.5h16M4 12h16M4 17.5h16"/>',
     left: '<path d="M15 18l-6-6 6-6"/>',
     right: '<path d="M9 18l6-6-6-6"/>'
@@ -37,7 +39,10 @@
       { id: 'quotes', label: 'Quotes', href: 'quote.html', icon: 'file', mod: 'quotes' },
       { id: 'pipeline', label: 'Leads & pipeline', href: 'pipeline.html', icon: 'funnel', mod: 'pipeline' },
       { id: 'equipment', label: 'Equipment', href: 'equipment.html', icon: 'camera', mod: 'equipment' }] },
-    { title: 'Crew & expenses', items: [{ id: 'crew', label: 'Crew & invoices', href: 'freelancers.html', icon: 'users', mod: 'crew' }] },
+    { title: 'Crew & expenses', items: [
+      { id: 'crew', label: 'Crew', href: 'freelancers.html#crew', icon: 'users', mod: 'crew' },
+      { id: 'crewinv', label: 'Crew invoices', href: 'freelancers.html#invoices', icon: 'receipt', mod: 'crew' },
+      { id: 'expenses', label: 'Expenses', href: 'expenses.html', icon: 'wallet', mod: 'expenses' }] },
     { title: 'Insights', items: [
       { id: 'growth', label: 'Growth report', href: 'report.html', icon: 'chart', mod: 'growth' },
       { id: 'reviews', label: 'Reviews', href: 'reviews.html', icon: 'star', mod: 'reviews' }] },
@@ -47,7 +52,7 @@
       { id: 'site', label: 'Website', href: 'https://studio.ryst.in/', icon: 'globe', ext: true }] }
   ];
   var TABS = ['dashboard', 'schedule', 'tasks', 'quotes'];
-  var ALL_MODS = ['schedule', 'tasks', 'quotes', 'pipeline', 'equipment', 'crew', 'growth', 'reviews'];
+  var ALL_MODS = ['schedule', 'tasks', 'quotes', 'pipeline', 'equipment', 'crew', 'expenses', 'growth', 'reviews'];
 
   function token() { try { return localStorage.getItem('ryst_proxy_token') || ''; } catch (e) { return ''; } }
   function claims() {
@@ -159,7 +164,8 @@
     document.addEventListener('keydown', function (e) { if (e.key === 'Escape') document.documentElement.classList.remove('rs-open'); });
     refreshMe();
   }
-  window.RystShell = { mount: mount, me: function () { return me; }, allowed: function (mod) { return me.role === 'admin' || me.modules.indexOf(mod) >= 0; }, modules: ALL_MODS.slice() };
+  function setPage(id) { if (page === id) return; page = id; if (mounted) render(); }
+  window.RystShell = { mount: mount, setPage: setPage, me: function () { return me; }, allowed: function (mod) { return me.role === 'admin' || me.modules.indexOf(mod) >= 0; }, modules: ALL_MODS.slice() };
   function auto() { var p = document.body && document.body.getAttribute('data-shell'); if (p && p !== 'manual') mount(); }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', auto); else auto();
 })();
