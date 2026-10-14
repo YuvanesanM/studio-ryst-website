@@ -37,7 +37,7 @@
       { id: 'quotes', label: 'Quotes', href: 'quote.html', icon: 'file', mod: 'quotes' },
       { id: 'pipeline', label: 'Leads & pipeline', href: 'pipeline.html', icon: 'funnel', mod: 'pipeline' },
       { id: 'equipment', label: 'Equipment', href: 'equipment.html', icon: 'camera', mod: 'equipment' }] },
-    { title: 'People & money', items: [{ id: 'crew', label: 'Crew & invoices', href: 'freelancers.html', icon: 'users', mod: 'crew' }] },
+    { title: 'Crew & expenses', items: [{ id: 'crew', label: 'Crew & invoices', href: 'freelancers.html', icon: 'users', mod: 'crew' }] },
     { title: 'Insights', items: [
       { id: 'growth', label: 'Growth report', href: 'report.html', icon: 'chart', mod: 'growth' },
       { id: 'reviews', label: 'Reviews', href: 'reviews.html', icon: 'star', mod: 'reviews' }] },
