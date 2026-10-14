@@ -273,7 +273,7 @@ function render() {
   if (can('growth')) tiles.push(tile('', 'report.html', 'Sales this month', money(revNow), revPct == null ? (revLast ? '' : 'ex-GST, paid in full') : `${chip(revPct, '%')}<span>vs ${compact(revLast)} last month</span>`, salesViz));
   if (can('quotes')) tiles.push(tile('', 'quote.html', 'Balance due', money(dueTotal), due.length ? `${due.length} confirmed booking${due.length === 1 ? '' : 's'}` : 'Nothing outstanding'));
   tiles.push(tile('', 'https://www.instagram.com/studio.ryst', 'Instagram', fol.length ? fmtN(fol[fol.length - 1].v) : '—',
-    fol.length ? `${chip(deltaSince(fol, 7))}<span>${deltaSince(fol, 7) == null ? 'tracking started' : 'this week'}</span>` : (SO && SO.sources && SO.sources.instagram ? 'First reading pending' : 'Entered daily in tasks'), sparkMini(fol, '#3d9b69')));
+    fol.length ? `${chip(deltaSince(fol, 7))}<span>${deltaSince(fol, 7) == null ? 'tracking started' : 'this week'}</span>` : 'First reading pending', sparkMini(fol, '#3d9b69')));
   tiles.push(tile('', 'reviews.html', 'Google reviews', rev.length ? fmtN(rev[rev.length - 1].v) : '—',
     rev.length ? `${lastRating ? '<span>★ ' + lastRating + '</span>' : ''}${chip(deltaSince(rev, 7))}<span>${deltaSince(rev, 7) == null ? '' : 'this week'}</span>` : 'First reading pending', sparkMini(rev, '#c8893d')));
   $('#kpis').innerHTML = tiles.join('').replace(/href="https:\/\/www\.instagram/, 'target="_blank" rel="noopener" href="https://www.instagram');
