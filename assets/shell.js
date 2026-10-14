@@ -6,7 +6,7 @@
    schedule view) use data-shell="manual" and call RystShell.mount(). */
 (function () {
   if (window.RystShell) return;
-  var PROXY = 'https://ryst-109a-proxy.onrender.com/studio';
+  var PROXY = 'https://ryst-quss.onrender.com/studio';
   var ICONS = {
     grid: '<rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/>',
     calendar: '<rect x="3" y="4.5" width="18" height="16.5" rx="2"/><path d="M16 2.5v4M8 2.5v4M3 10h18"/>',
