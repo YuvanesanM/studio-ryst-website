@@ -74,6 +74,7 @@
   .stime small{display:block;font-weight:500;color:var(--muted2);font-size:11.5px}
   .sname{font-weight:600;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .smeta{font-size:12px;color:var(--muted);display:flex;align-items:center;gap:6px;margin-top:2px}
+  .sdue{font-size:12px;color:var(--muted2);margin-top:3px} .sdue b{color:var(--warn);font-weight:700}
   .tag{font-size:10.5px;font-weight:700;letter-spacing:.3px;text-transform:uppercase;padding:3px 8px;border-radius:20px;white-space:nowrap}
   .tag.ok{background:var(--accent-soft);color:var(--accent-d)} .tag.warn{background:var(--warn-soft);color:var(--warn)} .tag.bad{background:var(--danger-soft);color:var(--danger)} .tag.info{background:var(--info-soft);color:var(--info)} .tag.mute{background:var(--panel2);color:var(--muted2)}
   .dayhead{font-size:11px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--muted2);margin:12px 0 2px;display:flex;align-items:center;gap:8px}
@@ -201,8 +202,16 @@ function payTag(q) {
   if (!q) return '';
   const g = qGrand(q), p = qPaid(q);
   if (g > 0 && p >= g) return '<span class="tag ok">Paid</span>';
-  if (p > 0) return `<span class="tag warn">${money(g - p)} due</span>`;
+  if (p > 0) return '<span class="tag warn">Part paid</span>';
   return g > 0 ? `<span class="tag bad">Unpaid</span>` : '';
+}
+// Balance line under a booking: paid so far and what's still due — shown even
+// once the session is in progress or done, since that's when it's collected.
+function dueLine(q) {
+  if (!q || q.clientStatus === 'Declined') return '';
+  const g = qGrand(q), p = qPaid(q);
+  if (!(g > 0) || p >= g) return '';
+  return `<div class="sdue"><b>${money(g - p)} due</b>${p > 0 ? ' · ' + money(p) + ' advance paid' : ' · no advance yet'}</div>`;
 }
 function sessHTML(s, iso) {
   const q = quoteOf(s), z = zk(s.zone), now = hhmmNow(), today = iso === todayISO();
@@ -212,7 +221,7 @@ function sessHTML(s, iso) {
   return `<${href ? `a href="${href}"` : 'div'} class="sess">
     <div class="stime">${esc(fmt12(s.start) || 'Anytime')}<small>${s.end ? 'to ' + esc(fmt12(s.end)) : ''}</small></div>
     <div style="min-width:0"><div class="sname">${esc(s.name || (q && q.cname) || 'Booking')}</div>
-      <div class="smeta"><span class="dot" style="background:${ZC[z] || '#9aa097'}"></span>${esc(ZL[z] || s.zone || '')}${s.quoteNo ? ' · ' + esc(s.quoteNo) : ''}${!s.date ? ' · weekly' : ''}</div></div>
+      <div class="smeta"><span class="dot" style="background:${ZC[z] || '#9aa097'}"></span>${esc(ZL[z] || s.zone || '')}${s.quoteNo ? ' · ' + esc(s.quoteNo) : ''}${!s.date ? ' · weekly' : ''}</div>${dueLine(q)}</div>
     ${status || '<span></span>'}</${href ? 'a' : 'div'}>`;
 }
 
