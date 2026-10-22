@@ -25,6 +25,10 @@
   groups.forEach(function (sel) {
     document.querySelectorAll(sel).forEach(function (el, i) { el._rvDelay = Math.min(i, 6) * 70; els.push(el); });
   });
+  // One moving picture: the hero photograph settles from a slight zoom.
+  var heroImg = document.querySelector('.hero-fig img');
+  if (heroImg) heroImg.animate([{ transform: 'scale(1.06)' }, { transform: 'none' }],
+    { duration: 1600, easing: 'cubic-bezier(.23,1,.32,1)' });
   var vh = window.innerHeight;
   var io = new IntersectionObserver(function (entries) {
     entries.forEach(function (e) {
