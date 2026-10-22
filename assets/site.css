@@ -230,3 +230,4 @@ footer{border-top:0;background:var(--surface-2);padding:72px 0 32px}
 .price-table:has(.pt-img){display:grid;grid-template-columns:240px 1fr;grid-template-rows:auto 1fr;overflow:hidden}
 .pt-img{grid-row:1 / span 6;width:100%;height:100%;object-fit:cover;display:block}
 @media (max-width:600px){.price-table:has(.pt-img){grid-template-columns:1fr}.pt-img{grid-row:auto;aspect-ratio:16/9;height:auto}}
+.info-card p,.bk-panel p{color:var(--ink)}
