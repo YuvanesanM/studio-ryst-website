@@ -34,7 +34,7 @@
 <link rel="icon" href="/assets/logo-300.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..600;1,9..144,400..600&family=Space+Mono:wght@400;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..600;1,9..144,400..600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "LocalBusiness", "@id": "https://studio.ryst.in/#business", "name": "Studio RYST", "alternateName": "Studio RYST - Podcast, Photography & Kitchen Content Studio", "description": "Chennai's first-of-its-kind 3-in-1 content production studio — Podcast, Photography and Culinary zones, available by the hour in T-Nagar.", "url": "https://studio.ryst.in/", "image": "https://studio.ryst.in/assets/logo-300.png", "logo": "https://studio.ryst.in/assets/logo-300.png", "telephone": "+91-75300-11770", "priceRange": "₹₹", "address": {"@type": "PostalAddress", "streetAddress": "52, Ankur Plaza, Gopathy Narayana Rd", "addressLocality": "T Nagar, Chennai", "addressRegion": "Tamil Nadu", "postalCode": "600017", "addressCountry": "IN"}, "geo": {"@type": "GeoCoordinates", "latitude": 13.0441808, "longitude": 80.2392505}, "hasMap": "https://maps.app.goo.gl/PmPDiPyLWbVhLFef7", "sameAs": ["https://instagram.com/studio.ryst"], "areaServed": {"@type": "City", "name": "Chennai"}}</script>
 
 <style>
@@ -67,7 +67,7 @@ h1,h2,h3{font-family:"Fraunces",Georgia,serif;font-weight:500;letter-spacing:-.0
 p{margin:0}
 button,input,select,textarea{font-family:inherit}
 .mono{font-family:"Space Mono",ui-monospace,monospace}
-.eyebrow{font-family:"Space Mono",monospace;font-size:11.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--accent-strong)}
+.eyebrow{font-family:"Inter",sans-serif;font-size:11.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--accent-strong)}
 .wrap{max-width:1080px;margin:0 auto;padding:0 24px}
 
 /* ---- ambient scroll rail ---- */
@@ -206,7 +206,7 @@ button,input,select,textarea{font-family:inherit}
 .zone-card-media{position:relative;aspect-ratio:4/3;overflow:hidden;background:var(--surface-2)}
 .zone-card-media img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .5s cubic-bezier(.2,.8,.2,1)}
 .zone-card.has-media:hover .zone-card-media img{transform:scale(1.06)}
-.zone-card-tag-chip{position:absolute;left:14px;bottom:14px;color:#fff;font-family:"Space Mono",monospace;font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;padding:6px 12px;border-radius:20px;backdrop-filter:blur(4px);background:rgba(23,19,16,.72)}
+.zone-card-tag-chip{position:absolute;left:14px;bottom:14px;color:#fff;font-family:"Inter",sans-serif;font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;padding:6px 12px;border-radius:20px;backdrop-filter:blur(4px);background:rgba(23,19,16,.72)}
 .zone-card.photo .zone-card-tag-chip{background:color-mix(in srgb, var(--zone-photo-strong) 82%, black)}
 .zone-card.podcast .zone-card-tag-chip{background:color-mix(in srgb, var(--zone-podcast-strong) 82%, black)}
 .zone-card.culinary .zone-card-tag-chip{background:color-mix(in srgb, var(--zone-culinary-strong) 82%, black)}
@@ -215,7 +215,7 @@ button,input,select,textarea{font-family:inherit}
 /* ---- why / principles list ---- */
 .plist{border-top:1px solid var(--line)}
 .prow{display:grid;grid-template-columns:64px 1fr;gap:24px;padding:26px 0;border-bottom:1px solid var(--line)}
-.prow .tag{font-family:"Space Mono",monospace;font-size:12px;color:var(--accent-strong);padding-top:2px}
+.prow .tag{font-family:"Inter",sans-serif;font-size:12px;color:var(--accent-strong);padding-top:2px}
 .prow h3{font-family:"Inter",sans-serif;font-weight:600;font-size:16.5px;margin-bottom:5px}
 .prow p{font-size:14.5px;color:var(--ink-muted);max-width:60ch;line-height:1.65}
 @media (max-width:600px){.prow{grid-template-columns:1fr;gap:6px}}
@@ -225,14 +225,14 @@ button,input,select,textarea{font-family:inherit}
 .price-table{background:var(--surface);border-left:3px solid var(--line)}
 .price-table .ph{display:flex;align-items:baseline;justify-content:space-between;padding:20px 24px;border-bottom:1px solid var(--line)}
 .price-table .ph h3{font-size:19px}
-.price-table .ph .note{font-family:"Space Mono",monospace;font-size:11px;color:var(--ink-muted)}
+.price-table .ph .note{font-family:"Inter",sans-serif;font-size:11px;color:var(--ink-muted)}
 .price-table[data-zone="Photography"]{border-left-color:var(--zone-photo)}
 .price-table[data-zone="Photography"] .ph h3{color:var(--zone-photo-strong)}
 .price-table[data-zone="Podcast"]{border-left-color:var(--zone-podcast)}
 .price-table[data-zone="Podcast"] .ph h3{color:var(--zone-podcast-strong)}
 .price-table[data-zone="Culinary"]{border-left-color:var(--zone-culinary)}
 .price-table[data-zone="Culinary"] .ph h3{color:var(--zone-culinary-strong)}
-.tier{display:flex;align-items:center;justify-content:space-between;padding:16px 24px;border-bottom:1px solid var(--line);font-family:"Space Mono",monospace;font-size:13px}
+.tier{display:flex;align-items:center;justify-content:space-between;padding:16px 24px;border-bottom:1px solid var(--line);font-family:"Inter",sans-serif;font-size:13px}
 .tier:last-child{border-bottom:none}
 .tier .len{color:var(--ink);letter-spacing:.05em}
 .tier .len b{font-family:"Inter",sans-serif;font-weight:600;letter-spacing:0;margin-right:8px}
@@ -247,7 +247,7 @@ button,input,select,textarea{font-family:inherit}
 .faq-item{border-bottom:1px solid var(--line);padding:18px 0}
 .faq-item summary{cursor:pointer;font-weight:600;font-size:15.5px;list-style:none;display:flex;align-items:center;justify-content:space-between;gap:16px}
 .faq-item summary::-webkit-details-marker{display:none}
-.faq-item summary::after{content:'+';font-family:"Space Mono",monospace;font-size:18px;color:var(--accent-strong);flex-shrink:0;transition:transform .2s}
+.faq-item summary::after{content:'+';font-family:"Inter",sans-serif;font-size:18px;color:var(--accent-strong);flex-shrink:0;transition:transform .2s}
 .faq-item[open] summary::after{transform:rotate(45deg)}
 .faq-item p{margin-top:12px;font-size:14px;color:var(--ink-muted);line-height:1.7;max-width:68ch}
 .faq-item p a{color:var(--accent-strong);font-weight:600}
@@ -256,7 +256,7 @@ button,input,select,textarea{font-family:inherit}
 .booking-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:1px;background:var(--line);border:1px solid var(--line);border-radius:4px;overflow:hidden}
 .bk-panel{background:var(--surface);padding:32px}
 .field{display:flex;flex-direction:column;gap:7px;margin-bottom:20px}
-.field label{font-family:"Space Mono",monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-muted)}
+.field label{font-family:"Inter",sans-serif;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-muted)}
 .field input,.field select,.field textarea{background:var(--surface-2);border:1px solid var(--line);color:var(--ink);border-radius:3px;padding:12px 13px;font-size:14.5px;outline:none;width:100%;font-family:inherit}
 .field input:focus,.field select:focus,.field textarea:focus{border-color:var(--accent)}
 .field textarea{resize:vertical;min-height:64px;line-height:1.5}
@@ -269,12 +269,12 @@ button,input,select,textarea{font-family:inherit}
 .zpill[data-zone="Podcast"].on{background:var(--zone-podcast-strong);border-color:var(--zone-podcast-strong);color:#fff}
 .zpill[data-zone="Culinary"].on{background:var(--zone-culinary);border-color:var(--zone-culinary);color:var(--accent-ink)}
 .hour-pick{display:flex;gap:8px}
-.hpill{flex:1;border:1.5px solid var(--line);background:var(--surface-2);color:var(--ink-muted);padding:10px 0;border-radius:3px;font-family:"Space Mono",monospace;font-size:13px;font-weight:700;cursor:pointer;text-align:center;transition:.15s}
+.hpill{flex:1;border:1.5px solid var(--line);background:var(--surface-2);color:var(--ink-muted);padding:10px 0;border-radius:3px;font-family:"Inter",sans-serif;font-size:13px;font-weight:700;cursor:pointer;text-align:center;transition:.15s}
 .hpill.on{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
 .bk-err{color:var(--danger);font-size:13px;min-height:18px;margin-top:4px}
 .bk-steps .info-row{display:flex;gap:14px;padding:15px 0;border-bottom:1px solid var(--line)}
 .bk-steps .info-row:last-child{border-bottom:none}
-.bk-steps .ico{font-family:"Space Mono",monospace;font-size:12px;color:var(--accent-strong);width:20px;flex-shrink:0}
+.bk-steps .ico{font-family:"Inter",sans-serif;font-size:12px;color:var(--accent-strong);width:20px;flex-shrink:0}
 .bk-steps .v{font-size:14.5px}
 .avail-note{font-size:12.5px;color:var(--ink-muted);margin-top:-6px;margin-bottom:18px;min-height:16px}
 @media (max-width:820px){.booking-grid{grid-template-columns:1fr}.two-col{grid-template-columns:1fr}}
@@ -284,8 +284,8 @@ button,input,select,textarea{font-family:inherit}
 .info-card{background:var(--surface);padding:30px}
 .info-row{display:flex;gap:16px;padding:16px 0;border-bottom:1px solid var(--line)}
 .info-row:last-child{border-bottom:none}
-.info-row .ico{width:20px;flex-shrink:0;font-family:"Space Mono",monospace;color:var(--accent-strong);font-size:13px;padding-top:3px;display:flex;align-items:center}
-.info-row .k{font-family:"Space Mono",monospace;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-muted)}
+.info-row .ico{width:20px;flex-shrink:0;font-family:"Inter",sans-serif;color:var(--accent-strong);font-size:13px;padding-top:3px;display:flex;align-items:center}
+.info-row .k{font-family:"Inter",sans-serif;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-muted)}
 .info-row .v{font-size:14.5px;color:var(--ink);font-weight:600;margin-top:3px}
 .info-row a{text-decoration:none;color:inherit}
 .social-row{display:flex;gap:10px;margin-top:20px}
@@ -305,7 +305,7 @@ button,input,select,textarea{font-family:inherit}
 .legal h2:first-child{margin-top:0}
 .legal p,.legal li{font-size:14.5px;color:var(--ink-muted);margin-bottom:10px;line-height:1.7}
 .legal ul{margin-left:20px}
-.legal .updated{font-family:"Space Mono",monospace;font-size:12px;color:var(--ink-muted);margin-bottom:28px}
+.legal .updated{font-family:"Inter",sans-serif;font-size:12px;color:var(--ink-muted);margin-bottom:28px}
 
 /* ---- footer ---- */
 footer{border-top:1px solid var(--line);padding:64px 0 30px;margin-top:0}
@@ -313,7 +313,7 @@ footer{border-top:1px solid var(--line);padding:64px 0 30px;margin-top:0}
 .foot-brand{display:flex;flex-direction:column;gap:14px}
 .foot-brand img{height:140px;width:140px;object-fit:contain;border-radius:18px;background:var(--paper)}
 .foot-brand p{font-size:13px;line-height:1.7;color:var(--ink-muted);max-width:34ch}
-.foot-col h4{font-family:"Space Mono",monospace;font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:16px}
+.foot-col h4{font-family:"Inter",sans-serif;font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:16px}
 .foot-col a{display:block;font-size:13.5px;color:var(--ink);text-decoration:none;margin-bottom:12px}
 .foot-col a:hover{color:var(--accent-strong)}
 .foot-ic{display:flex;align-items:center;gap:10px}
@@ -328,13 +328,14 @@ footer{border-top:1px solid var(--line);padding:64px 0 30px;margin-top:0}
 
 
 </style>
+<link rel="stylesheet" href="/assets/site.css">
 </head>
 <body>
 <div class="rail"><div class="rail-fill" id="railFill"></div></div>
 <header class="nav">
   <div class="inner">
     <a class="brand" href="/"><img src="/assets/logo-300.png" alt="Studio RYST" width="200" height="200"></a>
-    <button class="menu-btn" id="menuBtn" aria-label="Menu">☰</button>
+    <button class="menu-btn" id="menuBtn" aria-label="Menu"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
     <nav class="navlinks" id="navLinks">
       <a href="/">Home</a>
       <a href="/studio/">Our Studio</a>
@@ -346,11 +347,11 @@ footer{border-top:1px solid var(--line);padding:64px 0 30px;margin-top:0}
   </div>
 </header>
 
-<section class="hero small"><div class="wrap inner">
+<section class="hero small has-fig"><div class="wrap inner">
   <div class="eyebrow">Contact</div>
   <h1>Let's connect!</h1>
   <p class="lead">Connect with entrepreneurs, build your network, and make great business at Studio RYST.</p>
-</div></section>
+</div><figure class="hero-fig"><img src="/assets/photos/hero.jpg" alt="Behind the scenes at Studio RYST, T-Nagar, Chennai" width="2400" height="1350" fetchpriority="high"></figure></section>
 
 <section class="section"><div class="wrap">
   <div class="info-grid">
@@ -367,7 +368,7 @@ footer{border-top:1px solid var(--line);padding:64px 0 30px;margin-top:0}
     <div class="info-card">
       <h3 style="margin-bottom:16px;font-size:19px">Quick questions?</h3>
       <p style="font-size:14px;color:var(--ink-muted);margin-bottom:22px;line-height:1.7">The fastest way to reach us is WhatsApp — tell us what you're planning and we'll get right back to you.</p>
-      <a class="btn btn-wa" href="https://wa.me/917530011770?text=Hi!%20I%27d%20like%20to%20know%20more%20about%20Studio%20RYST" target="_blank" rel="noopener"><span>💬 Chat on WhatsApp</span></a>
+      <a class="btn btn-wa" href="https://wa.me/917530011770?text=Hi!%20I%27d%20like%20to%20know%20more%20about%20Studio%20RYST" target="_blank" rel="noopener"><svg viewBox="0 0 32 32" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M16.004 3C9.377 3 4 8.373 4 15c0 2.31.652 4.47 1.78 6.307L4 29l7.86-1.746A11.94 11.94 0 0 0 16.004 27C22.63 27 28 21.627 28 15S22.63 3 16.004 3zm6.98 16.98c-.297.836-1.474 1.53-2.41 1.727-.64.135-1.474.243-4.286-.92-3.596-1.49-5.91-5.14-6.09-5.377-.176-.238-1.454-1.936-1.454-3.693 0-1.756.914-2.617 1.24-2.976.297-.325.65-.406.867-.406.217 0 .434.002.624.011.2.01.468-.076.732.56.297.72.998 2.486 1.084 2.666.087.18.144.39.03.628-.114.238-.172.386-.34.594-.17.207-.356.462-.508.62-.17.176-.348.368-.15.72.198.353.878 1.45 1.885 2.348 1.294 1.155 2.386 1.512 2.74 1.68.353.17.56.144.766-.086.207-.23.882-1.03 1.118-1.383.235-.353.47-.294.792-.176.325.117 2.06.972 2.414 1.148.353.176.588.264.674.412.087.148.087.856-.21 1.693z"/></svg><span>Chat on WhatsApp</span></a>
       <div style="margin-top:20px"><a class="btn btn-outline" href="/booking/"><span>Or go straight to Booking →</span></a></div>
     </div>
   </div>
@@ -379,13 +380,13 @@ footer{border-top:1px solid var(--line);padding:64px 0 30px;margin-top:0}
         <img src="/assets/logo-300.png" alt="Studio RYST" width="200" height="200">
         <p>Chennai's first hybrid content production space combining podcast, kitchen, and photo shoot setups under one roof in T-Nagar.</p>
       </div>
-      <div class="foot-col"><h4>Quick Links</h4>
+      <div class="foot-col"><h4>Explore</h4>
         <a href="/">Home</a><a href="/studio/">Our Studio</a><a href="/packages/">Packages</a><a href="/booking/">Book Now</a><a href="/contact/">Contact</a>
       </div>
-      <div class="foot-col"><h4>Important Links</h4>
+      <div class="foot-col"><h4>Policies</h4>
         <a href="/terms-and-conditions/">Terms and Conditions</a><a href="/privacy-policy/">Privacy Policy</a><a href="/cancellation/">Refund and Cancellation</a>
       </div>
-      <div class="foot-col"><h4>Let's Connect!</h4>
+      <div class="foot-col"><h4>Get in touch</h4>
         <a class="foot-ic" href="https://instagram.com/studio.ryst" target="_blank" rel="noopener"><span class="fi ig"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="6"/><circle cx="12" cy="12" r="4.2"/><circle cx="17.4" cy="6.6" r="1.15" fill="currentColor" stroke="none"/></svg></span> Instagram — @studio.ryst</a>
         <a class="foot-ic" href="https://wa.me/917530011770" target="_blank" rel="noopener"><span class="fi wa"><svg viewBox="0 0 32 32" width="13" height="13" fill="currentColor"><path d="M16.004 3C9.377 3 4 8.373 4 15c0 2.31.652 4.47 1.78 6.307L4 29l7.86-1.746A11.94 11.94 0 0 0 16.004 27C22.63 27 28 21.627 28 15S22.63 3 16.004 3zm6.98 16.98c-.297.836-1.474 1.53-2.41 1.727-.64.135-1.474.243-4.286-.92-3.596-1.49-5.91-5.14-6.09-5.377-.176-.238-1.454-1.936-1.454-3.693 0-1.756.914-2.617 1.24-2.976.297-.325.65-.406.867-.406.217 0 .434.002.624.011.2.01.468-.076.732.56.297.72.998 2.486 1.084 2.666.087.18.144.39.03.628-.114.238-.172.386-.34.594-.17.207-.356.462-.508.62-.17.176-.348.368-.15.72.198.353.878 1.45 1.885 2.348 1.294 1.155 2.386 1.512 2.74 1.68.353.17.56.144.766-.086.207-.23.882-1.03 1.118-1.383.235-.353.47-.294.792-.176.325.117 2.06.972 2.414 1.148.353.176.588.264.674.412.087.148.087.856-.21 1.693z"/></svg></span> WhatsApp</a>
         <a class="foot-ic" href="https://maps.app.goo.gl/PmPDiPyLWbVhLFef7" target="_blank" rel="noopener"><span class="fi gm"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 21s7-7.58 7-12a7 7 0 1 0-14 0c0 4.42 7 12 7 12z"/><circle cx="12" cy="9" r="2.4"/></svg></span> Get Directions</a>
@@ -419,5 +420,6 @@ footer{border-top:1px solid var(--line);padding:64px 0 30px;margin-top:0}
 
   </script>
 
+<script src="/assets/site.js" defer></script>
 </body>
 </html>
