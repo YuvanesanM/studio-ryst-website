@@ -19,7 +19,7 @@
     '.hero.small .inner > *', '.hero-fig',
     '.section-head > *', '.split > *', '.zones > *', '.usefor > *', '.plist > *',
     '.price-tables > *', '.price-note', '.faq-list > *', '.gallery-grid > *',
-    '.booking-grid > *', '.info-grid > *', '.cta-band > *', '.legal > *'
+    '.booking-grid > *', '.info-grid > *', '.cta-band > *', '.cta-band .ctas > *', '.legal > *', '.foot-grid > *'
   ];
   var els = [];
   groups.forEach(function (sel) {

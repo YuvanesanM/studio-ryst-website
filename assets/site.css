@@ -231,3 +231,5 @@ footer{border-top:0;background:var(--surface-2);padding:72px 0 32px}
 .pt-img{grid-row:1 / span 6;width:100%;height:100%;object-fit:cover;display:block}
 @media (max-width:600px){.price-table:has(.pt-img){grid-template-columns:1fr}.pt-img{grid-row:auto;aspect-ratio:16/9;height:auto}}
 .info-card p,.bk-panel p{color:var(--ink)}
+@media (max-width:600px){.cta-band h2{font-size:24px}}
+.split li,.usefor-card p,.price-note li{color:var(--ink)}
