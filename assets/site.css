@@ -1,0 +1,235 @@
+/* Studio RYST — public-site refinement layer.
+   Loaded after each page's own <style>, so it overrides the shared base.
+   Principles (Impeccable craft floor · Taste house rules · Emil Kowalski's
+   design-engineering notes):
+   - Type does the work: fewer, bigger sizes; body at 17px; one text face
+     (Inter) + one display face (Fraunces). No monospace, no tiny tracked caps.
+   - No ornaments: no labels above headings, no hairline dividers, no
+     gradients, no glass, no text-shadow. Space and tone steps separate things.
+   - The header stays one compact height; the big logo hangs below it at the
+     top of the page and shrinks into the bar on scroll (no layout jump).
+   - Motion: strong custom ease-out, under 300ms for UI, press feedback on
+     every control, hover effects only on hover-capable pointers, and
+     reduced-motion respected. */
+
+:root{
+  --surface-2:#f1f0ed;          /* stone, not yellow cream */
+  --zone-culinary-strong:#4a6620;
+  --accent-strong:#8a5a0e;      /* text-safe gold (≥4.5:1 on white and stone) */
+  --ink-muted:#5c5346;
+  --ease-out:cubic-bezier(.23,1,.32,1);
+  --ease-in-out:cubic-bezier(.77,0,.175,1);
+  --fs-body:17px;
+  --fs-small:14px;
+  --fs-lead:19px;
+  --fs-h3:21px;
+  --fs-h2:clamp(28px,3.4vw,42px);
+}
+
+/* ---- browser surfaces ---- */
+html{scrollbar-color:#cfc8ba transparent;-webkit-text-size-adjust:100%}
+body{font-size:var(--fs-body);line-height:1.6;caret-color:var(--accent-strong)}
+::selection{background:#f8a61f;color:#171310}
+a{text-underline-offset:3px;text-decoration-thickness:1px}
+:focus-visible{outline:2px solid var(--accent-strong);outline-offset:3px;border-radius:2px}
+.hero-media :focus-visible,.cta-band :focus-visible{outline-color:#f8a61f}
+img{color:transparent}
+
+/* ---- one text face: everything that was Space Mono becomes Inter, sentence case ---- */
+.mono,.eyebrow,.stat-label,.zone-card-tag-chip,.prow .tag,.price-table .ph .note,.tier,.field label,
+.hpill,.info-row .k,.info-row .ico,.bk-steps .ico,.foot-col h4,.legal .updated,.t-time,
+.insta-follow-chip,.scroll-cue,.faq-item summary::after{
+  font-family:"Inter",system-ui,-apple-system,sans-serif;letter-spacing:normal;text-transform:none
+}
+.tier{font-size:15px}
+.tier .len{letter-spacing:normal}
+.field label{font-size:14px;font-weight:600;color:var(--ink)}
+.info-row .k{font-size:13px;color:var(--ink-muted)}
+.price-table .ph .note{font-size:14px}
+.legal .updated{font-size:14px}
+.t-time{font-size:13px}
+.badge{font-size:12px;letter-spacing:normal;text-transform:none;padding:2px 8px}
+.faq-item summary::after{font-size:22px;font-weight:400}
+
+/* ---- no labels above headings ---- */
+.eyebrow{display:none}
+
+/* ---- type scale ---- */
+h1,h2,h3{letter-spacing:-.02em}
+.section-head{max-width:720px;margin-bottom:48px}
+.section-head h2{font-size:var(--fs-h2);line-height:1.08;margin:0 0 16px}
+.section-head p{font-size:var(--fs-body);line-height:1.65;color:var(--ink);max-width:62ch}
+.zone-card p,.prow p,.faq-item p,.t-text{color:var(--ink)}
+.hero p.lead{font-size:var(--fs-lead);line-height:1.6}
+.hero.small{padding:72px 0 64px}
+.hero.small h1{font-size:clamp(32px,4.6vw,52px);line-height:1.05;margin:0 0 18px}
+.zone-card h3{font-size:var(--fs-h3)}
+.zone-card p,.prow p,.faq-item p,.t-text,.legal p,.legal li,.info-row .v,.bk-steps .v,.price-note,.field input,.field select,.field textarea{font-size:16px}
+.zone-card li{font-size:16px}
+.zone-card .more{font-size:14px}
+.zone-card .tag{display:none}   /* a kicker above the heading; the chip on the photo names the zone */
+.faq-item summary{font-size:17px}
+.prow h3{font-size:var(--fs-h3);font-family:"Fraunces",Georgia,serif;font-weight:500}
+.cta-band p,.section-head p{font-size:var(--fs-body)}
+.avail-note,.bk-err{font-size:14px}
+.zpill{font-size:14px}
+.hpill{font-size:15px}
+.reviews-badge{font-size:14px}
+
+/* ---- rhythm: space and tone, never lines ---- */
+.section{padding:88px 0;border-top:0}
+.stat-section{border-top:0}
+@media (max-width:600px){.section{padding:56px 0}.hero.small{padding:44px 0 32px}}
+.rail{background:transparent}
+
+/* ---- header: one compact bar, the big logo hangs below and shrinks on scroll ---- */
+.nav{border-bottom:0;background:var(--bg);transition:box-shadow .2s ease}
+.nav.scrolled{box-shadow:0 6px 18px -12px rgba(23,19,16,.28)}
+@media (min-width:861px){
+  .nav{backdrop-filter:none;background:var(--bg)}
+  .nav .inner{height:84px;padding-top:0;padding-bottom:0}
+  .brand{position:relative;width:200px;height:84px;align-self:flex-start}
+  .brand img{position:absolute;top:14px;left:0;margin:0;transform-origin:0 0;
+    transition:transform .32s var(--ease-out),box-shadow .32s var(--ease-out)}
+  .nav.scrolled .brand img{transform:scale(.3)}
+  /* the bar is shorter than the hanging logo: give the first section the room */
+  .nav:not(.nav-overlay) + .hero.small{padding-top:216px}
+  .navlinks a::after{transition:right .2s var(--ease-out)}
+}
+.nav.nav-overlay{position:fixed}
+.nav.nav-overlay.scrolled{position:fixed}
+.nav.nav-overlay::before{backdrop-filter:none;background:var(--bg);transition:opacity .2s ease}
+@media (max-width:860px){
+  .nav .inner{padding-top:10px;padding-bottom:10px}
+  .brand img{margin-bottom:0}
+  .navlinks{inset:76px 0 0 0;border-top:0}
+  .navlinks a{border-bottom:0;font-size:17px}
+}
+.menu-btn{width:44px;height:44px;border-radius:3px;display:none;align-items:center;justify-content:center}
+@media (max-width:860px){.menu-btn{display:inline-flex}}
+.menu-btn svg{display:block}
+
+/* ---- buttons: flat, one fill, instant press feedback ---- */
+.btn{font-size:16px;transition:transform .16s var(--ease-out),background-color .2s ease,border-color .2s ease,color .2s ease}
+.btn:active{transform:scale(.97)}
+.btn-brass::before{display:none}
+.btn-wa svg{flex-shrink:0}
+@media (hover:hover) and (pointer:fine){
+  .btn-brass:hover{background:#e9961a;border-color:#e9961a}
+  .btn-outline:hover{border-color:var(--ink)}
+}
+
+/* ---- hero over the photo: a scrim, not text shadows ---- */
+.hero-media .eyebrow,.hero-media h1,.hero-media p.lead{text-shadow:none}
+.hero-scrim{background:linear-gradient(90deg,rgba(23,19,16,.86) 0%,rgba(23,19,16,.7) 42%,rgba(23,19,16,.2) 80%),linear-gradient(180deg,rgba(23,19,16,.45) 0%,rgba(23,19,16,0) 30%,rgba(23,19,16,.55) 100%)}
+@media (max-width:860px){.hero-scrim{background:rgba(23,19,16,.68)}}
+.hero-media .reviews-badge{backdrop-filter:none;background:rgba(23,19,16,.55);border-color:rgba(255,255,255,.22)}
+.scroll-cue{font-size:13px}
+
+/* ---- zones: tone fields, no outlined grid, no gradient ---- */
+.zones{gap:20px;background:none;border:0;border-radius:0;overflow:visible}
+.zone-card,.zone-card:hover{background:var(--surface-2)}
+.zone-card{border-radius:4px;overflow:hidden}
+.zone-card-tag-chip{backdrop-filter:none;font-size:13px;font-weight:600;padding:5px 12px}
+.zone-card.has-media,.zone-card.has-media:hover{transform:none}
+.zone-card.has-media{transition:background-color .2s ease}
+.zone-card-media img{transition:transform .6s var(--ease-out)}
+.zone-card.has-media:hover .zone-card-media img{transform:none}
+@media (hover:hover) and (pointer:fine){
+  .zone-card.has-media:hover .zone-card-media img{transform:scale(1.04)}
+  .zone-card:hover{background:#ece8e0}
+}
+.zone-card:active{transform:scale(.99);transition:transform .16s var(--ease-out)}
+
+/* ---- why list: no numbers, no rules ---- */
+.plist{border-top:0}
+.prow{border-bottom:0;padding:0 0 26px;grid-template-columns:1fr}
+.prow .tag{display:none}
+
+/* ---- gallery ---- */
+.gallery-item img{transition:transform .6s var(--ease-out)}
+.gallery-item:hover img{transform:none}
+@media (hover:hover) and (pointer:fine){.gallery-item:hover img{transform:scale(1.03)}}
+
+/* ---- testimonials / instagram chips: fills, not outlines ---- */
+.testimonial-card{border:0;background:var(--surface)}
+.testimonials-section{background:var(--surface-2)}
+.t-arrow{border:0;background:var(--surface);width:44px;height:44px}
+.insta-follow-chip{border:0;background:var(--surface);font-size:14px;font-weight:600;color:var(--accent-strong)}
+
+/* ---- closing call to action: a full field of colour ---- */
+.cta-band{background:var(--ink);color:#fff;border:0;border-radius:4px;padding:64px 56px}
+.cta-band h2{color:#fff;font-size:var(--fs-h2);line-height:1.08}
+.cta-band p{color:rgba(255,255,255,.82);font-size:var(--fs-lead)}
+@media (max-width:600px){.cta-band{padding:40px 24px}}
+
+/* ---- forms and info panels: tone fields instead of 1px grids ---- */
+.booking-grid,.info-grid,.price-tables{gap:20px;background:none;border:0;overflow:visible}
+.bk-panel,.info-card,.price-table{background:var(--surface-2);border-radius:4px}
+.price-table{border-left:0}
+.price-table .ph{border-bottom:0}
+.tier{border-bottom:0;padding:12px 24px}
+.price-note{border:0;background:var(--surface-2)}
+.field input,.field select,.field textarea{background:var(--surface);border-color:#dcd5c7}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--accent-strong);box-shadow:0 0 0 3px rgba(248,166,31,.25)}
+.zpill,.hpill{transition:transform .16s var(--ease-out),background-color .2s ease,border-color .2s ease,color .2s ease}
+.zpill:active,.hpill:active{transform:scale(.97)}
+.social-btn{border:0;background:var(--surface-2)}
+.social-btn:hover{transform:none}
+
+/* ---- footer: a tone step, sentence-case headings ---- */
+footer{border-top:0;background:var(--surface-2);padding:72px 0 32px}
+.foot-col h4{font-size:15px;font-weight:600;color:var(--ink);margin-bottom:14px}
+.foot-col a{font-size:15px}
+.foot-brand p{font-size:15px}
+.foot-bottom{border-top:0;font-size:13px;padding-top:8px}
+.fi{background:var(--surface)}
+
+@media (prefers-reduced-motion:reduce){
+  .btn:active,.zone-card:active,.zpill:active,.hpill:active{transform:none}
+  .nav.scrolled .brand img{transition:none}
+}
+
+/* ---- inner pages ---- */
+.hero.small .inner{max-width:960px}
+.hero.small p.lead{color:var(--ink);max-width:62ch}
+.hero h1 em,.section-head h2 em{font-style:normal;color:inherit}   /* one face, one colour in headlines */
+@media (max-width:600px){.hero.small h1{font-size:clamp(28px,7.4vw,34px)}}
+.cta-band .btn-outline{color:#fff;border-color:rgba(255,255,255,.45)}
+@media (hover:hover) and (pointer:fine){.cta-band .btn-outline:hover{border-color:#fff}}
+.faq-list{border-top:0;display:grid;gap:8px}
+.faq-item{border-bottom:0;background:var(--surface-2);border-radius:4px;padding:18px 22px}
+.info-row,.bk-steps .info-row{border-bottom:0}
+.usefor-card{border:0;background:var(--surface-2)}
+.steps-ol{margin:0;padding-left:22px;display:grid;gap:12px;font-size:16px}
+.steps-ol li::marker{color:var(--accent-strong);font-weight:700}
+.split h2{line-height:1.12}
+.usefor-card{text-align:left}
+
+/* ---- inner-page hero: copy beside one large photograph of the studio ---- */
+.hero-fig{margin:0}
+.hero-fig img{width:100%;height:100%;object-fit:cover;display:block}
+@media (min-width:861px){
+  .hero.small.has-fig{display:grid;grid-template-columns:minmax(0,1fr) 46vw;padding:0;min-height:min(80vh,780px)}
+  .nav:not(.nav-overlay) + .hero.small.has-fig{padding-top:0}
+  .hero.small.has-fig .inner{max-width:none;margin:0;align-self:center;
+    padding:216px 56px 72px max(24px,calc((100vw - 1080px)/2 + 24px))}
+  .hero.small.has-fig .hero-fig{height:100%;min-height:520px}
+}
+@media (max-width:860px){
+  .hero.small.has-fig .hero-fig{margin:28px 24px 0;aspect-ratio:4/3;border-radius:4px;overflow:hidden}
+}
+
+/* ---- a "why" list that owns the full width ---- */
+@media (min-width:861px){.section > .wrap > .plist{display:grid;grid-template-columns:1fr 1fr;gap:8px 64px}}
+.usefor-card{background:none;padding:0}
+
+/* ---- scroll reveal (site.js adds .rv only when it can animate) ---- */
+.rv{opacity:0}
+/* ---- packages: each zone's prices beside a photo of that zone ---- */
+.price-table:has(.pt-img){display:grid;grid-template-columns:240px 1fr;grid-template-rows:auto 1fr;overflow:hidden}
+.pt-img{grid-row:1 / span 6;width:100%;height:100%;object-fit:cover;display:block}
+@media (max-width:600px){.price-table:has(.pt-img){grid-template-columns:1fr}.pt-img{grid-row:auto;aspect-ratio:16/9;height:auto}}
+.info-card p,.bk-panel p{color:var(--ink)}
+@media (max-width:600px){.cta-band h2{font-size:24px}}
+.split li,.usefor-card p,.price-note li{color:var(--ink)}
