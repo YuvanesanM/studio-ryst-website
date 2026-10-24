@@ -496,6 +496,9 @@ let leadLink = null;       // set when this quote was raised from a CRM lead
 let curScheduleId = null;  // set once this quote has been pushed to the schedule
 let curScheduleConflict = false;  // true when syncToSchedule found a zone/time clash and skipped the write
 let qPaymentsDraft = [];   // {id,date,amount,note} — this quote's payments log
+// Payments removed in this editing session, so the save-time merge with the
+// cloud copy (which picks up Razorpay payments) doesn't bring them back.
+let qPaymentsRemoved = new Set();
 // {email,name} of whoever created/last saved this quote — see saveQuote().
 // curCreatedBy stays null for a quote that originated from a guest booking
 // (no coordinator has created it — see /public-booking) until a coordinator
@@ -767,7 +770,11 @@ function renderQPayments(){
       </div>`;
     }).join("");
     box.querySelectorAll(".qpmt-del").forEach(btn=>btn.addEventListener("click", e=>{
-      qPaymentsDraft.splice(+e.currentTarget.dataset.i, 1); renderQPayments(); render();
+      const i=+e.currentTarget.dataset.i, p=qPaymentsDraft[i]; if(!p) return;
+      if(!confirm(`Remove the ${money(p.amount)} payment dated ${p.date||"—"}?`)) return;
+      if(p.id) qPaymentsRemoved.add(p.id);
+      qPaymentsDraft.splice(i, 1); renderQPayments(); render();
+      toast("Payment removed — Save to apply");
     }));
   }
 }
@@ -1015,7 +1022,7 @@ function newQuote(){
   $("#zone").value=ZONES[0]; $("#hours").value=String(DEFAULT_HOURS);
   $("#cname").value=""; $("#cphone").value=""; $("#cgst").value=""; $("#caddr").value=""; $("#terms").value=settings.terms; $("#discountInp").value=""; discFloorPct=0;
   $("#sessDate").value=""; $("#sessStart").value=""; curScheduleId=null; curScheduleConflict=false; updateSchedStatus();
-  qPaymentsDraft=[]; $("#qPmtDate").value=todayISOq(); $("#qPmtAmount").value=""; $("#qPmtNote").value="";
+  qPaymentsDraft=[]; qPaymentsRemoved=new Set(); $("#qPmtDate").value=todayISOq(); $("#qPmtAmount").value=""; $("#qPmtNote").value="";
   renderQPayments();
   items=[zoneItem()];
   renderItems(); render(); syncLoadQuoteBtnLabel();
@@ -1225,7 +1232,7 @@ async function saveQuote(silent){
     if(fresh.scheduleId && !q.scheduleId){ q.scheduleId=fresh.scheduleId; curScheduleId=q.scheduleId; }
     else if(fresh.scheduleConflict && !q.scheduleId){ q.scheduleConflict=true; curScheduleConflict=true; }
     const localIds=new Set(q.payments.map(p=>p.id));
-    const extra=(fresh.payments||[]).filter(p=>!localIds.has(p.id));
+    const extra=(fresh.payments||[]).filter(p=>!localIds.has(p.id) && !qPaymentsRemoved.has(p.id));
     if(extra.length){
       q.payments=[...q.payments, ...extra];
       qPaymentsDraft=q.payments.map(p=>({...p}));
@@ -1267,7 +1274,7 @@ function loadQuote(qno){
   // reopened quote still keeps its schedule entry tagged with the right lead.
   leadLink = q.leadId ? { id:q.leadId, phone:q.cphone||"" } : null;
   curShareToken=q.shareToken||genToken(); curSharedAt=q.sharedAt||null; curClientStatus=q.clientStatus||""; curClientRespondedAt=q.clientRespondedAt||null; renderClientResp(q);
-  qPaymentsDraft=Array.isArray(q.payments)?q.payments.map(p=>({...p})):[]; $("#qPmtDate").value=todayISOq(); $("#qPmtAmount").value=""; $("#qPmtNote").value="";
+  qPaymentsDraft=Array.isArray(q.payments)?q.payments.map(p=>({...p})):[]; qPaymentsRemoved=new Set(); $("#qPmtDate").value=todayISOq(); $("#qPmtAmount").value=""; $("#qPmtNote").value="";
   renderQPayments();
   items=(q.items&&q.items.length)? q.items.map(x=>({desc:x.desc||"",sac:x.sac||"",price:x.price||"",qty:(x.qty!=null?x.qty:"1"),gst:(x.gst??FALLBACK_GST)})) : [{desc:"",sac:"",price:"",qty:"1",gst:FALLBACK_GST}];
   { const s0=items.reduce((a,it)=>a+lineTotal(it),0), d0=parseFloat(q.discount)||0;
