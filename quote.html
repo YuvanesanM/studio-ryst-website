@@ -57,7 +57,7 @@
   input.t,textarea.t,select.t{width:100%;background:var(--panel2);border:1px solid var(--line);border-radius:9px;color:var(--ink);padding:10px 12px;font-size:13.5px;font-weight:400}
   textarea.t{resize:vertical;min-height:64px;line-height:1.5}
   input.t:focus,textarea.t:focus,select.t:focus{outline:none;border-color:var(--accent);background:#fff}
-  input.locked{background:#eef0ec;color:var(--muted);cursor:not-allowed;border-style:dashed}
+  input.locked,.li-row input:disabled{background:#eef0ec;color:var(--muted);cursor:not-allowed;border-style:dashed}
 
   .li-head,.li-row{display:grid;grid-template-columns:1fr 84px 50px 92px 30px;gap:8px;align-items:start}
   .li-head{font-size:11px;color:var(--muted2);letter-spacing:.4px;margin-bottom:7px;padding:0 2px;align-items:center}
@@ -652,7 +652,9 @@ async function pushQuotes(){
 function toast(msg){ const t=$("#toast"); t.textContent=msg; t.classList.add("show"); setTimeout(()=>t.classList.remove("show"),2200); }
 
 function fmtDate(iso){ if(!iso) return ""; const [y,m,d]=iso.split("-"); return `${d}/${m}/${y}`; }
-function lineTotal(it){ return (parseFloat(it.price)||0)*(parseFloat(it.qty)||0); }
+// A line counts only once a service is picked — a price typed against
+// "— choose service —" never reaches the totals or the saved quote.
+function lineTotal(it){ if(!String(it.desc||'').trim()) return 0; return (parseFloat(it.price)||0)*(parseFloat(it.qty)||0); }
 function lineGst(it){ return lineTotal(it)*(parseFloat(it.gst)||0)/100; }
 function reqText(){ const z=$("#zone").value, h=parseInt($("#hours").value,10)||1; return `${z} Zone — ${h} ${h===1?"Hour":"Hours"}`; }
 function findCard(desc){ const d=(desc||"").trim().toLowerCase(); return settings.rateCard.find(c=>(c.desc||"").trim().toLowerCase()===d); }
@@ -1029,6 +1031,7 @@ function renderItems(){
     const rcEntry=settings.rateCard.find(c=>c.desc===it.desc);
     const minPrice=(rcEntry&&rcEntry.rate!==""&&rcEntry.rate!=null)?parseFloat(rcEntry.rate)||0:0;
     const priceWarn=minPrice>0&&it.price!==""&&parseFloat(it.price)<minPrice;
+    const noSvc=!isStudio && !it.desc;   // price & qty stay locked until a service is chosen
     // Studio rental entries are hidden from the dropdown — that line is driven
     // by the Zone + Duration selectors above, not chosen here.
     const rcOpts=settings.rateCard
@@ -1051,10 +1054,10 @@ function renderItems(){
       </div>
       ${isStudio
         ? `<input class="t num locked" data-i="${i}" data-k="price" type="text" tabindex="-1" readonly value="${esc(it.price)}" title="Set by Zone & Duration above">`
-        : `<input class="t num${priceWarn?' warn':''}" data-i="${i}" data-k="price" data-min="${minPrice}" type="number" min="${minPrice||0}" inputmode="decimal" placeholder="${minPrice||0}" value="${esc(it.price)}">`}
+        : `<input class="t num${priceWarn?' warn':''}" data-i="${i}" data-k="price" data-min="${minPrice}" type="number" min="${minPrice||0}" inputmode="decimal" placeholder="${noSvc?'—':(minPrice||0)}" value="${noSvc?'':esc(it.price)}"${noSvc?' disabled title="Choose a service first"':''}>`}
       ${isStudio
         ? `<input class="t num locked" data-i="${i}" data-k="qty" type="text" tabindex="-1" readonly value="1" title="Qty fixed at 1 for studio rental">`
-        : `<input class="t num" data-i="${i}" data-k="qty" type="number" min="1" step="1" inputmode="numeric" placeholder="1" value="${esc(it.qty)}">`}
+        : `<input class="t num" data-i="${i}" data-k="qty" type="number" min="1" step="1" inputmode="numeric" placeholder="1" value="${esc(it.qty)}"${noSvc?' disabled title="Choose a service first"':''}>`}
       <input class="t tot" value="${money(lineTotal(it))}" readonly tabindex="-1">
       <button class="li-del" data-del="${i}" title="Remove">×</button>`;
     body.appendChild(row);
@@ -1076,7 +1079,8 @@ function renderItems(){
           }
         }
       }
-      row.querySelector(".tot").value=money(lineTotal(items[i]));
+      if(!val) items[i].price="";
+      renderItems();
       render();
     });
   });
@@ -1196,7 +1200,7 @@ function collect(){
     leadId: (leadLink && leadLink.id) || null,
     payments, status: paid>0 ? "Confirmed" : "Pending", shareToken:curShareToken, sharedAt:curSharedAt,
     clientStatus:curClientStatus, clientRespondedAt:curClientRespondedAt,
-    items: items.map(({desc,sac,price,qty,gst})=>({desc,sac,price,qty,gst})), savedAt:Date.now() };
+    items: items.filter(it=>String(it.desc||'').trim()).map(({desc,sac,price,qty,gst})=>({desc,sac,price,qty,gst})), savedAt:Date.now() };
 }
 // `silent` suppresses the "Quote saved" toast — used when saveQuote() runs as
 // a first step of a bigger action (e.g. sharing) that shows its own.
