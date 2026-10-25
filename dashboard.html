@@ -187,7 +187,28 @@ const qItems = q => (q.items || []).filter(it => it.desc || it.price);
 const qSub = q => qItems(q).reduce((s, it) => s + lineT(it), 0);
 const qGst = q => qItems(q).reduce((s, it) => s + lineT(it) * (parseFloat(it.gst) || 0) / 100, 0);
 const qNet = q => { const s = qSub(q); return s - Math.min(parseFloat(q.discount) || 0, s); };
-const qGrand = q => Math.round(qNet(q) + qGst(q));
+// ── Quote money: one breakup used by every view and the server ──
+// The discount is spread over the lines in proportion to their value and
+// comes off BEFORE GST, so each line's GST is charged on its discounted
+// (taxable) value. Lines are rounded to the rupee and the last rupee of
+// rounding goes to the biggest line, so the lines always add up to the total.
+function quoteBreakup(q){
+  const its=(Array.isArray(q&&q.items)?q.items:[]).filter(it=>it&&(String(it.desc||'').trim()||String(it.price||'').trim()));
+  const val=it=>(parseFloat(it.price)||0)*(parseFloat(it.qty)||0);
+  const sub=its.reduce((s,it)=>s+val(it),0);
+  const discount=Math.min(Math.max(parseFloat(q&&q.discount)||0,0),sub);
+  const rows=its.map(it=>{ const v=val(it), d=sub?discount*v/sub:0, r=parseFloat(it.gst)||0; return {it:it, value:v, rate:r, tx:v-d, gx:(v-d)*r/100}; });
+  const grand=Math.round(sub-discount+rows.reduce((s,x)=>s+x.gx,0));
+  rows.forEach(x=>{ x.taxable=Math.floor(x.tx+1e-9); });
+  let left=Math.round(sub-discount)-rows.reduce((s,x)=>s+x.taxable,0);
+  rows.slice().sort((a,b)=>(b.tx-b.taxable)-(a.tx-a.taxable)).forEach(x=>{ if(left>0){ x.taxable++; left--; } });
+  rows.forEach(x=>{ x.discount=Math.round(x.value-x.taxable); x.gst=Math.round(x.gx); });
+  const off=grand-rows.reduce((s,x)=>s+x.taxable+x.gst,0);
+  if(off&&rows.length){ rows.reduce((a,b)=>b.gx>a.gx?b:a).gst+=off; }
+  rows.forEach(x=>{ x.amount=x.taxable+x.gst; });
+  return {rows:rows, sub:sub, discount:discount, taxable:rows.reduce((s,x)=>s+x.taxable,0), gst:rows.reduce((s,x)=>s+x.gst,0), grand:grand};
+}
+const qGrand = q => quoteBreakup(q).grand;
 const qPaid = q => (q.payments || []).reduce((s, p) => s + (Number(p.amount) || 0), 0);
 const qDate = q => q.date || (q.savedAt ? localISO(q.savedAt) : '');
 
