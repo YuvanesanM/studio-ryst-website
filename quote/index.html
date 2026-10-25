@@ -569,6 +569,7 @@ async function startPayment(amountRupees){
     if(!res.ok) throw new Error(data.error || 'Could not start payment');
     const rzp = new Razorpay({
       key: data.keyId, amount: data.amount, currency: 'INR', order_id: data.orderId,
+      notes: { shareToken: token, quoteNo: (CURRENT_QUOTE&&CURRENT_QUOTE.qno)||'' },
       name: 'Studio RYST', description: 'Quote '+(CURRENT_QUOTE&&CURRENT_QUOTE.qno||''),
       prefill: { name: (CURRENT_QUOTE&&CURRENT_QUOTE.cname)||'' },
       theme: { color: '#3d9b69' },
@@ -620,12 +621,12 @@ function renderDecision(q){
     sc.innerHTML = `<div class="status-banner ${accepted?'accepted':'declined'}">
         <span class="ic">${accepted?'✅':'✋'}</span>
         <span>You ${accepted?'accepted':'declined'} this quote${when?' on '+esc(when):''}.
-          <span class="sub">Changed your mind? You can update your response below.</span>
+          <span class="sub">${accepted && Number(q.paidTotal)>0 ? 'Your booking is paid — to change or cancel it, please contact us.' : 'Changed your mind? You can update your response below.'}</span>
         </span>
       </div>
       <div class="dbtns" style="margin-top:14px">
         ${accepted ? '' : `<button class="dbtn accept" id="btnAccept2">✅ Accept instead</button>`}
-        ${accepted ? `<button class="dbtn decline" id="btnDecline2">Decline instead</button>` : ''}
+        ${accepted && !(Number(q.paidTotal)>0) ? `<button class="dbtn decline" id="btnDecline2">Decline instead</button>` : ''}
       </div>`;
     const a2=$('#btnAccept2'), d2=$('#btnDecline2');
     if(a2) a2.addEventListener('click', ()=>submitDecision('Accepted'));
@@ -633,6 +634,7 @@ function renderDecision(q){
   } else {
     $('#decideCard').style.display='block';
     $('#statusCard').style.display='none';
+    const dBtn=$('#btnDecline'); if(dBtn) dBtn.style.display = Number(q.paidTotal)>0 ? 'none' : '';   // a paid booking can't be declined here
   }
 }
 

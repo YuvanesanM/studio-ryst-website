@@ -507,6 +507,7 @@ let qPaymentsDraft = [];   // {id,date,amount,note} — this quote's payments lo
 // Payments removed in this editing session, so the save-time merge with the
 // cloud copy (which picks up Razorpay payments) doesn't bring them back.
 let qPaymentsRemoved = new Set();
+let qPaymentsSaved = new Set();   // ids already in the stored quote — only admins can remove those
 // {email,name} of whoever created/last saved this quote — see saveQuote().
 // curCreatedBy stays null for a quote that originated from a guest booking
 // (no coordinator has created it — see /public-booking) until a coordinator
@@ -663,9 +664,9 @@ async function pushQuotes(){
 function toast(msg){ const t=$("#toast"); t.textContent=msg; t.classList.add("show"); setTimeout(()=>t.classList.remove("show"),2200); }
 
 function fmtDate(iso){ if(!iso) return ""; const [y,m,d]=iso.split("-"); return `${d}/${m}/${y}`; }
-// A line counts only once a service is picked — a price typed against
-// "— choose service —" never reaches the totals or the saved quote.
-function lineTotal(it){ if(!String(it.desc||'').trim()) return 0; return (parseFloat(it.price)||0)*(parseFloat(it.qty)||0); }
+// Same rule as the customer page and the server. New lines can't get a price
+// without a service (the price box stays locked until one is picked).
+function lineTotal(it){ return (parseFloat(it.price)||0)*(parseFloat(it.qty)||0); }
 function lineGst(it){ return lineTotal(it)*(parseFloat(it.gst)||0)/100; }
 
 // GST breakup for the totals: CGST + SGST (half each) when the client is in
@@ -795,7 +796,7 @@ function renderQPayments(){
       const i=qPaymentsDraft.indexOf(p);
       return `<div style="display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:12.5px;padding:7px 10px;background:var(--panel2);border-radius:8px">
         <span>${esc(p.date||"—")}${p.note?" · "+esc(p.note):""}</span>
-        <span style="display:flex;align-items:center;gap:9px"><b>${money(p.amount)}</b><button type="button" data-i="${i}" class="qpmt-del" title="Remove" style="background:none;border:none;color:var(--muted2);cursor:pointer;font-size:15px;line-height:1;padding:2px">×</button></span>
+        <span style="display:flex;align-items:center;gap:9px"><b>${money(p.amount)}</b>${(IS_ADMIN || !qPaymentsSaved.has(p.id)) ? `<button type="button" data-i="${i}" class="qpmt-del" title="Remove" style="background:none;border:none;color:var(--muted2);cursor:pointer;font-size:15px;line-height:1;padding:2px">×</button>` : ""}</span>
       </div>`;
     }).join("");
     box.querySelectorAll(".qpmt-del").forEach(btn=>btn.addEventListener("click", e=>{
@@ -852,8 +853,29 @@ async function linkLeadSchedule(leadId, sid, dateISO, start){
 // automatically — there's no manual "Add to schedule" step anymore. A quote
 // already on the schedule stays in sync (date/time/confirmed flag) on every
 // save; an unconfirmed quote never touches schedule.json at all.
+async function removeFromSchedule(q){
+  try{
+    const gr=await fetch(PROXY_URL+'/schedule',{headers:{'X-Token':proxyToken}});
+    if(gr.status===401){ handleExpired(); return; }
+    if(!gr.ok){ toast("Could not reach the schedule"); return; }
+    const sched=await gr.json(); const sessions=Array.isArray(sched.sessions)?sched.sessions:[];
+    const left=sessions.filter(s=>s.id!==curScheduleId);
+    if(left.length!==sessions.length){
+      const pr=await fetch(PROXY_URL+"/schedule",{method:"PUT",headers:{"X-Token":proxyToken,"Content-Type":"application/json"},body:JSON.stringify({...sched,sessions:left})});
+      if(pr.status===403){ toast("Completed sessions are locked for your account"); return; }
+      if(!pr.ok){ toast("Could not update the schedule ("+pr.status+")"); return; }
+    }
+    curScheduleId=null; curScheduleConflict=false; updateSchedStatus();
+    const all=getQuotes(); const idx=all.findIndex(x=>x.qno===q.qno);
+    if(idx>=0){ all[idx].scheduleId=null; all[idx].scheduleConflict=false; setQuotes(all); await pushQuotes(); }
+    toast("No payment on file — removed from the schedule");
+  }catch(e){ toast("Could not reach the schedule"); }
+}
 async function syncToSchedule(q){
   if(!curScheduleId && q.status!=='Confirmed'){ updateSchedStatus(); return; }
+  // A booking exists only while the quote is paid and not declined (same rule
+  // as the Google Calendar sync) — otherwise take it back off the schedule.
+  if(curScheduleId && (q.status!=='Confirmed' || q.clientStatus==='Declined')){ await removeFromSchedule(q); return; }
   try{
     const hours=parseInt($("#hours").value,10)||DEFAULT_HOURS;
     const end=addHoursTime(q.sessionStart, hours);
@@ -876,7 +898,8 @@ async function syncToSchedule(q){
     const DOW=['sun','mon','tue','wed','thu','fri','sat'];
     const sessionDow=DOW[new Date(session.date+"T00:00:00Z").getUTCDay()];
     const sameDay=s=>s.date ? s.date===session.date : (Array.isArray(s.days) && s.days.some(d=>String(d).toLowerCase().slice(0,3)===sessionDow));
-    const conflict=sessions.find(s=>s.id!==sid && s.zone===session.zone && sameDay(s) && s.start<session.end && session.start<s.end);
+    const clash=(a,b)=>a===b||a==='multi-zone'||b==='multi-zone';   // Multi-Zone uses every zone
+    const conflict=sessions.find(s=>s.id!==sid && clash(String(s.zone||'').toLowerCase(),session.zone) && sameDay(s) && s.start<session.end && session.start<s.end);
     if(conflict){
       curScheduleConflict=true;
       updateSchedStatus(`Conflicts with ${conflict.name||conflict.quoteNo||'another booking'} (${conflict.start}–${conflict.end})`);
@@ -1051,7 +1074,7 @@ function newQuote(){
   $("#zone").value=ZONES[0]; $("#hours").value=String(DEFAULT_HOURS);
   $("#cname").value=""; $("#cphone").value=""; $("#cgst").value=""; $("#caddr").value=""; $("#terms").value=settings.terms; $("#discountInp").value=""; discFloorPct=0;
   $("#sessDate").value=""; $("#sessStart").value=""; curScheduleId=null; curScheduleConflict=false; updateSchedStatus();
-  qPaymentsDraft=[]; qPaymentsRemoved=new Set(); $("#qPmtDate").value=todayISOq(); $("#qPmtAmount").value=""; $("#qPmtNote").value="";
+  qPaymentsDraft=[]; qPaymentsRemoved=new Set(); qPaymentsSaved=new Set(); $("#qPmtDate").value=todayISOq(); $("#qPmtAmount").value=""; $("#qPmtNote").value="";
   renderQPayments();
   items=[zoneItem()];
   renderItems(); render(); syncLoadQuoteBtnLabel();
@@ -1090,7 +1113,7 @@ function renderItems(){
       </div>
       ${isStudio
         ? `<input class="t num locked" data-i="${i}" data-k="price" type="text" tabindex="-1" readonly value="${esc(it.price)}" title="Set by Zone & Duration above">`
-        : `<input class="t num${priceWarn?' warn':''}" data-i="${i}" data-k="price" data-min="${minPrice}" type="number" min="${minPrice||0}" inputmode="decimal" placeholder="${noSvc?'—':(minPrice||0)}" value="${noSvc?'':esc(it.price)}"${noSvc?' disabled title="Choose a service first"':''}>`}
+        : `<input class="t num${priceWarn?' warn':''}" data-i="${i}" data-k="price" data-min="${minPrice}" type="number" min="${minPrice||0}" inputmode="decimal" placeholder="${noSvc?'—':(minPrice||0)}" value="${esc(it.price)}"${noSvc?' disabled title="Choose a service first"':''}>`}
       ${isStudio
         ? `<input class="t num locked" data-i="${i}" data-k="qty" type="text" tabindex="-1" readonly value="1" title="Qty fixed at 1 for studio rental">`
         : `<input class="t num" data-i="${i}" data-k="qty" type="number" min="1" step="1" inputmode="numeric" placeholder="1" value="${esc(it.qty)}"${noSvc?' disabled title="Choose a service first"':''}>`}
@@ -1237,7 +1260,7 @@ function collect(){
     leadId: (leadLink && leadLink.id) || null,
     payments, status: paid>0 ? "Confirmed" : "Pending", shareToken:curShareToken, sharedAt:curSharedAt,
     clientStatus:curClientStatus, clientRespondedAt:curClientRespondedAt,
-    items: items.filter(it=>String(it.desc||'').trim()).map(({desc,sac,price,qty,gst})=>({desc,sac,price,qty,gst})), savedAt:Date.now() };
+    items: items.filter(it=>String(it.desc||'').trim() || String(it.price||'').trim()).map(({desc,sac,price,qty,gst})=>({desc,sac,price,qty,gst})), savedAt:Date.now() };
 }
 // `silent` suppresses the "Quote saved" toast — used when saveQuote() runs as
 // a first step of a bigger action (e.g. sharing) that shows its own.
@@ -1304,7 +1327,7 @@ function loadQuote(qno){
   // reopened quote still keeps its schedule entry tagged with the right lead.
   leadLink = q.leadId ? { id:q.leadId, phone:q.cphone||"" } : null;
   curShareToken=q.shareToken||genToken(); curSharedAt=q.sharedAt||null; curClientStatus=q.clientStatus||""; curClientRespondedAt=q.clientRespondedAt||null; renderClientResp(q);
-  qPaymentsDraft=Array.isArray(q.payments)?q.payments.map(p=>({...p})):[]; qPaymentsRemoved=new Set(); $("#qPmtDate").value=todayISOq(); $("#qPmtAmount").value=""; $("#qPmtNote").value="";
+  qPaymentsDraft=Array.isArray(q.payments)?q.payments.map(p=>({...p})):[]; qPaymentsRemoved=new Set(); qPaymentsSaved=new Set(qPaymentsDraft.map(p=>p.id).filter(Boolean)); $("#qPmtDate").value=todayISOq(); $("#qPmtAmount").value=""; $("#qPmtNote").value="";
   renderQPayments();
   items=(q.items&&q.items.length)? q.items.map(x=>({desc:x.desc||"",sac:x.sac||"",price:x.price||"",qty:(x.qty!=null?x.qty:"1"),gst:(x.gst??FALLBACK_GST)})) : [{desc:"",sac:"",price:"",qty:"1",gst:FALLBACK_GST}];
   { const s0=items.reduce((a,it)=>a+lineTotal(it),0), d0=parseFloat(q.discount)||0;
