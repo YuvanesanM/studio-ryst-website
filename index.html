@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8" />
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://www.googletagmanager.com https://www.instagram.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://ryst-quss.onrender.com https://www.google-analytics.com https://analytics.google.com https://*.google-analytics.com https://*.analytics.google.com; frame-src https://www.instagram.com; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; media-src 'self'; connect-src 'self' https://ryst-quss.onrender.com https://www.google-analytics.com https://analytics.google.com https://*.google-analytics.com https://*.analytics.google.com; object-src 'none'; base-uri 'self'; form-action 'self'">
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-G00HG2N31H"></script>
 <script>
@@ -12,12 +12,14 @@
 
   gtag('config', 'G-G00HG2N31H');
 </script>
+<script>document.documentElement.classList.add('js')</script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Podcast Studio &amp; Kitchen Studio in Chennai | Studio RYST</title>
 <meta name="description" content="Podcast studio, kitchen studio and photography studio in T-Nagar, Chennai — one 3-in-1 creator space. Book by the hour with instant confirmation.">
 <meta name="robots" content="index, follow">
 <link rel="canonical" href="https://studio.ryst.in/">
-<meta name="theme-color" content="#f8a61f">
+<meta name="theme-color" content="#141110">
+<meta name="color-scheme" content="dark">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Studio RYST">
 <meta property="og:title" content="Podcast Studio &amp; Kitchen Studio in Chennai | Studio RYST">
@@ -34,803 +36,586 @@
 <link rel="icon" href="/assets/logo-300.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..600;1,9..144,400..600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300..500;1,6..72,300..500&display=swap" rel="stylesheet">
+<link rel="preload" as="image" href="/assets/photos/hero.jpg" fetchpriority="high">
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebSite", "@id": "https://studio.ryst.in/#website", "url": "https://studio.ryst.in/", "name": "Studio RYST", "alternateName": ["Studio RYST Chennai", "RYST Studio"], "publisher": {"@id": "https://studio.ryst.in/#business"}, "inLanguage": "en-IN"}</script>
 <script type="application/ld+json" id="bizSchema">{"@context": "https://schema.org", "@type": "LocalBusiness", "@id": "https://studio.ryst.in/#business", "name": "Studio RYST", "alternateName": "Studio RYST - Podcast, Photography & Kitchen Content Studio", "description": "Chennai's first-of-its-kind 3-in-1 content production studio — Podcast, Photography and Culinary zones, available by the hour in T-Nagar.", "url": "https://studio.ryst.in/", "image": "https://studio.ryst.in/assets/logo-300.png", "logo": "https://studio.ryst.in/assets/logo-300.png", "telephone": "+91-75300-11770", "priceRange": "₹₹", "address": {"@type": "PostalAddress", "streetAddress": "52, Ankur Plaza, Gopathy Narayana Rd", "addressLocality": "T Nagar, Chennai", "addressRegion": "Tamil Nadu", "postalCode": "600017", "addressCountry": "IN"}, "geo": {"@type": "GeoCoordinates", "latitude": 13.0441808, "longitude": 80.2392505}, "hasMap": "https://maps.app.goo.gl/PmPDiPyLWbVhLFef7", "sameAs": ["https://instagram.com/studio.ryst"], "areaServed": {"@type": "City", "name": "Chennai"}}</script>
 
 <style>
-
+/* ── The dark room ────────────────────────────────────────────────────────
+   One deep field from top to bottom; the studio with the house lights down.
+   Photographs are the lit things. One face (Newsreader), light weights, a
+   soft paper ink, and gold used once per screen for the single action.
+   Direction and rules: .claude/skills/taste-skill (direction sheet in
+   .taste-skill/direction.json) and the Impeccable craft floor. ───────── */
 :root{
-  /* White, always — no dark mode. Accent colors are lifted straight from
-     the Studio RYST wordmark's "RYST" lettering: gold/orange stays the one
-     site-wide accent (nav, buttons, links, badges); teal, crimson and green
-     are reserved for the three zones so each has its own identity without
-     turning the whole site into a rainbow. */
-  --bg:#ffffff; --surface:#ffffff; --surface-2:#f7f4ee; --line:#e8e2d3;
-  --ink:#18140f; --ink-muted:#6b6152;
-  --accent:#f8a61f; --accent-strong:#a16b14; --accent-ink:#171310;
-  --paper:#ffffff; --paper-ink:#17130f; --wa:#26824b;
-  --danger:#a50b1c;
-  --zone-photo:#c30d22; --zone-photo-strong:#a50b1c;
-  --zone-podcast:#0e8598; --zone-podcast-strong:#0b7181;
-  --zone-culinary:#8dc042; --zone-culinary-strong:#5b7c2a;
+  color-scheme:dark;
+  --ground:#141110; --ground-deep:#0e0c0b; --surface:#1e1a17; --surface-2:#2a2522;
+  --ink:#ede6d9; --ink-2:#cfc5b5; --muted:#b1a695;
+  --accent:#f8a61f; --accent-ink:#171310;
+  --m:clamp(20px,2.2vw,32px);                   /* the one pair of outer margins */
+  --small:14px;
+  --body:clamp(18px,1.05rem + .3vw,21px);
+  --lead:clamp(20px,1.1rem + .7vw,26px);
+  --head:30px;                                  /* chapter headings */
+  --big:clamp(28px,2.5vw,36px);                 /* statements, questions (a statement stays ≤36px) */
+  --ease-out:cubic-bezier(.22,1,.36,1);
+  --ease-expo:cubic-bezier(.16,1,.3,1);
+  --ease-in-out:cubic-bezier(.65,0,.35,1);
 }
 *{box-sizing:border-box}
-html{scroll-behavior:smooth}
-body{
-  margin:0; background:var(--bg); color:var(--ink); font-family:"Inter",system-ui,-apple-system,sans-serif;
-  font-size:16px; line-height:1.6; -webkit-font-smoothing:antialiased;
-  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E");
-}
+html{background:var(--ground);scroll-behavior:smooth;-webkit-text-size-adjust:100%;scrollbar-color:#3a332f transparent}
+body{margin:0;background:var(--ground);color:var(--ink);font-family:"Newsreader",Georgia,"Times New Roman",serif;font-optical-sizing:auto;font-weight:400;font-size:var(--body);line-height:1.6;-webkit-font-smoothing:antialiased;caret-color:var(--accent)}
 ::selection{background:var(--accent);color:var(--accent-ink)}
-a{color:inherit} img,svg{max-width:100%}
-h1,h2,h3{font-family:"Fraunces",Georgia,serif;font-weight:500;letter-spacing:-.01em;text-wrap:balance;margin:0}
-p{margin:0}
-button,input,select,textarea{font-family:inherit}
-.mono{font-family:"Space Mono",ui-monospace,monospace}
-.eyebrow{font-family:"Inter",sans-serif;font-size:11.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--accent-strong)}
-.wrap{max-width:1080px;margin:0 auto;padding:0 24px}
+a{color:inherit;text-decoration-thickness:1px;text-underline-offset:4px}
+:focus-visible{outline:2px solid var(--accent);outline-offset:4px}
+img,video{display:block;max-width:100%;height:auto}   /* height attrs reserve space; CSS ratios decide the box */
+h1,h2,h3,p,figure,ul{margin:0}
+ul{padding:0;list-style:none}
+button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer}
 
-/* ---- ambient scroll rail ---- */
-.rail{position:fixed;left:0;top:0;bottom:0;width:3px;z-index:60;background:var(--line)}
-.rail-fill{width:100%;height:0%;background:var(--accent);transition:height .08s linear}
-@media (max-width:720px){.rail{display:none}}
-
-/* ---- nav ---- */
-.nav{position:sticky;top:0;z-index:50;background:var(--bg);border-bottom:1px solid var(--line)}
-@media (min-width:861px){
-  /* backdrop-filter on .nav would make it a containing block for the mobile
-     menu's position:fixed overlay (clipping it to the header's own height
-     instead of the viewport) — only safe to use above the breakpoint where
-     that overlay exists. */
-  .nav{background:color-mix(in srgb, var(--bg) 92%, transparent);backdrop-filter:blur(10px)}
+/* ---- one button shape: solid rectangle ---- */
+.btn{display:inline-flex;align-items:center;justify-content:center;min-height:56px;padding:0 28px;font-size:18px;font-weight:500;text-decoration:none;transition:transform .16s var(--ease-out),background-color .2s ease,color .2s ease}
+.btn:active{transform:scale(.97)}
+.btn-gold{background:var(--accent);color:var(--accent-ink)}
+.btn-dim{background:var(--surface-2);color:var(--ink)}
+@media (hover:hover) and (pointer:fine){
+  .btn-gold:hover{background:#ffb637}
+  .btn-dim:hover{background:#352e2a}
 }
-.nav .inner{max-width:1080px;margin:0 auto;padding:14px 24px;display:flex;align-items:center;gap:20px}
-.brand{display:flex;align-items:center;flex-shrink:0;text-decoration:none}
-.brand img{height:200px;width:200px;object-fit:contain;border-radius:22px;background:var(--paper);margin-bottom:14px}
-.navlinks{display:flex;gap:30px;margin-left:auto;align-items:center}
-.navlinks a{text-decoration:none;font-size:14px;font-weight:600;color:var(--ink);padding:6px 0;position:relative}
-.navlinks a::after{content:'';position:absolute;left:0;right:100%;bottom:-2px;height:1.5px;background:var(--accent);transition:right .35s cubic-bezier(.4,0,.2,1)}
-.navlinks a:hover::after,.navlinks a.active::after{right:0}
-.navlinks a.active{color:var(--accent-strong)}
-.menu-btn{display:none;background:none;border:none;font-size:22px;color:var(--ink);cursor:pointer;padding:4px}
-.navlinks .nav-cta-m{display:none}
+.tlink{text-decoration:none;color:var(--ink-2);transition:color .2s ease}
+.tlink:hover{color:var(--ink)}
+
+/* ---- nav: text links top-right, no logo at the top ---- */
+.nav{position:absolute;top:0;left:0;right:0;z-index:20;display:flex;justify-content:flex-end;align-items:center;gap:32px;padding:var(--m)}
+.nav a{font-size:18px;text-decoration:none;color:var(--ink);opacity:.86;transition:opacity .2s ease}
+.nav a:hover{opacity:1}
+.nav .nav-act{opacity:1;min-height:44px;padding:0 18px;background:var(--accent);color:var(--accent-ink);display:inline-flex;align-items:center;font-weight:500;transition:transform .16s var(--ease-out)}
+.nav .nav-act:active{transform:scale(.97)}
+.nav .menu-btn{display:none}
+.menu{position:fixed;inset:0;z-index:30;background:var(--ground-deep);display:none;flex-direction:column;padding:var(--m)}
+.menu.open{display:flex}
+.menu a{font-size:34px;font-weight:300;text-decoration:none;padding:14px 0;color:var(--ink)}
+.menu .close{align-self:flex-end;font-size:18px;min-height:44px;padding:0 8px}
+.menu .menu-act{margin-top:auto;align-self:flex-start}
+
+/* ---- hero: inset photograph, the name crossing it along the bottom ---- */
+.hero{position:relative;display:grid;grid-template-columns:47% 53%;min-height:100svh}
+.hero-pic{position:sticky;top:var(--m);height:calc(100svh - 2*var(--m));margin:var(--m) 0 var(--m) var(--m);overflow:hidden;background:#1a1613}
+.hero-pic img,.hero-pic video{width:100%;height:100%;object-fit:cover;object-position:62% 40%}
+.hero-pic video{position:absolute;inset:0}
+.hero-right{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 var(--m) 22svh;text-align:center}
+.hero-lead{max-width:26ch;font-size:var(--lead);line-height:1.35;color:var(--ink)}
+.reviews{display:inline-flex;align-items:center;gap:10px;margin-top:22px;font-size:18px;color:var(--ink-2);text-decoration:none}
+.reviews .stars{color:var(--accent);letter-spacing:.06em}
+.reviews b{font-weight:500;color:var(--ink)}
+.wordmark{position:absolute;z-index:2;left:calc(47% - 10vw);right:var(--m);bottom:40px;font-size:clamp(96px,14vw,215px);font-weight:300;line-height:.9;letter-spacing:-.04em;white-space:nowrap;text-align:right;color:var(--ink);transform-origin:100% 100%;will-change:transform}
+.wordmark .line{display:block;overflow:hidden}
+.wordmark .line span{display:inline-block}
 @media (max-width:860px){
-  .brand img{height:56px;width:56px;border-radius:9px;margin-bottom:8px}
-  .navlinks{position:fixed;inset:66px 0 0 0;background:var(--bg);flex-direction:column;align-items:flex-start;gap:0;padding:8px 24px 24px;transform:translateY(-8px);opacity:0;pointer-events:none;transition:.18s;border-top:1px solid var(--line)}
-  .navlinks.open{transform:translateY(0);opacity:1;pointer-events:auto}
-  .navlinks a{padding:14px 0;border-bottom:1px solid var(--line);width:100%}
-  .menu-btn{display:block;margin-left:auto}
-  .nav .nav-cta{display:none}
-  .navlinks .nav-cta-m{display:inline-flex;margin-top:16px}
+  .hero{display:flex;flex-direction:column;min-height:0;padding-bottom:40px}
+  .hero-pic{position:relative;top:0;height:58svh;margin:var(--m) var(--m) 0}
+  .hero-right{display:block;order:3;padding:10px var(--m) 0;text-align:left}
+  .hero-lead{max-width:none;font-size:18px}
+  .wordmark{position:relative;order:2;left:auto;right:auto;bottom:auto;margin:-1vw var(--m) 0;font-size:min(19vw,120px);line-height:1;text-align:left}
+  .nav{gap:16px}
+  .nav .nav-lnk{display:none}
+  .nav .menu-btn{display:inline-flex;align-items:center;min-height:44px;padding:0 10px;font-size:17px;color:var(--ink)}
 }
 
-/* ---- nav: overlay variant (homepage only, opt-in via nav_variant="overlay")
-   Starts transparent/white-text over the hero photo, crossfades to the
-   normal solid/blurred nav once .scrolled is toggled by a scroll listener.
-   Faded via an ::before's opacity rather than animating background/
-   backdrop-filter directly — those don't interpolate smoothly cross-browser,
-   opacity does. ---- */
-.nav.nav-overlay{position:absolute;top:0;left:0;right:0;background:transparent;border-bottom-color:transparent;backdrop-filter:none}
-.nav.nav-overlay::before{content:'';position:absolute;inset:0;z-index:-1;background:color-mix(in srgb, var(--bg) 92%, transparent);backdrop-filter:blur(10px);opacity:0;transition:opacity .3s ease}
-.nav.nav-overlay.scrolled::before{opacity:1}
-.nav.nav-overlay .navlinks a,.nav.nav-overlay .menu-btn{color:#fff;transition:color .3s ease}
-.nav.nav-overlay.scrolled .navlinks a,.nav.nav-overlay.scrolled .menu-btn{color:var(--ink)}
-.nav.nav-overlay.scrolled{position:sticky;border-bottom-color:var(--line)}
+/* ---- chapters ---- */
+.chapter{padding:clamp(96px,9.7vw,140px) var(--m)}
+.chapter h2{font-size:var(--head);font-weight:400;line-height:1.1;letter-spacing:-.01em}
+
+/* ---- intro: staircase statement ---- */
+.intro{display:grid;grid-template-columns:repeat(12,1fr);gap:0 24px;align-content:center;margin:clamp(40px,6vw,96px) 0 clamp(80px,10vw,160px)}
+.stairs{grid-column:1 / 10;font-size:var(--big);font-weight:400;line-height:1.08;letter-spacing:-.01em}
+.stairs span{display:block;color:var(--ink)}
+.stairs span:nth-child(even){color:var(--ink-2)}
+.stairs span:nth-child(2){padding-left:6vw}
+.stairs span:nth-child(3){padding-left:12vw}
+.stairs span:nth-child(4){padding-left:18vw}
+.stairs span:nth-child(5){padding-left:24vw}
+.intro-pics{grid-column:10 / 13;display:flex;flex-direction:column;gap:16px;align-self:start}
+.intro-pics img{flex:0 0 auto;width:100%;height:auto;aspect-ratio:3/2;object-fit:cover}
+.intro-note{grid-column:1 / 7;margin-top:56px;font-size:var(--small);color:var(--muted);max-width:44ch;line-height:1.5}
 @media (max-width:860px){
-  /* Mobile drawer is always on a solid --bg panel regardless of scroll state,
-     so its own links stay dark/readable even while the header itself is
-     still transparent above it. */
-  .nav.nav-overlay .navlinks a{color:var(--ink)}
+  .intro{display:block}
+  .stairs{font-size:24px}
+  .stairs span:nth-child(2){padding-left:5vw}.stairs span:nth-child(3){padding-left:10vw}.stairs span:nth-child(4){padding-left:15vw}.stairs span:nth-child(5){padding-left:20vw}
+  .intro-pics{flex-direction:row;margin-top:40px}
+  .intro-pics img{width:calc(50% - 8px);flex:0 0 calc(50% - 8px)}
+  .intro-note{margin-top:28px}
 }
 
-/* ---- buttons ---- */
-.btn{display:inline-flex;align-items:center;gap:8px;justify-content:center;border-radius:3px;padding:14px 26px;font-size:14px;font-weight:700;text-decoration:none;cursor:pointer;border:1.5px solid transparent;transition:.15s;position:relative;overflow:hidden;isolation:isolate}
-.btn span{position:relative;z-index:1}
-.btn-brass{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
-.btn-brass::before{content:'';position:absolute;inset:0;background:var(--accent-strong);transform:scaleX(0);transform-origin:left;transition:transform .5s cubic-bezier(.2,.8,.2,1);z-index:0}
-.btn-brass:active::before{transform:scaleX(1);transition:transform .08s linear}
-.btn-outline{background:transparent;color:var(--ink);border-color:var(--line)}
-.btn-outline:hover{border-color:var(--accent)}
-.btn-wa{background:var(--wa);color:#fff;border-color:var(--wa)}
-.btn-wa:hover{background:#1f6b3c}
-.btn:disabled{opacity:.5;cursor:not-allowed}
-
-/* ---- hero ---- */
-.hero{padding:88px 0 72px}
-.hero .inner{max-width:760px}
-.hero h1{font-size:clamp(32px,5.6vw,58px);line-height:1.06;margin:16px 0 20px}
-.hero h1 em{font-style:italic;color:var(--accent-strong)}
-.hero p.lead{font-size:17px;color:var(--ink-muted);max-width:56ch;line-height:1.7;margin-bottom:30px}
-.hero .ctas{display:flex;gap:14px;flex-wrap:wrap}
-.reviews-badge{display:flex;align-items:center;gap:10px;margin-top:22px;font-size:13.5px;color:var(--ink-muted);text-decoration:none;width:fit-content}
-.reviews-badge:hover{color:var(--ink)}
-.rb-stars{display:flex;gap:1px;color:var(--accent-strong)}
-.rb-stars .dim{color:var(--line)}
-#rbRating{color:var(--ink);font-size:14.5px}
-.hero.small{padding:64px 0 56px}
-.hero.small h1{font-size:clamp(28px,4.2vw,42px)}
-
-/* ---- sections ---- */
-.section{padding:76px 0;border-top:1px solid var(--line)}
-.gallery-section{background:var(--bg)}
-.section-head{max-width:640px;margin-bottom:44px}
-.section-head h2{font-size:clamp(24px,3.2vw,34px);margin:12px 0 12px}
-.section-head p{color:var(--ink-muted);font-size:15.5px;line-height:1.7}
-/* These desktop paddings (64/56px hero, 76px section) stack to well over
-   130px of pure whitespace between the hero text and the next section's
-   content — barely noticeable on a wide screen but disproportionate on a
-   narrow one, where there's so much less content per screen. Tighten the
-   vertical rhythm on every interior page (.hero.small is used by Studio,
-   Packages, Booking, Contact, the legal pages and 404) below this width. */
-@media (max-width:600px){
-  .hero.small{padding:40px 0 28px}
-  .section{padding:44px 0}
+/* ---- rooms: each a lit exhibit ---- */
+.rooms h2{margin-bottom:0}
+.room{display:grid;grid-template-columns:repeat(12,1fr);gap:0 24px;align-items:center;min-height:88svh}
+.room + .room{margin-top:clamp(60px,8vw,120px)}
+.room figure{grid-column:1 / 8;overflow:hidden;background:#1a1613}
+.room figure img{width:100%;aspect-ratio:4/3;object-fit:cover;transition:transform 1.2s var(--ease-expo)}
+.room .txt{grid-column:9 / 13}
+.room:nth-child(odd) figure{grid-column:6 / 13;order:2}
+.room:nth-child(odd) .txt{grid-column:1 / 5;order:1}
+.room h3{font-size:var(--big);font-weight:300;line-height:1.05;letter-spacing:-.02em}
+.room .txt p{margin-top:18px}
+.room ul{margin-top:28px;line-height:1.3;color:var(--muted)}
+.room li{padding:3px 0}
+.room .txt a{display:inline-block;margin-top:26px;font-size:var(--body);color:var(--ink)}
+@media (hover:hover) and (pointer:fine){.room figure:hover img{transform:scale(1.03)}}
+@media (max-width:860px){
+  .room,.room:nth-child(odd){display:block;min-height:0}
+  .room .txt{margin-top:24px}
+  .room ul{font-size:18px;line-height:1.4}
 }
 
-/* ---- zone cards ----
-   Each zone gets its own accent lifted from the RYST wordmark (photography
-   =crimson, podcast=teal, culinary=green) via a top border + tag/dash/
-   underline color — the site's one primary accent (gold) stays reserved for
-   global chrome (nav, buttons, badges) so this reads as zone identity, not
-   a rainbow. */
-.zones{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:4px;overflow:hidden}
-.zone-card{background:linear-gradient(165deg,var(--surface-2),var(--surface));border-top:3px solid var(--accent);padding:29px 26px 32px;transition:background .25s ease;text-decoration:none;display:block;color:var(--ink)}
-.zone-card:hover{background:linear-gradient(165deg,#efe8d9,#fff)}
-.zone-card .tag{font-size:13px;font-weight:700;color:var(--accent-strong);display:block;margin-bottom:10px}
-.zone-card h3{font-size:20px;margin-bottom:10px}
-.zone-card p{color:var(--ink-muted);font-size:14px;line-height:1.65;margin-bottom:16px}
-.zone-card ul{list-style:none;margin:0 0 6px;padding:0}
-.zone-card li{font-size:13.5px;color:var(--ink-muted);padding:4px 0 4px 20px;position:relative}
-.zone-card li::before{content:'—';position:absolute;left:0;color:var(--accent)}
-.zone-card .more{font-size:13px;font-weight:700;color:var(--ink);border-bottom:1.5px solid var(--accent);padding-bottom:1px}
-.zone-card.photo{border-top-color:var(--zone-photo)}
-.zone-card.photo .tag{color:var(--zone-photo-strong)}
-.zone-card.photo li::before{color:var(--zone-photo)}
-.zone-card.photo .more{border-bottom-color:var(--zone-photo)}
-.zone-card.podcast{border-top-color:var(--zone-podcast)}
-.zone-card.podcast .tag{color:var(--zone-podcast-strong)}
-.zone-card.podcast li::before{color:var(--zone-podcast)}
-.zone-card.podcast .more{border-bottom-color:var(--zone-podcast)}
-.zone-card.culinary{border-top-color:var(--zone-culinary)}
-.zone-card.culinary .tag{color:var(--zone-culinary-strong)}
-.zone-card.culinary li::before{color:var(--zone-culinary)}
-.zone-card.culinary .more{border-bottom-color:var(--zone-culinary)}
-@media (max-width:820px){.zones{grid-template-columns:1fr}}
+/* ---- gallery: photographs gathered round a heading, drifting ---- */
+.gallery{position:relative;min-height:100svh;display:flex;align-items:center;justify-content:center;text-align:center;padding:40px var(--m)}
+.gallery .mid{position:relative;z-index:2;max-width:34ch}
+.gallery h2{font-size:var(--big);font-weight:300;line-height:1.1}
+.gallery p{margin-top:16px;color:var(--ink)}
+.gallery .mid a{display:inline-block;margin-top:12px;color:var(--ink-2)}
+.gallery .ph{position:absolute;width:clamp(150px,13vw,200px);aspect-ratio:9/10;overflow:hidden;will-change:transform}
+.gallery .ph img{width:100%;height:100%;object-fit:cover}
+.gallery .ph a{display:block;height:100%}
+.ph1{left:23%;top:6%}  .ph2{left:62%;top:9%}  .ph3{left:66%;top:40%}
+.ph4{left:24%;top:48%} .ph5{left:41%;top:72%} .ph6{left:56%;top:68%}
+@media (max-width:860px){
+  .gallery{display:block;min-height:0;padding:60px var(--m)}
+  .gallery .mid{margin:28px auto}
+  .gallery h2{font-size:7vw}
+  .gallery .ph{position:static;width:30%;display:inline-block;vertical-align:top;margin:0 2% 12px}
+  .gallery .row{display:flex;justify-content:center;gap:4%}
+  .gallery .row.up{padding-right:22%}
+  .gallery .row.down{padding-left:10%}
+}
 
-/* ---- zone cards: real photos (shared — used by Home and Studio) ---- */
-/* The colored top border reads as a "tab" accent on the flat text-only
-   card, but as a stray sliver sitting right above a full-bleed photo —
-   drop it here since the tag chip inside the photo already carries the
-   zone-identity color. */
-.zone-card.has-media{padding:0;display:flex;flex-direction:column;border-top:none;transition:background .25s ease,transform .25s ease}
-.zone-card.has-media:hover{transform:translateY(-4px)}
-.zone-card-media{position:relative;aspect-ratio:4/3;overflow:hidden;background:var(--surface-2)}
-.zone-card-media img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .5s cubic-bezier(.2,.8,.2,1)}
-.zone-card.has-media:hover .zone-card-media img{transform:scale(1.06)}
-.zone-card-tag-chip{position:absolute;left:14px;bottom:14px;color:#fff;font-family:"Inter",sans-serif;font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;padding:6px 12px;border-radius:20px;backdrop-filter:blur(4px);background:rgba(23,19,16,.72)}
-.zone-card.photo .zone-card-tag-chip{background:color-mix(in srgb, var(--zone-photo-strong) 82%, black)}
-.zone-card.podcast .zone-card-tag-chip{background:color-mix(in srgb, var(--zone-podcast-strong) 82%, black)}
-.zone-card.culinary .zone-card-tag-chip{background:color-mix(in srgb, var(--zone-culinary-strong) 82%, black)}
-.zone-card-body{padding:24px 26px 28px}
+/* ---- pricing: prices like a menu ---- */
+.prices{display:grid;grid-template-columns:repeat(12,1fr);gap:0 24px}
+.prices .lead-col{grid-column:1 / 4}
+.prices .lead-col img{margin-top:32px;width:100%;aspect-ratio:4/5;object-fit:cover}
+.prices .menu-cols{grid-column:5 / 13;display:grid;grid-template-columns:1fr 1fr;gap:0 64px}
+.pgroup + .pgroup{margin-top:48px}
+.pgroup h3{font-size:var(--lead);font-weight:500;line-height:1.2}
+.prow{display:flex;justify-content:space-between;align-items:baseline;gap:24px;margin-top:22px;font-size:var(--body);font-variant-numeric:tabular-nums}
+.prow small{display:block;margin-top:4px;font-size:16px;color:var(--muted);max-width:36ch}
+.prow .pr{white-space:nowrap}
+.pnote{grid-column:5 / 13;margin-top:56px;font-size:var(--small);color:var(--muted);max-width:60ch;line-height:1.5}
+@media (max-width:860px){
+  .prices{display:block}
+  .prices .lead-col img{width:60%}
+  .prices .menu-cols{display:block;margin-top:40px}
+  .pgroup h3{font-size:20px}.pgroup + .pgroup{margin-top:40px}
+  .prow{font-size:17px}
+  .pnote{margin-top:40px}
+}
 
-/* ---- why / principles list ---- */
-.plist{border-top:1px solid var(--line)}
-.prow{display:grid;grid-template-columns:64px 1fr;gap:24px;padding:26px 0;border-bottom:1px solid var(--line)}
-.prow .tag{font-family:"Inter",sans-serif;font-size:12px;color:var(--accent-strong);padding-top:2px}
-.prow h3{font-family:"Inter",sans-serif;font-weight:600;font-size:16.5px;margin-bottom:5px}
-.prow p{font-size:14.5px;color:var(--ink-muted);max-width:60ch;line-height:1.65}
-@media (max-width:600px){.prow{grid-template-columns:1fr;gap:6px}}
+/* ---- the live thing: what's open this week ---- */
+.open,.faq{background:var(--ground-deep)}
+.open{margin-top:0}
+.open{display:grid;grid-template-columns:repeat(12,1fr);gap:0 24px}
+.open .lead-col{grid-column:1 / 5}
+.open .lead-col p{margin-top:16px;color:var(--ink-2);max-width:30ch}
+.zones{display:flex;flex-wrap:wrap;gap:8px;margin-top:24px}
+.zones button{min-height:44px;padding:0 16px;color:var(--ink-2);background:var(--surface);transition:background-color .2s ease,color .2s ease,transform .16s var(--ease-out)}
+.zones button:active{transform:scale(.97)}
+.zones button[aria-pressed="true"]{background:var(--surface-2);color:var(--ink)}
+.days{grid-column:6 / 13}
+.day{display:grid;grid-template-columns:150px 1fr;gap:24px;padding:14px 0;font-size:var(--body);font-variant-numeric:tabular-nums}
+.day .d{color:var(--ink)}
+.day .s{color:var(--muted)}
+.day .s.free{color:var(--ink-2)}
+.open .cta{grid-column:6 / 13;margin-top:32px}
+@media (max-width:860px){
+  .open{display:block}
+  .days{margin-top:32px}
+  .day{grid-template-columns:110px 1fr;font-size:17px;padding:12px 0}
+}
 
-/* ---- pricing ---- */
-.price-tables{display:flex;flex-direction:column;gap:2px;background:var(--line);border:1px solid var(--line);border-radius:4px;overflow:hidden}
-.price-table{background:var(--surface);border-left:3px solid var(--line)}
-.price-table .ph{display:flex;align-items:baseline;justify-content:space-between;padding:20px 24px;border-bottom:1px solid var(--line)}
-.price-table .ph h3{font-size:19px}
-.price-table .ph .note{font-family:"Inter",sans-serif;font-size:11px;color:var(--ink-muted)}
-.price-table[data-zone="Photography"]{border-left-color:var(--zone-photo)}
-.price-table[data-zone="Photography"] .ph h3{color:var(--zone-photo-strong)}
-.price-table[data-zone="Podcast"]{border-left-color:var(--zone-podcast)}
-.price-table[data-zone="Podcast"] .ph h3{color:var(--zone-podcast-strong)}
-.price-table[data-zone="Culinary"]{border-left-color:var(--zone-culinary)}
-.price-table[data-zone="Culinary"] .ph h3{color:var(--zone-culinary-strong)}
-.tier{display:flex;align-items:center;justify-content:space-between;padding:16px 24px;border-bottom:1px solid var(--line);font-family:"Inter",sans-serif;font-size:13px}
-.tier:last-child{border-bottom:none}
-.tier .len{color:var(--ink);letter-spacing:.05em}
-.tier .len b{font-family:"Inter",sans-serif;font-weight:600;letter-spacing:0;margin-right:8px}
-.badge{font-size:9px;letter-spacing:.08em;background:color-mix(in srgb, var(--accent) 20%, transparent);color:var(--accent-strong);padding:2px 7px;border-radius:20px;margin-left:8px;text-transform:uppercase}
-.tier .price{color:var(--accent-strong);font-weight:700;font-variant-numeric:tabular-nums}
-.price-note{border:1px dashed var(--line);border-radius:4px;padding:22px 24px;margin-top:28px;font-size:13.5px;color:var(--ink-muted);line-height:1.7}
-.price-note b{color:var(--ink)}
-.price-note ul{margin:10px 0 0 18px}
+/* ---- faq: large questions, answers beside ---- */
+.faq .row{display:grid;grid-template-columns:repeat(12,1fr);gap:0 24px;align-items:baseline}
+.faq .row + .row{margin-top:clamp(48px,5vw,72px)}
+.faq h2,.faq h3{grid-column:1 / 7;font-size:var(--big);font-weight:500;line-height:1.1;letter-spacing:-.01em}
+.faq h2{color:var(--muted);font-weight:400}
+.faq p{grid-column:8 / 13;max-width:40ch;line-height:1.55}
+@media (max-width:860px){
+  .faq .row{display:block}
+  .faq .row + .row{margin-top:56px}
+  .faq h2,.faq h3{font-size:24px}
+  .faq p{margin-top:12px;max-width:none}
+}
 
-/* ---- FAQ ---- */
-.faq-list{border-top:1px solid var(--line)}
-.faq-item{border-bottom:1px solid var(--line);padding:18px 0}
-.faq-item summary{cursor:pointer;font-weight:600;font-size:15.5px;list-style:none;display:flex;align-items:center;justify-content:space-between;gap:16px}
-.faq-item summary::-webkit-details-marker{display:none}
-.faq-item summary::after{content:'+';font-family:"Inter",sans-serif;font-size:18px;color:var(--accent-strong);flex-shrink:0;transition:transform .2s}
-.faq-item[open] summary::after{transform:rotate(45deg)}
-.faq-item p{margin-top:12px;font-size:14px;color:var(--ink-muted);line-height:1.7;max-width:68ch}
-.faq-item p a{color:var(--accent-strong);font-weight:600}
+/* ---- closing: the question at both edges ---- */
+.ask{position:relative;height:100svh;background:#0a0807;display:flex;flex-direction:column;justify-content:space-between;align-items:center;padding:32px var(--m) 24px;text-align:center;overflow:hidden}
+.ask h2{font-size:clamp(110px,11vw,168px);font-weight:300;line-height:1;letter-spacing:-.04em;white-space:nowrap}
+.ask .choice{display:flex;align-items:center;gap:0}
+.ask .choice .btn{width:200px}
+.ask .or{width:240px;color:var(--muted);font-size:18px}
+.ask .after{position:absolute;left:0;right:0;top:calc(50% + 46px);font-size:18px;color:var(--muted)}
+@media (max-width:860px){
+  .ask h2{font-size:18vw}
+  .ask .choice{flex-direction:column;gap:12px;width:72%}
+  .ask .choice .btn{width:100%}
+  .ask .or{width:auto}
+  .ask .after{position:static;margin-top:0}
+  .ask .choice-wrap{display:flex;flex-direction:column;align-items:center;gap:16px;width:100%}
+}
 
-/* ---- booking ---- */
-.booking-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:1px;background:var(--line);border:1px solid var(--line);border-radius:4px;overflow:hidden}
-.bk-panel{background:var(--surface);padding:32px}
-.field{display:flex;flex-direction:column;gap:7px;margin-bottom:20px}
-.field label{font-family:"Inter",sans-serif;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-muted)}
-.field input,.field select,.field textarea{background:var(--surface-2);border:1px solid var(--line);color:var(--ink);border-radius:3px;padding:12px 13px;font-size:14.5px;outline:none;width:100%;font-family:inherit}
-.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--accent)}
-.field textarea{resize:vertical;min-height:64px;line-height:1.5}
-.field .opt{font-weight:400;color:var(--ink-muted);text-transform:none;letter-spacing:0;font-family:"Inter",sans-serif}
-.two-col{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-.zone-pick{display:flex;gap:8px;flex-wrap:wrap}
-.zpill{border:1.5px solid var(--line);background:var(--surface-2);color:var(--ink-muted);padding:9px 15px;border-radius:20px;font-size:12.5px;font-weight:600;cursor:pointer;transition:.15s}
-.zpill.on{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
-.zpill[data-zone="Photography"].on{background:var(--zone-photo);border-color:var(--zone-photo);color:#fff}
-.zpill[data-zone="Podcast"].on{background:var(--zone-podcast-strong);border-color:var(--zone-podcast-strong);color:#fff}
-.zpill[data-zone="Culinary"].on{background:var(--zone-culinary);border-color:var(--zone-culinary);color:var(--accent-ink)}
-.hour-pick{display:flex;gap:8px}
-.hpill{flex:1;border:1.5px solid var(--line);background:var(--surface-2);color:var(--ink-muted);padding:10px 0;border-radius:3px;font-family:"Inter",sans-serif;font-size:13px;font-weight:700;cursor:pointer;text-align:center;transition:.15s}
-.hpill.on{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
-.bk-err{color:var(--danger);font-size:13px;min-height:18px;margin-top:4px}
-.bk-steps .info-row{display:flex;gap:14px;padding:15px 0;border-bottom:1px solid var(--line)}
-.bk-steps .info-row:last-child{border-bottom:none}
-.bk-steps .ico{font-family:"Inter",sans-serif;font-size:12px;color:var(--accent-strong);width:20px;flex-shrink:0}
-.bk-steps .v{font-size:14.5px}
-.avail-note{font-size:12.5px;color:var(--ink-muted);margin-top:-6px;margin-bottom:18px;min-height:16px}
-@media (max-width:820px){.booking-grid{grid-template-columns:1fr}.two-col{grid-template-columns:1fr}}
+/* ---- footer: the name across the last photograph ---- */
+.foot{position:relative;height:100svh;overflow:hidden;color:var(--ink)}
+.foot > img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 45%;filter:brightness(.62)}
+.foot .top{position:absolute;top:32px;left:var(--m);right:var(--m);display:flex;justify-content:space-between;gap:24px;font-size:18px;line-height:1.7}
+.foot .top ul{max-width:25%}
+.foot .top a{text-decoration:none}
+.foot .top a:hover{text-decoration:underline}
+.foot .top .mark{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+.foot .top .mark img{width:48px;height:48px;background:#fff;object-fit:contain}
+.foot .big{position:absolute;left:var(--m);right:var(--m);bottom:56px;font-size:16.5vw;font-weight:300;line-height:.85;letter-spacing:-.045em;white-space:nowrap;text-align:center;transform-origin:50% 100%}
+.foot .legal{position:absolute;left:var(--m);right:var(--m);bottom:22px;font-size:var(--small);color:var(--ink-2)}
+@media (max-width:860px){
+  .foot{height:88svh}
+  .foot .top{flex-direction:column;gap:18px}
+  .foot .top ul{max-width:none}
+  .foot .big{bottom:84px;font-size:15vw}
+  .foot .legal{bottom:18px}
+}
 
-/* ---- contact ---- */
-.info-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:1px;background:var(--line);border:1px solid var(--line);border-radius:4px;overflow:hidden}
-.info-card{background:var(--surface);padding:30px}
-.info-row{display:flex;gap:16px;padding:16px 0;border-bottom:1px solid var(--line)}
-.info-row:last-child{border-bottom:none}
-.info-row .ico{width:20px;flex-shrink:0;font-family:"Inter",sans-serif;color:var(--accent-strong);font-size:13px;padding-top:3px;display:flex;align-items:center}
-.info-row .k{font-family:"Inter",sans-serif;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-muted)}
-.info-row .v{font-size:14.5px;color:var(--ink);font-weight:600;margin-top:3px}
-.info-row a{text-decoration:none;color:inherit}
-.social-row{display:flex;gap:10px;margin-top:20px}
-.social-btn{width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;text-decoration:none;border:1px solid var(--line);background:var(--surface-2);color:var(--accent-strong);transition:.15s}
-.social-btn:hover{transform:translateY(-2px);border-color:var(--accent)}
-@media (max-width:820px){.info-grid{grid-template-columns:1fr}}
-
-/* ---- CTA band ---- */
-.insta-embed{display:flex;flex-wrap:wrap;justify-content:center;gap:24px;align-items:flex-start}
-.cta-band{background:var(--surface);border:1px solid var(--line);border-radius:4px;padding:52px 44px;text-align:left}
-.cta-band h2{font-size:clamp(22px,3.2vw,30px);margin-bottom:12px}
-.cta-band p{color:var(--ink-muted);font-size:15px;margin-bottom:26px;max-width:52ch}
-.cta-band .ctas{display:flex;gap:14px;flex-wrap:wrap}
-
-/* ---- legal ---- */
-.legal h2{font-size:19px;margin:32px 0 10px;font-family:"Inter",sans-serif;font-weight:700}
-.legal h2:first-child{margin-top:0}
-.legal p,.legal li{font-size:14.5px;color:var(--ink-muted);margin-bottom:10px;line-height:1.7}
-.legal ul{margin-left:20px}
-.legal .updated{font-family:"Inter",sans-serif;font-size:12px;color:var(--ink-muted);margin-bottom:28px}
-
-/* ---- footer ---- */
-footer{border-top:1px solid var(--line);padding:64px 0 30px;margin-top:0}
-.foot-grid{display:grid;grid-template-columns:1.3fr 1fr 1fr 1fr;gap:36px;margin-bottom:40px}
-.foot-brand{display:flex;flex-direction:column;gap:14px}
-.foot-brand img{height:140px;width:140px;object-fit:contain;border-radius:18px;background:var(--paper)}
-.foot-brand p{font-size:13px;line-height:1.7;color:var(--ink-muted);max-width:34ch}
-.foot-col h4{font-family:"Inter",sans-serif;font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:16px}
-.foot-col a{display:block;font-size:13.5px;color:var(--ink);text-decoration:none;margin-bottom:12px}
-.foot-col a:hover{color:var(--accent-strong)}
-.foot-ic{display:flex;align-items:center;gap:10px}
-.fi{width:22px;height:22px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;background:var(--surface-2);color:var(--accent-strong)}
-.foot-bottom{border-top:1px solid var(--line);padding-top:22px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;font-size:12px;color:var(--ink-muted)}
-@media (max-width:820px){.foot-grid{grid-template-columns:1fr 1fr}}
-@media (max-width:520px){.foot-grid{grid-template-columns:1fr}.foot-bottom{flex-direction:column}}
-
-/* ---- accessibility: site-wide, not just the homepage's new motion ---- */
-.btn:focus-visible,.zone-card:focus-visible,.gallery-item:focus-visible,.t-arrow:focus-visible,.reviews-badge:focus-visible,.scroll-cue:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
-@media (prefers-reduced-motion:reduce){*,*::before,*::after{transition-duration:.001ms!important;animation-duration:.001ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important}}
-
-
-/* ---- hero: full-bleed photo/video ---- */
-/* padding-top reserves clearance under the absolutely-positioned overlay
-   nav so the vertically-centered hero content can never render behind it —
-   relying on centering math alone (no reserved space) was fragile: it only
-   happened to clear the nav before the logo was enlarged, and broke (on
-   both desktop and mobile) the moment the nav got taller. 260px clears the
-   desktop nav (~242px: 14+200px logo+14px margin+14px pad); the 860px
-   override below clears the shorter mobile nav (~92px) instead. */
-.hero.hero-media{position:relative;padding:0;padding-top:260px;overflow:hidden;min-height:clamp(560px,92vh,900px);display:flex;align-items:center}
-.hero-media-bg{position:absolute;inset:0;z-index:0;background:var(--surface-2)}
-.hero-photo,.hero-video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 35%}
-.hero-scrim{position:absolute;inset:0;z-index:1;
-  background:linear-gradient(180deg, rgba(23,19,16,.55) 0%, rgba(23,19,16,.35) 40%, rgba(23,19,16,.8) 100%),
-             linear-gradient(90deg, rgba(23,19,16,.78) 0%, rgba(23,19,16,.6) 40%, rgba(23,19,16,.12) 75%);}
-@media (max-width:860px){.hero-scrim{background:linear-gradient(180deg, rgba(23,19,16,.62) 0%, rgba(23,19,16,.7) 45%, rgba(23,19,16,.86) 100%)}}
-.hero-media .hero-inner{position:relative;z-index:2;width:100%;max-width:760px}
-.hero-media .eyebrow{color:var(--accent)}
-.hero-media h1{color:#fff}
-.hero-media h1 em{color:var(--accent)}
-.hero-media p.lead{color:rgba(255,255,255,.94)}
-.hero-media .eyebrow,.hero-media h1,.hero-media p.lead{text-shadow:0 1px 14px rgba(0,0,0,.45)}
-.nobr{white-space:nowrap}
-.btn-outline-invert{background:transparent;color:#fff;border-color:rgba(255,255,255,.55)}
-.btn-outline-invert:hover{border-color:var(--accent);color:var(--accent)}
-.hero-media .reviews-badge{background:rgba(255,255,255,.12);backdrop-filter:blur(6px);border:1px solid rgba(255,255,255,.25);border-radius:30px;padding:8px 16px 8px 10px;color:#fff}
-.hero-media .reviews-badge:hover{background:rgba(255,255,255,.2)}
-.hero-media #rbRating{color:#fff}
-.hero-media .rb-stars{color:var(--accent)}
-.hero-media .rb-stars .dim{color:rgba(255,255,255,.35)}
-.scroll-cue{position:absolute;left:50%;bottom:22px;transform:translateX(-50%);z-index:2;display:flex;flex-direction:column;align-items:center;gap:6px;color:rgba(255,255,255,.8);background:none;border:0;cursor:pointer;font-family:"Inter",sans-serif;font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;transition:opacity .3s ease}
-@keyframes cueBounce{0%,100%{transform:translateY(0)}50%{transform:translateY(6px)}}
-.scroll-cue svg{animation:cueBounce 2.2s ease-in-out infinite}
-@keyframes heroKB{from{transform:scale(1)}to{transform:scale(1.06)}}
-.hero-media.kb-static .hero-photo{animation:heroKB 18s ease-out forwards}
-@media (max-width:600px){.hero.hero-media{min-height:clamp(480px,78vh,640px)}}
-/* Reserve top clearance under the absolutely-positioned overlay nav on
-   narrow screens — matches the nav's own mobile breakpoint (860px, where
-   the logo grows to 56px and the nav bar gets taller), not the hero's own
-   600px min-height breakpoint, since that's the actual trigger condition.
-   Padding goes on the flex CONTAINER, not .hero-inner: padding on the
-   centered flex item itself would only shift its content by half the
-   added amount (flex centering re-splits the extra space on both sides),
-   while padding on the container shifts the centered area by the full
-   amount. */
-@media (max-width:860px){.hero.hero-media{padding-top:100px;padding-bottom:36px}}
-/* The scroll cue is pinned to the hero's bottom edge — fine on desktop
-   where the 900px-tall hero has ~200px of slack below the content block,
-   but on mobile the hero's height is content-driven (min-height is a
-   floor, not a cap) and the live reviews badge is the last thing to
-   render, so a long lead paragraph + badge can grow right into the cue's
-   fixed spot. Rather than chase a pixel value that only holds for today's
-   copy length, just drop the cue below 700px — it's a decorative nicety,
-   not something mobile visitors need telling to scroll. */
-@media (max-width:700px){.scroll-cue{display:none}}
-@media (prefers-reduced-motion:reduce){.hero-media .hero-photo{animation:none}.scroll-cue svg{animation:none}}
-
-/* ---- trust/stats bar ----
-   Flexbox, not a fixed-column grid: the two live items (rating/review
-   count) start hidden until /public-reviews resolves, and a fixed
-   grid-template-columns would leave a dead empty track showing the
-   container's background through it. With flex, whatever's actually
-   visible just grows to fill the row — 2 items look as intentional as 4. */
-.stat-section{padding:56px 0;border-top:1px solid var(--line)}
-.stat-row{display:flex;flex-wrap:wrap;gap:1px;background:var(--line);border:1px solid var(--line);border-radius:4px;overflow:hidden}
-.stat-item{flex:1 1 160px;background:var(--surface);padding:30px 20px;text-align:center}
-.stat-value{display:flex;align-items:baseline;justify-content:center;gap:2px;font-family:"Fraunces",serif;font-weight:500;font-size:clamp(28px,4vw,40px);color:var(--accent-strong)}
-.stat-suffix{font-size:.55em;color:var(--accent-strong)}
-.stat-label{margin-top:8px;font-family:"Inter",sans-serif;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-muted)}
-
-/* ---- testimonials ---- */
-.testimonials-section{background:var(--surface-2)}
-.testimonial-track{display:flex;gap:20px;overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:8px;scrollbar-width:none}
-.testimonial-track::-webkit-scrollbar{display:none}
-.testimonial-card{flex:0 0 min(360px,84vw);scroll-snap-align:start;background:var(--surface);border:1px solid var(--line);border-radius:4px;padding:26px 24px;display:flex;flex-direction:column;gap:14px}
-.testimonial-card .rb-stars{color:var(--accent-strong)}
-.t-text{font-size:14.5px;line-height:1.7;color:var(--ink);flex:1}
-.t-meta{display:flex;align-items:center;gap:10px}
-.t-avatar,.t-avatar-fallback{width:36px;height:36px;border-radius:50%;object-fit:cover;flex-shrink:0}
-.t-avatar-fallback{display:flex;align-items:center;justify-content:center;background:var(--accent);color:var(--accent-ink);font-weight:700;font-size:13px}
-.t-name{display:block;font-size:13.5px;font-weight:700}
-.t-time{display:block;font-size:11.5px;color:var(--ink-muted);font-family:"Inter",sans-serif}
-.testimonial-controls{display:flex;align-items:center;justify-content:center;gap:16px;margin-top:20px}
-.t-arrow{width:38px;height:38px;border-radius:50%;border:1px solid var(--line);background:var(--surface);cursor:pointer;font-size:18px;color:var(--ink);transition:.15s}
-.t-arrow:hover{border-color:var(--accent);color:var(--accent-strong)}
-.t-dots{display:flex;gap:6px}
-.t-dot{width:6px;height:6px;border-radius:50%;background:var(--line);transition:.2s}
-.t-dot.on{background:var(--accent-strong);width:18px;border-radius:3px}
-
-/* ---- gallery + lightbox ---- */
-.gallery-grid{display:grid;grid-template-columns:repeat(4,1fr);grid-auto-rows:180px;gap:8px;grid-auto-flow:dense}
-.gallery-item{position:relative;overflow:hidden;border-radius:4px;border:0;padding:0;cursor:pointer;background:var(--surface-2)}
-.gallery-item.span-2{grid-column:span 2;grid-row:span 2}
-.gallery-item img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .4s ease}
-.gallery-item:hover img{transform:scale(1.05)}
-.gallery-item::after{content:'';position:absolute;inset:0;background:rgba(23,19,16,0);transition:background .25s}
-.gallery-item:hover::after{background:rgba(23,19,16,.08)}
-@media (max-width:820px){.gallery-grid{grid-template-columns:repeat(2,1fr)}}
-@media (max-width:480px){.gallery-grid{grid-auto-rows:120px}}
-.lightbox{position:fixed;inset:0;background:rgba(23,19,16,.92);display:none;align-items:center;justify-content:center;z-index:100;opacity:0;transition:opacity .25s ease}
-.lightbox.open{display:flex;opacity:1}
-.lb-img{max-width:88vw;max-height:82vh;object-fit:contain;border-radius:4px}
-.lb-close,.lb-prev,.lb-next{position:absolute;background:none;border:0;color:#fff;font-size:32px;cursor:pointer;padding:12px}
-.lb-close{top:14px;right:18px}
-.lb-prev{left:10px;top:50%;transform:translateY(-50%)}
-.lb-next{right:10px;top:50%;transform:translateY(-50%)}
-
-/* ---- instagram reframe ---- */
-.insta-section{background:var(--surface-2)}
-.insta-head{display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:16px;margin-bottom:0}
-.insta-follow-chip{display:inline-flex;align-items:center;gap:8px;font-family:"Inter",sans-serif;font-size:12.5px;font-weight:700;color:var(--accent-strong);text-decoration:none;border:1px solid var(--line);padding:8px 14px;border-radius:20px;transition:.15s}
-.insta-follow-chip:hover{border-color:var(--accent)}
-.insta-frame{border-radius:4px;overflow:hidden}
-.hero-media .hero-inner{max-width:1080px}
-.hero-media h1{max-width:15em;font-size:clamp(30px,5vw,68px);line-height:1.02;margin:0 0 28px}
-.hero-media p.lead{max-width:54ch}
-.why-grid{display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center}
-.why-photo{margin:0;border-radius:4px;overflow:hidden;aspect-ratio:4/5}
-.why-photo img{width:100%;height:100%;object-fit:cover;display:block}
-@media (max-width:820px){.why-grid{grid-template-columns:1fr;gap:32px}.why-photo{aspect-ratio:4/3}}
-
+/* ---- motion: hidden only when JS can animate; reduced motion keeps the finished state ---- */
+@media (prefers-reduced-motion:no-preference){
+  .js .wordmark .line span{transform:translateY(105%);animation:rise 900ms var(--ease-expo) forwards;animation-delay:calc(120ms + var(--i,0)*90ms)}
+  .js [data-load]{opacity:0;transform:translateY(12px);animation:load 600ms var(--ease-out) forwards;animation-delay:var(--d,420ms)}
+  .js .hero-pic img{transform:scale(1.08);animation:settle 1400ms var(--ease-expo) 100ms forwards}
+  .js [data-rv]{opacity:0;transform:translateY(18px);transition:opacity .45s var(--ease-out),transform .45s var(--ease-out);transition-delay:calc(var(--i,0)*45ms)}
+  .js [data-rv].in{opacity:1;transform:none}
+  .js .room figure{clip-path:inset(0 0 100% 0);transition:clip-path .6s var(--ease-in-out)}
+  .js .room figure.in{clip-path:inset(0)}
+}
+@keyframes rise{to{transform:none}}
+@keyframes load{to{opacity:1;transform:none}}
+@keyframes settle{to{transform:none}}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}.btn:active,.nav .nav-act:active{transform:none}}
 </style>
-<link rel="stylesheet" href="/assets/site.css">
 </head>
 <body>
-<div class="rail"><div class="rail-fill" id="railFill"></div></div>
-<header class="nav nav-overlay">
-  <div class="inner">
-    <a class="brand" href="/"><img src="/assets/logo-300.png" alt="Studio RYST" width="200" height="200"></a>
-    <button class="menu-btn" id="menuBtn" aria-label="Menu"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
-    <nav class="navlinks" id="navLinks">
-      <a href="/" class="active">Home</a>
-      <a href="/studio/">Our Studio</a>
-      <a href="/packages/">Packages</a>
-      <a href="/contact/">Contact</a>
-      <a class="btn btn-brass nav-cta-m" href="/booking/"><span>Book Now</span></a>
-    </nav>
-    <a class="btn btn-brass nav-cta" href="/booking/"><span>Book Now</span></a>
-  </div>
-</header>
 
-<section class="hero hero-media kb-static" id="heroSection">
-  <div class="hero-media-bg">
+<header class="nav" aria-label="Site">
+  <a class="nav-lnk" href="/studio/">The studio</a>
+  <a class="nav-lnk" href="/packages/">Rates</a>
+  <a class="nav-lnk" href="/contact/">Contact</a>
+  <button class="menu-btn" id="menuBtn" aria-expanded="false" aria-controls="menu">Menu</button>
+  <a class="nav-act" href="/booking/">Book a session</a>
+</header>
+<nav class="menu" id="menu" aria-label="Menu" hidden>
+  <button class="close" id="menuClose">Close</button>
+  <a href="/studio/">The studio</a>
+  <a href="/packages/">Rates</a>
+  <a href="/contact/">Contact</a>
+  <a href="https://instagram.com/studio.ryst" target="_blank" rel="noopener">Instagram</a>
+  <a class="btn btn-gold menu-act" href="/booking/">Book a session</a>
+</nav>
+
+<section class="hero" id="top">
+  <figure class="hero-pic">
     <picture><source type="image/webp" srcset="/assets/photos/hero.webp">
-    <img class="hero-photo" id="heroPhoto" src="/assets/photos/hero.jpg"
-      alt="Behind the scenes at Studio RYST — a podcast interview being filmed with a full lighting rig in our T-Nagar podcast studio"
-      width="2400" height="1350" loading="eager" fetchpriority="high"
-      onerror="this.style.display='none'"></picture>
-    <video class="hero-video" id="heroVideo" muted loop playsinline preload="none" aria-hidden="true" hidden></video>
-    <div class="hero-scrim"></div>
+    <img id="heroPhoto" src="/assets/photos/hero.jpg" alt="A podcast interview being filmed at Studio RYST, T. Nagar — softboxes lit, the set glowing in a dark room" width="2400" height="1350" fetchpriority="high"></picture>
+    <video id="heroVideo" muted loop playsinline preload="none" poster="/assets/photos/hero.jpg" aria-hidden="true" hidden></video>
+  </figure>
+  <div class="hero-right">
+    <p class="hero-lead">A podcast room, a filmable kitchen and a photo studio under one roof in T. Nagar, Chennai. Booked by the hour.</p>
+    <a class="reviews" id="reviewsBadge" href="https://maps.app.goo.gl/7YeM8gav8mYPg42XA" target="_blank" rel="noopener" data-load style="--d:520ms" hidden><span class="stars" id="rbStars"></span><b id="rbRating"></b><span id="rbCount"></span></a>
   </div>
-  <div class="wrap hero-inner">
-    <h1>Podcast studio, kitchen studio &amp; photo studio.</h1>
-    <p class="lead">Chennai's 3&#8209;in&#8209;1 studio in T&#8209;Nagar for podcasters, food creators
-      and brands. Book by the hour, with instant confirmation.</p>
-    <div class="ctas">
-      <a class="btn btn-brass" href="/booking/"><span>Book a Session</span></a>
-      <a class="btn btn-outline-invert" href="/packages/"><span>View Packages</span></a>
-    </div>
-    <a class="reviews-badge" id="reviewsBadge" href="https://maps.app.goo.gl/7YeM8gav8mYPg42XA" target="_blank" rel="noopener" style="display:none">
-      <span class="rb-stars" id="rbStars"></span>
-      <b id="rbRating"></b><span id="rbCount"></span>
-    </a>
-  </div>
-  <button class="scroll-cue" id="scrollCue" aria-label="Scroll to explore">
-    <span>Scroll</span>
-    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
-  </button>
+  <h1 class="wordmark" id="wordmark"><span class="line"><span style="--i:0">studio ryst</span></span></h1>
 </section>
 
-<section class="section"><div class="wrap">
-  <div class="section-head">
-    <h2>One studio, three ways to create.</h2>
-    <p>Studio RYST brings a podcast studio, a kitchen studio and a photography
-      studio together in one thoughtfully designed space in T-Nagar, Chennai — so
-      creators managing multiple formats don't have to book, pack up, and travel
-      between three different studios across the city. Record a video podcast in
-      the morning, film a recipe reel in the kitchen after lunch, and shoot
-      product stills before you leave.</p>
+<section class="chapter rooms" aria-labelledby="roomsH">
+  <h2 id="roomsH" data-rv>Three rooms, one roof.</h2>
+  <div class="intro">
+  <p class="stairs" data-rv>
+    <span>Record the podcast at ten,</span>
+    <span>film the recipe after lunch,</span>
+    <span>shoot the product by five —</span>
+    <span>all under one roof,</span>
+    <span>on one booking.</span>
+  </p>
+  <div class="intro-pics">
+    <img data-rv style="--i:1" src="/assets/photos/gallery-02.jpg" alt="Two guests in conversation on the podcast sofa at Studio RYST" width="1400" height="1080" loading="lazy">
+    <img data-rv style="--i:2" src="/assets/photos/gallery-04.jpg" alt="A cooking shoot in progress in the Studio RYST kitchen" width="1400" height="1080" loading="lazy">
   </div>
-  <div class="zones">
-    <a class="zone-card photo has-media" href="/studio/">
-      <div class="zone-card-media"><picture><source type="image/webp" srcset="/assets/photos/zone-photography.webp"><img src="/assets/photos/zone-photography.jpg" alt="Photography zone at Studio RYST — continuous LED lighting and backdrop" width="1200" height="900" loading="lazy" onerror="this.style.display='none'"></picture><span class="zone-card-tag-chip">Photography</span></div>
-      <div class="zone-card-body"><span class="tag">Light. Frame. Capture.</span><h3>Photography Studio</h3>
-        <p>Continuous LED lighting with a green screen available — built for
-          product shoots, editorials, headshots and
-          e-commerce. Book from 2 hours.</p><span class="more">Explore this zone →</span></div></a>
-    <a class="zone-card podcast has-media" href="/podcast-studio-chennai/">
-      <div class="zone-card-media"><picture><source type="image/webp" srcset="/assets/photos/zone-podcast.webp"><img src="/assets/photos/zone-podcast.jpg" alt="Podcast zone at Studio RYST — sofa seating and broadcast-ready setup" width="1200" height="900" loading="lazy" onerror="this.style.display='none'"></picture><span class="zone-card-tag-chip">Podcast</span></div>
-      <div class="zone-card-body"><span class="tag">Speak. Record. Inspire.</span><h3>Podcast Studio</h3>
-        <p>A podcast studio with acoustic treatment, broadcast-grade microphones,
-          a sofa set and ambient lighting — for video podcasts, interviews and
-          brand storytelling. Book from 2 hours.</p><span class="more">Explore this zone →</span></div></a>
-    <a class="zone-card culinary has-media" href="/kitchen-studio-chennai/">
-      <div class="zone-card-media"><picture><source type="image/webp" srcset="/assets/photos/zone-culinary.webp"><img src="/assets/photos/zone-culinary.jpg" alt="Culinary zone at Studio RYST — kitchen and countertop setup" width="1200" height="900" loading="lazy" onerror="this.style.display='none'"></picture><span class="zone-card-tag-chip">Kitchen</span></div>
-      <div class="zone-card-body"><span class="tag">Cook. Style. Shoot.</span><h3>Kitchen Studio</h3>
-        <p>A premium kitchen studio designed to be filmed in, with styling-friendly
-          counters and light for recipe videos, cooking shows and food
-          photography. Book from 4 hours.</p>
-        <span class="more">Explore this zone →</span></div></a>
+  <p class="intro-note" data-rv style="--i:3">52, Ankur Plaza, Gopathy Narayana Road, T. Nagar. Two-hour minimum for the podcast and photo studios, four for the kitchen. Semi-acoustic, climate-controlled, confirmed the moment you pay.</p>
   </div>
-</div></section>
 
-<section class="section testimonials-section" id="testimonialsSection" style="display:none"><div class="wrap">
-  <div class="section-head"><h2>Real reviews from Google.</h2></div>
-  <div class="testimonial-track" id="testimonialTrack"></div>
-  <div class="testimonial-controls">
-    <button class="t-arrow" id="tPrev" aria-label="Previous review" type="button">‹</button>
-    <div class="t-dots" id="tDots"></div>
-    <button class="t-arrow" id="tNext" aria-label="Next review" type="button">›</button>
-  </div>
-</div></section>
-
-<section class="section gallery-section"><div class="wrap">
-  <div class="section-head"><h2>A closer look at the space.</h2></div>
-  <div class="gallery-grid" id="galleryGrid">
-    <button class="gallery-item span-2" data-full="/assets/photos/gallery-01.jpg" aria-label="Open photo 1" type="button"><img src="/assets/photos/gallery-01.jpg" alt="Studio RYST — behind the scenes on a live shoot, full lighting rig and crew" width="1400" height="1080" loading="lazy" onerror="this.style.display='none'"></button>
-    <button class="gallery-item" data-full="/assets/photos/gallery-02.jpg" aria-label="Open photo 2" type="button"><img src="/assets/photos/gallery-02.jpg" alt="Studio RYST — two guests recording a podcast conversation" width="1400" height="1080" loading="lazy" onerror="this.style.display='none'"></button>
-    <button class="gallery-item" data-full="/assets/photos/gallery-03.jpg" aria-label="Open photo 3" type="button"><img src="/assets/photos/gallery-03.jpg" alt="Studio RYST — recording session in the Podcast Zone" width="1400" height="1080" loading="lazy" onerror="this.style.display='none'"></button>
-    <button class="gallery-item" data-full="/assets/photos/gallery-04.jpg" aria-label="Open photo 4" type="button"><img src="/assets/photos/gallery-04.jpg" alt="Studio RYST — culinary content shoot in the Kitchen Zone" width="1400" height="1080" loading="lazy" onerror="this.style.display='none'"></button>
-    <button class="gallery-item" data-full="/assets/photos/gallery-06.jpg" aria-label="Open photo 6" type="button"><img src="/assets/photos/gallery-06.jpg" alt="Studio RYST — product photography session" width="1400" height="1080" loading="lazy" onerror="this.style.display='none'"></button>
-  </div>
-</div></section>
-
-<div class="lightbox" id="lightbox" aria-hidden="true">
-  <button class="lb-close" id="lbClose" aria-label="Close" type="button">×</button>
-  <button class="lb-prev" id="lbPrev" aria-label="Previous" type="button">‹</button>
-  <img class="lb-img" id="lbImg" src="" alt="">
-  <button class="lb-next" id="lbNext" aria-label="Next" type="button">›</button>
-</div>
-
-<section class="section why-section"><div class="wrap why-grid">
-  <div>
-    <div class="section-head"><h2>Built for creators, not just content.</h2></div>
-    <div class="plist">
-      <div class="prow"><div><h3>Central location</h3><p>Right in T-Nagar — easy to reach from anywhere in Chennai.</p></div></div>
-      <div class="prow"><div><h3>Soundproofed</h3><p>Semi-acoustic design keeps recordings clean, even in the city.</p></div></div>
-      <div class="prow"><div><h3>Three studios, one booking</h3><p>Podcast, kitchen and photography under one roof — a first for Chennai.</p></div></div>
-      <div class="prow"><div><h3>Made for how you shoot</h3><p>Every detail designed around how creators actually shoot and record.</p></div></div>
+  <article class="room">
+    <figure><picture><source type="image/webp" srcset="/assets/photos/zone-podcast.webp"><img src="/assets/photos/zone-podcast.jpg" alt="The podcast room at Studio RYST — sofa seating, microphones on stands, warm ambient light" width="1400" height="1050" loading="lazy"></picture></figure>
+    <div class="txt">
+      <h3 data-rv>The podcast room</h3>
+      <p data-rv style="--i:1">An acoustically treated room with broadcast microphones and sofa seating for a host and guests, lit for video. Book from 2 hours.</p>
+      <ul data-rv style="--i:2">
+        <li>Broadcast microphones for host and guests</li>
+        <li>Acoustic treatment for clean sound</li>
+        <li>Sofa seating for interview and panel formats</li>
+        <li>Camera-ready ambient lighting</li>
+        <li>Bring your camera, or add a cinematographer</li>
+      </ul>
+      <a class="tlink" data-rv style="--i:3" href="/podcast-studio-chennai/">About the podcast room →</a>
     </div>
-  </div>
-  <figure class="why-photo"><img src="/assets/photos/gallery-05.jpg" alt="An interview set up and lit in the Studio RYST podcast studio" width="1400" height="1080" loading="lazy"></figure>
-</div></section>
+  </article>
 
-<section class="section insta-section"><div class="wrap">
-  <div class="section-head insta-head">
-    <h2>Latest from Instagram.</h2>
-    <a class="insta-follow-chip" href="https://instagram.com/studio.ryst" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="6"/><circle cx="12" cy="12" r="4.2"/><circle cx="17.4" cy="6.6" r="1.15" fill="currentColor" stroke="none"/></svg> @studio.ryst</a>
-  </div>
-  <div class="insta-embed">
-    <div class="insta-frame"><blockquote class="instagram-media" data-instgrm-captioned data-instgrm-permalink="https://www.instagram.com/p/DbdOa3-z52A/?utm_source=ig_embed&amp;utm_campaign=loading" data-instgrm-version="14" style=" background:#FFF; border:0; border-radius:3px; box-shadow:0 0 1px 0 rgba(0,0,0,0.5),0 1px 10px 0 rgba(0,0,0,0.15); margin: 1px; max-width:540px; min-width:326px; padding:0; width:99.375%; width:-webkit-calc(100% - 2px); width:calc(100% - 2px);"><div style="padding:16px;"> <a href="https://www.instagram.com/p/DbdOa3-z52A/?utm_source=ig_embed&amp;utm_campaign=loading" style=" background:#FFFFFF; line-height:0; padding:0 0; text-align:center; text-decoration:none; width:100%;" target="_blank"> <div style=" display: flex; flex-direction: row; align-items: center;"> <div style="background-color: #F4F4F4; border-radius: 50%; flex-grow: 0; height: 40px; margin-right: 14px; width: 40px;"></div> <div style="display: flex; flex-direction: column; flex-grow: 1; justify-content: center;"> <div style=" background-color: #F4F4F4; border-radius: 4px; flex-grow: 0; height: 14px; margin-bottom: 6px; width: 100px;"></div> <div style=" background-color: #F4F4F4; border-radius: 4px; flex-grow: 0; height: 14px; width: 60px;"></div></div></div><div style="padding: 19% 0;"></div> <div style="display:block; height:50px; margin:0 auto 12px; width:50px;"><svg width="50px" height="50px" viewBox="0 0 60 60" version="1.1" xmlns="https://www.w3.org/2000/svg" xmlns:xlink="https://www.w3.org/1999/xlink"><g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><g transform="translate(-511.000000, -20.000000)" fill="#000000"><g><path d="M556.869,30.41 C554.814,30.41 553.148,32.076 553.148,34.131 C553.148,36.186 554.814,37.852 556.869,37.852 C558.924,37.852 560.59,36.186 560.59,34.131 C560.59,32.076 558.924,30.41 556.869,30.41 M541,60.657 C535.114,60.657 530.342,55.887 530.342,50 C530.342,44.114 535.114,39.342 541,39.342 C546.887,39.342 551.658,44.114 551.658,50 C551.658,55.887 546.887,60.657 541,60.657 M541,33.886 C532.1,33.886 524.886,41.1 524.886,50 C524.886,58.899 532.1,66.113 541,66.113 C549.9,66.113 557.115,58.899 557.115,50 C557.115,41.1 549.9,33.886 541,33.886 M565.378,62.101 C565.244,65.022 564.756,66.606 564.346,67.663 C563.803,69.06 563.154,70.057 562.106,71.106 C561.058,72.155 560.06,72.803 558.662,73.347 C557.607,73.757 556.021,74.244 553.102,74.378 C549.944,74.521 548.997,74.552 541,74.552 C533.003,74.552 532.056,74.521 528.898,74.378 C525.979,74.244 524.393,73.757 523.338,73.347 C521.94,72.803 520.942,72.155 519.894,71.106 C518.846,70.057 518.197,69.06 517.654,67.663 C517.244,66.606 516.755,65.022 516.623,62.101 C516.479,58.943 516.448,57.996 516.448,50 C516.448,42.003 516.479,41.056 516.623,37.899 C516.755,34.978 517.244,33.391 517.654,32.338 C518.197,30.938 518.846,29.942 519.894,28.894 C520.942,27.846 521.94,27.196 523.338,26.654 C524.393,26.244 525.979,25.756 528.898,25.623 C532.057,25.479 533.004,25.448 541,25.448 C548.997,25.448 549.943,25.479 553.102,25.623 C556.021,25.756 557.607,26.244 558.662,26.654 C560.06,27.196 561.058,27.846 562.106,28.894 C563.154,29.942 563.803,30.938 564.346,32.338 C564.756,33.391 565.244,34.978 565.378,37.899 C565.522,41.056 565.552,42.003 565.552,50 C565.552,57.996 565.522,58.943 565.378,62.101 M570.82,37.631 C570.674,34.438 570.167,32.258 569.425,30.349 C568.659,28.377 567.633,26.702 565.965,25.035 C564.297,23.368 562.623,22.342 560.652,21.575 C558.743,20.834 556.562,20.326 553.369,20.18 C550.169,20.033 549.148,20 541,20 C532.853,20 531.831,20.033 528.631,20.18 C525.438,20.326 523.257,20.834 521.349,21.575 C519.376,22.342 517.703,23.368 516.035,25.035 C514.368,26.702 513.342,28.377 512.574,30.349 C511.834,32.258 511.326,34.438 511.181,37.631 C511.035,40.831 511,41.851 511,50 C511,58.147 511.035,59.17 511.181,62.369 C511.326,65.562 511.834,67.743 512.574,69.651 C513.342,71.625 514.368,73.296 516.035,74.965 C517.703,76.634 519.376,77.658 521.349,78.425 C523.257,79.167 525.438,79.673 528.631,79.82 C531.831,79.965 532.853,80.001 541,80.001 C549.148,80.001 550.169,79.965 553.369,79.82 C556.562,79.673 558.743,79.167 560.652,78.425 C562.623,77.658 564.297,76.634 565.965,74.965 C567.633,73.296 568.659,71.625 569.425,69.651 C570.167,67.743 570.674,65.562 570.82,62.369 C570.966,59.17 571,58.147 571,50 C571,41.851 570.966,40.831 570.82,37.631"></path></g></g></g></svg></div><div style="padding-top: 8px;"> <div style=" color:#3897f0; font-family:Arial,sans-serif; font-size:14px; font-style:normal; font-weight:550; line-height:18px;">View this post on Instagram</div></div><div style="padding: 12.5% 0;"></div> <div style="display: flex; flex-direction: row; margin-bottom: 14px; align-items: center;"><div> <div style="background-color: #F4F4F4; border-radius: 50%; height: 12.5px; width: 12.5px; transform: translateX(0px) translateY(7px);"></div> <div style="background-color: #F4F4F4; height: 12.5px; transform: rotate(-45deg) translateX(3px) translateY(1px); width: 12.5px; flex-grow: 0; margin-right: 14px; margin-left: 2px;"></div> <div style="background-color: #F4F4F4; border-radius: 50%; height: 12.5px; width: 12.5px; transform: translateX(9px) translateY(-18px);"></div></div><div style="margin-left: 8px;"> <div style=" background-color: #F4F4F4; border-radius: 50%; flex-grow: 0; height: 20px; width: 20px;"></div> <div style=" width: 0; height: 0; border-top: 2px solid transparent; border-left: 6px solid #f4f4f4; border-bottom: 2px solid transparent; transform: translateX(16px) translateY(-4px) rotate(30deg)"></div></div><div style="margin-left: auto;"> <div style=" width: 0px; border-top: 8px solid #F4F4F4; border-right: 8px solid transparent; transform: translateY(16px);"></div> <div style=" background-color: #F4F4F4; flex-grow: 0; height: 12px; width: 16px; transform: translateY(-4px);"></div> <div style=" width: 0; height: 0; border-top: 8px solid #F4F4F4; border-left: 8px solid transparent; transform: translateY(-4px) translateX(8px);"></div></div></div> <div style="display: flex; flex-direction: column; flex-grow: 1; justify-content: center; margin-bottom: 24px;"> <div style=" background-color: #F4F4F4; border-radius: 4px; flex-grow: 0; height: 14px; margin-bottom: 6px; width: 224px;"></div> <div style=" background-color: #F4F4F4; border-radius: 4px; flex-grow: 0; height: 14px; width: 144px;"></div></div></a><p style=" color:#c9c8cd; font-family:Arial,sans-serif; font-size:14px; line-height:17px; margin-bottom:0; margin-top:8px; overflow:hidden; padding:8px 0 7px; text-align:center; text-overflow:ellipsis; white-space:nowrap;"><a href="https://www.instagram.com/p/DbdOa3-z52A/?utm_source=ig_embed&amp;utm_campaign=loading" style=" color:#c9c8cd; font-family:Arial,sans-serif; font-size:14px; font-style:normal; font-weight:normal; line-height:17px; text-decoration:none;" target="_blank">A post shared by Studio RYST (@studio.ryst)</a></p></div></blockquote></div>
-    <div class="insta-frame"><blockquote class="instagram-media" data-instgrm-captioned data-instgrm-permalink="https://www.instagram.com/p/Dc_Cp1_TxWM/?utm_source=ig_embed&amp;utm_campaign=loading" data-instgrm-version="14" style=" background:#FFF; border:0; border-radius:3px; box-shadow:0 0 1px 0 rgba(0,0,0,0.5),0 1px 10px 0 rgba(0,0,0,0.15); margin: 1px; max-width:540px; min-width:326px; padding:0; width:99.375%; width:-webkit-calc(100% - 2px); width:calc(100% - 2px);"><div style="padding:16px;"> <a href="https://www.instagram.com/p/Dc_Cp1_TxWM/?utm_source=ig_embed&amp;utm_campaign=loading" style=" background:#FFFFFF; line-height:0; padding:0 0; text-align:center; text-decoration:none; width:100%;" target="_blank"> <div style=" display: flex; flex-direction: row; align-items: center;"> <div style="background-color: #F4F4F4; border-radius: 50%; flex-grow: 0; height: 40px; margin-right: 14px; width: 40px;"></div> <div style="display: flex; flex-direction: column; flex-grow: 1; justify-content: center;"> <div style=" background-color: #F4F4F4; border-radius: 4px; flex-grow: 0; height: 14px; margin-bottom: 6px; width: 100px;"></div> <div style=" background-color: #F4F4F4; border-radius: 4px; flex-grow: 0; height: 14px; width: 60px;"></div></div></div><div style="padding: 19% 0;"></div> <div style="display:block; height:50px; margin:0 auto 12px; width:50px;"><svg width="50px" height="50px" viewBox="0 0 60 60" version="1.1" xmlns="https://www.w3.org/2000/svg" xmlns:xlink="https://www.w3.org/1999/xlink"><g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><g transform="translate(-511.000000, -20.000000)" fill="#000000"><g><path d="M556.869,30.41 C554.814,30.41 553.148,32.076 553.148,34.131 C553.148,36.186 554.814,37.852 556.869,37.852 C558.924,37.852 560.59,36.186 560.59,34.131 C560.59,32.076 558.924,30.41 556.869,30.41 M541,60.657 C535.114,60.657 530.342,55.887 530.342,50 C530.342,44.114 535.114,39.342 541,39.342 C546.887,39.342 551.658,44.114 551.658,50 C551.658,55.887 546.887,60.657 541,60.657 M541,33.886 C532.1,33.886 524.886,41.1 524.886,50 C524.886,58.899 532.1,66.113 541,66.113 C549.9,66.113 557.115,58.899 557.115,50 C557.115,41.1 549.9,33.886 541,33.886 M565.378,62.101 C565.244,65.022 564.756,66.606 564.346,67.663 C563.803,69.06 563.154,70.057 562.106,71.106 C561.058,72.155 560.06,72.803 558.662,73.347 C557.607,73.757 556.021,74.244 553.102,74.378 C549.944,74.521 548.997,74.552 541,74.552 C533.003,74.552 532.056,74.521 528.898,74.378 C525.979,74.244 524.393,73.757 523.338,73.347 C521.94,72.803 520.942,72.155 519.894,71.106 C518.846,70.057 518.197,69.06 517.654,67.663 C517.244,66.606 516.755,65.022 516.623,62.101 C516.479,58.943 516.448,57.996 516.448,50 C516.448,42.003 516.479,41.056 516.623,37.899 C516.755,34.978 517.244,33.391 517.654,32.338 C518.197,30.938 518.846,29.942 519.894,28.894 C520.942,27.846 521.94,27.196 523.338,26.654 C524.393,26.244 525.979,25.756 528.898,25.623 C532.057,25.479 533.004,25.448 541,25.448 C548.997,25.448 549.943,25.479 553.102,25.623 C556.021,25.756 557.607,26.244 558.662,26.654 C560.06,27.196 561.058,27.846 562.106,28.894 C563.154,29.942 563.803,30.938 564.346,32.338 C564.756,33.391 565.244,34.978 565.378,37.899 C565.522,41.056 565.552,42.003 565.552,50 C565.552,57.996 565.522,58.943 565.378,62.101 M570.82,37.631 C570.674,34.438 570.167,32.258 569.425,30.349 C568.659,28.377 567.633,26.702 565.965,25.035 C564.297,23.368 562.623,22.342 560.652,21.575 C558.743,20.834 556.562,20.326 553.369,20.18 C550.169,20.033 549.148,20 541,20 C532.853,20 531.831,20.033 528.631,20.18 C525.438,20.326 523.257,20.834 521.349,21.575 C519.376,22.342 517.703,23.368 516.035,25.035 C514.368,26.702 513.342,28.377 512.574,30.349 C511.834,32.258 511.326,34.438 511.181,37.631 C511.035,40.831 511,41.851 511,50 C511,58.147 511.035,59.17 511.181,62.369 C511.326,65.562 511.834,67.743 512.574,69.651 C513.342,71.625 514.368,73.296 516.035,74.965 C517.703,76.634 519.376,77.658 521.349,78.425 C523.257,79.167 525.438,79.673 528.631,79.82 C531.831,79.965 532.853,80.001 541,80.001 C549.148,80.001 550.169,79.965 553.369,79.82 C556.562,79.673 558.743,79.167 560.652,78.425 C562.623,77.658 564.297,76.634 565.965,74.965 C567.633,73.296 568.659,71.625 569.425,69.651 C570.167,67.743 570.674,65.562 570.82,62.369 C570.966,59.17 571,58.147 571,50 C571,41.851 570.966,40.831 570.82,37.631"></path></g></g></g></svg></div><div style="padding-top: 8px;"> <div style=" color:#3897f0; font-family:Arial,sans-serif; font-size:14px; font-style:normal; font-weight:550; line-height:18px;">View this post on Instagram</div></div><div style="padding: 12.5% 0;"></div> <div style="display: flex; flex-direction: row; margin-bottom: 14px; align-items: center;"><div> <div style="background-color: #F4F4F4; border-radius: 50%; height: 12.5px; width: 12.5px; transform: translateX(0px) translateY(7px);"></div> <div style="background-color: #F4F4F4; height: 12.5px; transform: rotate(-45deg) translateX(3px) translateY(1px); width: 12.5px; flex-grow: 0; margin-right: 14px; margin-left: 2px;"></div> <div style="background-color: #F4F4F4; border-radius: 50%; height: 12.5px; width: 12.5px; transform: translateX(9px) translateY(-18px);"></div></div><div style="margin-left: 8px;"> <div style=" background-color: #F4F4F4; border-radius: 50%; flex-grow: 0; height: 20px; width: 20px;"></div> <div style=" width: 0; height: 0; border-top: 2px solid transparent; border-left: 6px solid #f4f4f4; border-bottom: 2px solid transparent; transform: translateX(16px) translateY(-4px) rotate(30deg)"></div></div><div style="margin-left: auto;"> <div style=" width: 0px; border-top: 8px solid #F4F4F4; border-right: 8px solid transparent; transform: translateY(16px);"></div> <div style=" background-color: #F4F4F4; flex-grow: 0; height: 12px; width: 16px; transform: translateY(-4px);"></div> <div style=" width: 0; height: 0; border-top: 8px solid #F4F4F4; border-left: 8px solid transparent; transform: translateY(-4px) translateX(8px);"></div></div></div> <div style="display: flex; flex-direction: column; flex-grow: 1; justify-content: center; margin-bottom: 24px;"> <div style=" background-color: #F4F4F4; border-radius: 4px; flex-grow: 0; height: 14px; margin-bottom: 6px; width: 224px;"></div> <div style=" background-color: #F4F4F4; border-radius: 4px; flex-grow: 0; height: 14px; width: 144px;"></div></div></a><p style=" color:#c9c8cd; font-family:Arial,sans-serif; font-size:14px; line-height:17px; margin-bottom:0; margin-top:8px; overflow:hidden; padding:8px 0 7px; text-align:center; text-overflow:ellipsis; white-space:nowrap;"><a href="https://www.instagram.com/p/Dc_Cp1_TxWM/?utm_source=ig_embed&amp;utm_campaign=loading" style=" color:#c9c8cd; font-family:Arial,sans-serif; font-size:14px; font-style:normal; font-weight:normal; line-height:17px; text-decoration:none;" target="_blank">A post shared by Studio RYST (@studio.ryst)</a></p></div></blockquote></div>
-  </div>
-</div></section>
-
-<section class="section"><div class="wrap">
-  <div class="cta-band">
-    <h2>Ready to create something great?</h2>
-    <p>Instant confirmation, flexible hours, and a space that adapts to your format.</p>
-    <div class="ctas">
-      <a class="btn btn-brass" href="/booking/"><span>Book a Session</span></a>
-      <a class="btn btn-wa" href="https://wa.me/917530011770?text=Hi!%20I%27d%20like%20to%20know%20more%20about%20Studio%20RYST" target="_blank" rel="noopener"><svg viewBox="0 0 32 32" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M16.004 3C9.377 3 4 8.373 4 15c0 2.31.652 4.47 1.78 6.307L4 29l7.86-1.746A11.94 11.94 0 0 0 16.004 27C22.63 27 28 21.627 28 15S22.63 3 16.004 3zm6.98 16.98c-.297.836-1.474 1.53-2.41 1.727-.64.135-1.474.243-4.286-.92-3.596-1.49-5.91-5.14-6.09-5.377-.176-.238-1.454-1.936-1.454-3.693 0-1.756.914-2.617 1.24-2.976.297-.325.65-.406.867-.406.217 0 .434.002.624.011.2.01.468-.076.732.56.297.72.998 2.486 1.084 2.666.087.18.144.39.03.628-.114.238-.172.386-.34.594-.17.207-.356.462-.508.62-.17.176-.348.368-.15.72.198.353.878 1.45 1.885 2.348 1.294 1.155 2.386 1.512 2.74 1.68.353.17.56.144.766-.086.207-.23.882-1.03 1.118-1.383.235-.353.47-.294.792-.176.325.117 2.06.972 2.414 1.148.353.176.588.264.674.412.087.148.087.856-.21 1.693z"/></svg><span>Chat on WhatsApp</span></a>
+  <article class="room">
+    <figure><picture><source type="image/webp" srcset="/assets/photos/zone-culinary.webp"><img src="/assets/photos/zone-culinary.jpg" alt="The kitchen studio at Studio RYST — open shelves, a working counter and cookware under warm light" width="1400" height="1050" loading="lazy"></picture></figure>
+    <div class="txt">
+      <h3 data-rv>The kitchen studio</h3>
+      <p data-rv style="--i:1">A real kitchen built to be filmed in, with styling-friendly counters and lighting set up for how food is framed and shot. Book from 4 hours.</p>
+      <ul data-rv style="--i:2">
+        <li>A full working kitchen, not a mock set</li>
+        <li>Styling-friendly counters and surfaces</li>
+        <li>Lighting set for food and product shots</li>
+        <li>Room for recipe videos, demos and photography</li>
+        <li>Bring your camera, or add a cinematographer</li>
+      </ul>
+      <a class="tlink" data-rv style="--i:3" href="/kitchen-studio-chennai/">About the kitchen studio →</a>
     </div>
-  </div>
-</div></section>
+  </article>
 
-<footer><div class="wrap">
-    <div class="foot-grid">
-      <div class="foot-brand">
-        <img src="/assets/logo-300.png" alt="Studio RYST" width="200" height="200">
-        <p>Chennai's first hybrid content production space combining podcast, kitchen, and photo shoot setups under one roof in T-Nagar.</p>
+  <article class="room">
+    <figure><picture><source type="image/webp" srcset="/assets/photos/zone-photography.webp"><img src="/assets/photos/zone-photography.jpg" alt="The photo studio at Studio RYST — green screen, continuous LED lights and softboxes" width="1400" height="1050" loading="lazy"></picture></figure>
+    <div class="txt">
+      <h3 data-rv>The photo studio</h3>
+      <p data-rv style="--i:1">Continuous LED lighting with a green screen available, for product shoots, editorials, headshots and e-commerce. Book from 2 hours.</p>
+      <ul data-rv style="--i:2">
+        <li>Continuous LED lighting</li>
+        <li>Green screen available</li>
+        <li>Product, editorial and e-commerce setups</li>
+        <li>Headshots and portrait sessions</li>
+        <li>Bring your camera, or add a cinematographer</li>
+      </ul>
+      <a class="tlink" data-rv style="--i:3" href="/studio/">About the photo studio →</a>
+    </div>
+  </article>
+</section>
+
+<section class="gallery" id="gallery" aria-labelledby="galH">
+  <div class="row up">
+    <figure class="ph ph1" data-rate="7"><a href="/assets/photos/gallery-01.jpg" target="_blank" rel="noopener"><img src="/assets/photos/gallery-01.jpg" alt="A live shoot at Studio RYST — the full lighting rig and crew" width="1400" height="1080" loading="lazy"></a></figure>
+    <figure class="ph ph2" data-rate="-5"><a href="/assets/photos/gallery-03.jpg" target="_blank" rel="noopener"><img src="/assets/photos/gallery-03.jpg" alt="A recording session in the podcast room" width="1400" height="1080" loading="lazy"></a></figure>
+  </div>
+  <div class="mid">
+    <h2 id="galH" data-rv>A closer look<br>at the space.</h2>
+    <p data-rv style="--i:1">Every picture here was taken in this studio, on a working day.</p>
+    <a class="tlink" data-rv style="--i:2" href="https://instagram.com/studio.ryst" target="_blank" rel="noopener">More on Instagram, @studio.ryst</a>
+  </div>
+  <div class="row down">
+    <figure class="ph ph3" data-rate="9"><a href="/assets/photos/gallery-05.jpg" target="_blank" rel="noopener"><img src="/assets/photos/gallery-05.jpg" alt="An interview set up and lit in the podcast room" width="1400" height="1080" loading="lazy"></a></figure>
+    <figure class="ph ph4" data-rate="-8"><a href="/assets/photos/gallery-06.jpg" target="_blank" rel="noopener"><img src="/assets/photos/gallery-06.jpg" alt="A product photography session in the photo studio" width="1400" height="1080" loading="lazy"></a></figure>
+    <figure class="ph ph5" data-rate="4"><a href="/assets/photos/gallery-04.jpg" target="_blank" rel="noopener"><img src="/assets/photos/gallery-04.jpg" alt="A cooking shoot in the kitchen studio" width="1400" height="1080" loading="lazy"></a></figure>
+    <figure class="ph ph6" data-rate="-11"><a href="/assets/photos/gallery-02.jpg" target="_blank" rel="noopener"><img src="/assets/photos/gallery-02.jpg" alt="Two guests recording a podcast conversation" width="1400" height="1080" loading="lazy"></a></figure>
+  </div>
+</section>
+
+<section class="chapter" id="rates" aria-labelledby="ratesH">
+  <div class="prices">
+    <div class="lead-col">
+      <h2 id="ratesH" data-rv>Hourly rates</h2>
+      <img data-rv style="--i:1" src="/assets/photos/gallery-06.jpg" alt="A product shoot in the Studio RYST photo studio" width="1400" height="1080" loading="lazy">
+    </div>
+    <div class="menu-cols" id="menuCols">
+      <div>
+        <div class="pgroup" data-zone="Podcast" data-rv>
+          <h3>Podcast room</h3>
+          <div class="prow" data-hours="2"><span>2 hours<small>Quick and focused</small></span><span class="pr">₹4,500</span></div>
+          <div class="prow" data-hours="4"><span>4 hours<small>Half-day block</small></span><span class="pr">8,000</span></div>
+          <div class="prow" data-hours="8"><span>8 hours<small>Full production day</small></span><span class="pr">15,000</span></div>
+        </div>
       </div>
-      <div class="foot-col"><h4>Explore</h4>
-        <a href="/">Home</a><a href="/studio/">Our Studio</a><a href="/packages/">Packages</a><a href="/booking/">Book Now</a><a href="/contact/">Contact</a>
-      </div>
-      <div class="foot-col"><h4>Policies</h4>
-        <a href="/terms-and-conditions/">Terms and Conditions</a><a href="/privacy-policy/">Privacy Policy</a><a href="/cancellation/">Refund and Cancellation</a>
-      </div>
-      <div class="foot-col"><h4>Get in touch</h4>
-        <a class="foot-ic" href="https://instagram.com/studio.ryst" target="_blank" rel="noopener"><span class="fi ig"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="6"/><circle cx="12" cy="12" r="4.2"/><circle cx="17.4" cy="6.6" r="1.15" fill="currentColor" stroke="none"/></svg></span> Instagram — @studio.ryst</a>
-        <a class="foot-ic" href="https://wa.me/917530011770" target="_blank" rel="noopener"><span class="fi wa"><svg viewBox="0 0 32 32" width="13" height="13" fill="currentColor"><path d="M16.004 3C9.377 3 4 8.373 4 15c0 2.31.652 4.47 1.78 6.307L4 29l7.86-1.746A11.94 11.94 0 0 0 16.004 27C22.63 27 28 21.627 28 15S22.63 3 16.004 3zm6.98 16.98c-.297.836-1.474 1.53-2.41 1.727-.64.135-1.474.243-4.286-.92-3.596-1.49-5.91-5.14-6.09-5.377-.176-.238-1.454-1.936-1.454-3.693 0-1.756.914-2.617 1.24-2.976.297-.325.65-.406.867-.406.217 0 .434.002.624.011.2.01.468-.076.732.56.297.72.998 2.486 1.084 2.666.087.18.144.39.03.628-.114.238-.172.386-.34.594-.17.207-.356.462-.508.62-.17.176-.348.368-.15.72.198.353.878 1.45 1.885 2.348 1.294 1.155 2.386 1.512 2.74 1.68.353.17.56.144.766-.086.207-.23.882-1.03 1.118-1.383.235-.353.47-.294.792-.176.325.117 2.06.972 2.414 1.148.353.176.588.264.674.412.087.148.087.856-.21 1.693z"/></svg></span> WhatsApp</a>
-        <a class="foot-ic" href="https://maps.app.goo.gl/PmPDiPyLWbVhLFef7" target="_blank" rel="noopener"><span class="fi gm"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 21s7-7.58 7-12a7 7 0 1 0-14 0c0 4.42 7 12 7 12z"/><circle cx="12" cy="9" r="2.4"/></svg></span> Get Directions</a>
-        <a class="foot-ic" href="mailto:info@dreamour.in"><span class="fi em"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M3 6l9 7 9-7"/></svg></span> info@dreamour.in</a>
-        <a class="foot-ic" href="tel:+917530011770"><span class="fi ph"><svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor"><path d="M6.6 10.8c1.4 2.8 3.8 5.2 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.5.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1C10.6 21 3 13.4 3 4c0-.6.4-1 1-1h3.4c.6 0 1 .4 1 1 0 1.2.2 2.4.6 3.5.1.4 0 .8-.2 1L6.6 10.8z"/></svg></span> +91 75300 11770</a>
+      <div>
+        <div class="pgroup" data-zone="Photography" data-rv style="--i:1">
+          <h3>Photo studio</h3>
+          <div class="prow" data-hours="2"><span>2 hours<small>Quick and focused</small></span><span class="pr">₹5,500</span></div>
+          <div class="prow" data-hours="4"><span>4 hours<small>Half-day block</small></span><span class="pr">10,000</span></div>
+          <div class="prow" data-hours="8"><span>8 hours<small>Full production day</small></span><span class="pr">18,000</span></div>
+        </div>
+        <div class="pgroup" data-zone="Culinary" data-rv style="--i:2">
+          <h3>Kitchen studio</h3>
+          <div class="prow" data-hours="4"><span>4 hours<small>Half-day block</small></span><span class="pr">₹12,000</span></div>
+          <div class="prow" data-hours="8"><span>8 hours<small>Full production day</small></span><span class="pr">22,000</span></div>
+        </div>
       </div>
     </div>
-    <div class="foot-bottom">
-      <p>RYST is a registered Trademark of Dreamour Multiventures. All rights reserved.</p>
-      <p>© 2026 Dreamour Multiventures.</p>
-    </div>
-  </div></footer>
-  <script>
-  (function(){
-    var btn=document.getElementById('menuBtn'), nav=document.getElementById('navLinks');
-    if(!btn||!nav) return;
-    btn.addEventListener('click', function(){ nav.classList.toggle('open'); });
-    nav.querySelectorAll('a').forEach(function(a){ a.addEventListener('click', function(){ nav.classList.remove('open'); }); });
-  })();
-  
-(function(){
-  var fill=document.getElementById('railFill');
-  function onScroll(){
-    var h=document.documentElement;
-    var scrolled=h.scrollTop||document.body.scrollTop;
-    var height=(h.scrollHeight-h.clientHeight)||1;
-    if(fill) fill.style.height=Math.min(100,(scrolled/height)*100)+'%';
-  }
-  document.addEventListener('scroll', onScroll, {passive:true}); onScroll();
-})();
+    <p class="pnote" data-rv style="--i:3">Before GST. Microphones, lights, the kitchen and electricity are included. Cameras, lenses and recorders aren't — bring your own, or add a cinematographer as a paid extra. <a href="/packages/">Every rate and add-on →</a></p>
+  </div>
+</section>
 
-  </script>
-<script async src="https://www.instagram.com/embed.js"></script>
-<script defer src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
-<script defer src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<section class="chapter open" id="open" aria-labelledby="openH">
+  <div class="lead-col">
+    <h2 id="openH" data-rv>Open this week</h2>
+    <p data-rv style="--i:1">Live from the studio diary. Pick a room and see which days still have time.</p>
+    <div class="zones" data-rv style="--i:2" role="group" aria-label="Room">
+      <button type="button" data-zone="Podcast" aria-pressed="true">Podcast</button>
+      <button type="button" data-zone="Photography" aria-pressed="false">Photo</button>
+      <button type="button" data-zone="Culinary" aria-pressed="false">Kitchen</button>
+    </div>
+  </div>
+  <div class="days" id="days" data-rv style="--i:1" aria-live="polite"><div class="day"><span class="d">Loading</span><span class="s">Checking the diary…</span></div></div>
+  <div class="cta" data-rv style="--i:3"><a class="btn btn-gold" href="/booking/">Book a time</a></div>
+</section>
+
+<section class="chapter faq" aria-labelledby="faqH">
+  <div class="row"><h2 id="faqH" data-rv>Good to know</h2></div>
+  <div class="row"><h3 data-rv>What's the minimum booking?</h3><p data-rv style="--i:1">Two hours for the podcast and photo studios, four for the kitchen. Four- and eight-hour blocks cost less per hour.</p></div>
+  <div class="row"><h3 data-rv>Is GST included in the rates?</h3><p data-rv style="--i:1">No — GST is added at 18% on the taxable value. Your quote shows the exact breakup for every line, and a tax invoice follows your payment.</p></div>
+  <div class="row"><h3 data-rv>How do I confirm a slot?</h3><p data-rv style="--i:1">Book online, see your total with GST, pay the full amount and the slot is yours at once. Prefer WhatsApp? Send the request and we'll reply with a payment link.</p></div>
+  <div class="row"><h3 data-rv>Can I reschedule?</h3><p data-rv style="--i:1">Once, free, with at least 48 hours' notice. Within 48 hours of the slot there's no refund or reschedule, and payments are otherwise non-refundable.</p></div>
+  <div class="row"><h3 data-rv>Do you provide cameras?</h3><p data-rv style="--i:1">Microphones, lights and the kitchen are included. Cameras, lenses and recorders aren't — bring your own, or add a cinematographer as a paid extra.</p></div>
+  <div class="row"><h3 data-rv>Where exactly are you?</h3><p data-rv style="--i:1">52, Ankur Plaza, Gopathy Narayana Road, T. Nagar, Chennai 600017 — easy to reach from anywhere in the city, with parking nearby. <a href="https://maps.app.goo.gl/PmPDiPyLWbVhLFef7" target="_blank" rel="noopener">Directions</a></p></div>
+</section>
+
+<section class="ask" aria-labelledby="askH">
+  <h2 id="askH">Ready to</h2>
+  <div class="choice-wrap">
+    <div class="choice">
+      <a class="btn btn-gold" href="/booking/">Book a session</a>
+      <span class="or">or</span>
+      <a class="btn btn-dim" href="https://wa.me/917530011770?text=Hi!%20I%27d%20like%20to%20know%20more%20about%20Studio%20RYST" target="_blank" rel="noopener">Ask on WhatsApp</a>
+    </div>
+    <p class="after">Pay online and your slot is confirmed instantly. On WhatsApp, we reply with a payment link.</p>
+  </div>
+  <h2 aria-hidden="true">record?</h2>
+</section>
+
+<footer class="foot">
+  <img src="/assets/photos/gallery-01.jpg" alt="" width="1400" height="1080" loading="eager" fetchpriority="low">
+  <div class="top">
+    <ul>
+      <li class="mark"><img src="/assets/logo-300.png" alt="Studio RYST" width="48" height="48"></li>
+      <li><a href="/studio/">The studio</a></li>
+      <li><a href="/packages/">Rates</a></li>
+      <li><a href="/booking/">Book a session</a></li>
+      <li><a href="/contact/">Contact</a></li>
+      <li><a href="/terms-and-conditions/">Terms</a> · <a href="/privacy-policy/">Privacy</a> · <a href="/cancellation/">Refunds</a></li>
+    </ul>
+    <ul style="text-align:right">
+      <li>52, Ankur Plaza, Gopathy Narayana Road</li>
+      <li>T. Nagar, Chennai 600017</li>
+      <li><a href="tel:+917530011770">+91 75300 11770</a></li>
+      <li><a href="mailto:info@dreamour.in">info@dreamour.in</a></li>
+      <li><a href="https://instagram.com/studio.ryst" target="_blank" rel="noopener">@studio.ryst</a> · <a href="https://maps.app.goo.gl/PmPDiPyLWbVhLFef7" target="_blank" rel="noopener">Directions</a></li>
+    </ul>
+  </div>
+  <div class="big" id="footMark" aria-hidden="true">studio ryst</div>
+  <p class="legal">RYST is a registered trademark of Dreamour Multiventures · © 2026</p>
+</footer>
 
 <script>
-// GSAP now loads via `defer` (non-blocking) instead of a plain blocking
-// <script src>, so this can no longer assume gsap is already defined the
-// instant this inline block runs — defer'd scripts execute in order, but
-// only right before DOMContentLoaded, and a plain inline script (this one)
-// would otherwise run immediately at parse time, ahead of them. Wrapping in
-// DOMContentLoaded guarantees both GSAP files have already executed by the
-// time this runs, so the gsap-dependent code below behaves exactly as
-// before — just without the two library downloads blocking the parser.
-document.addEventListener('DOMContentLoaded', function(){
+(function(){
   var PROXY_URL = 'https://ryst-quss.onrender.com/studio';
+  var $ = function(s){ return document.querySelector(s); };
   var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  var esc = function(s){ var d=document.createElement('div'); d.textContent=String(s==null?'':s); return d.innerHTML; };
 
-  function countUp(el, endVal, decimals){
-    if(!el) return;
-    if(reduce || typeof gsap === 'undefined'){ el.textContent = decimals ? endVal.toFixed(decimals) : Math.round(endVal); return; }
-    var obj = {val:0};
-    gsap.to(obj, {val:endVal, duration:1.2, ease:'power1.out',
-      onUpdate:function(){ el.textContent = decimals ? obj.val.toFixed(decimals) : Math.round(obj.val); }});
+  // Menu (phone)
+  var menu = $('#menu'), mb = $('#menuBtn');
+  function openMenu(o){ menu.hidden = !o; menu.classList.toggle('open', o); mb.setAttribute('aria-expanded', String(o)); document.body.style.overflow = o ? 'hidden' : ''; }
+  mb.addEventListener('click', function(){ openMenu(true); });
+  $('#menuClose').addEventListener('click', function(){ openMenu(false); });
+  menu.querySelectorAll('a').forEach(function(a){ a.addEventListener('click', function(){ openMenu(false); }); });
+  document.addEventListener('keydown', function(e){ if(e.key === 'Escape' && !menu.hidden) openMenu(false); });
+
+  // Hero video: set HERO_VIDEO to a clip in /assets/video/ (short, muted, ~10–15 s,
+  // under ~4 MB) and it plays behind the name. Until then the photo stays.
+  var HERO_VIDEO = '';
+  var v = $('#heroVideo');
+  if(HERO_VIDEO && v && !reduce && !(navigator.connection && navigator.connection.saveData)){
+    v.poster = '/assets/photos/hero.jpg'; v.src = HERO_VIDEO;
+    v.addEventListener('playing', function(){ v.hidden = false; $('#heroPhoto').style.visibility = 'hidden'; }, { once:true });
+    var pp = v.play(); if(pp && pp.catch) pp.catch(function(){});
   }
 
-  function renderTestimonials(reviews){
-    if(!reviews || !reviews.length) return;
-    var track = document.getElementById('testimonialTrack'), dots = document.getElementById('tDots');
-    if(!track) return;
-    track.innerHTML = reviews.map(function(r){
-      var full = Math.round(r.rating);
-      var stars = '';
-      for(var i=0;i<5;i++){ stars += '<span'+(i<full?'':' class="dim"')+'><svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor"><path d="M12 2.5l2.9 6.6 7.1.7-5.4 4.7 1.6 7-6.2-3.8-6.2 3.8 1.6-7-5.4-4.7 7.1-.7z"/></svg></span>'; }
-      var avatar = r.photo
-        ? '<img class="t-avatar" src="'+esc(r.photo)+'" alt="" width="36" height="36" loading="lazy" referrerpolicy="no-referrer" onerror="this.outerHTML=\'<span class=&quot;t-avatar-fallback&quot;>'+esc((r.author||'?').charAt(0))+'</span>\'">'
-        : '<span class="t-avatar-fallback">'+esc((r.author||'?').charAt(0))+'</span>';
-      return '<div class="testimonial-card">'
-        + '<span class="rb-stars">'+stars+'</span>'
-        + '<p class="t-text">'+esc(r.text)+'</p>'
-        + '<div class="t-meta">'+avatar+'<span><span class="t-name">'+esc(r.author)+'</span><span class="t-time">'+esc(r.relativeTime)+' · Google</span></span></div>'
-        + '</div>';
-    }).join('');
-    dots.innerHTML = reviews.map(function(_,i){ return '<span class="t-dot'+(i===0?' on':'')+'"></span>'; }).join('');
-    var dotEls = dots.querySelectorAll('.t-dot');
-    function cardWidth(){ var c = track.querySelector('.testimonial-card'); return c ? c.offsetWidth + 20 : 300; }
-    var prev = document.getElementById('tPrev'), next = document.getElementById('tNext');
-    if(prev) prev.addEventListener('click', function(){ track.scrollBy({left:-cardWidth(), behavior:'smooth'}); });
-    if(next) next.addEventListener('click', function(){ track.scrollBy({left:cardWidth(), behavior:'smooth'}); });
-    track.addEventListener('scroll', function(){
-      var i = Math.round(track.scrollLeft / cardWidth());
-      dotEls.forEach(function(d,idx){ d.classList.toggle('on', idx===i); });
-    }, {passive:true});
-    document.getElementById('testimonialsSection').style.display = 'block';
+  // Section entrances, once, in reading order
+  if('IntersectionObserver' in window){
+    var io = new IntersectionObserver(function(es){ es.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } }); }, { rootMargin:'0px' });
+    document.querySelectorAll('[data-rv], .room figure').forEach(function(el){ io.observe(el); });
+  } else { document.querySelectorAll('[data-rv], .room figure').forEach(function(el){ el.classList.add('in'); }); }
+
+  // Scroll-linked: the name scales down as the first screen leaves (the one
+  // loud move), the gallery photographs drift at their own rates. Locked to
+  // the scrollbar, no smoothing; static under reduced motion.
+  var wm = $('#wordmark'), hero = $('.hero'), gal = $('#gallery'), fm = $('#footMark'), foot = $('.foot');
+  var phs = Array.prototype.slice.call(document.querySelectorAll('.gallery .ph'));
+  var ticking = false;
+  function frame(){
+    ticking = false;
+    var vh = window.innerHeight;
+    var hp = Math.min(1, Math.max(0, window.scrollY / Math.max(1, hero.offsetHeight)));
+    wm.style.transform = 'scale(' + (1 - hp * 0.06) + ')';
+    if(window.innerWidth > 860){
+      var r = gal.getBoundingClientRect();
+      var gp = Math.min(1, Math.max(0, (vh - r.top) / (vh + r.height)));   // 0 as the band enters, 1 as it leaves
+      phs.forEach(function(p){ var rate = parseFloat(p.dataset.rate) || 0; p.style.transform = 'translateY(' + ((gp - 0.5) * rate * 2) + '%)'; });
+    } else { phs.forEach(function(p){ p.style.transform = ''; }); }
+    var fr = foot.getBoundingClientRect();
+    var fp = Math.min(1, Math.max(0, (vh - fr.top) / vh));
+    fm.style.transform = 'scale(' + (0.94 + fp * 0.06) + ')';
+  }
+  if(!reduce){
+    document.addEventListener('scroll', function(){ if(!ticking){ ticking = true; requestAnimationFrame(frame); } }, { passive:true });
+    window.addEventListener('resize', frame);
+    frame();
   }
 
-  fetch(PROXY_URL+'/public-reviews').then(function(r){ return r.ok ? r.json() : null; }).then(function(d){
+  // Live Google rating (also added to the LocalBusiness schema for search)
+  fetch(PROXY_URL + '/public-reviews').then(function(r){ return r.ok ? r.json() : null; }).then(function(d){
     if(!d || !d.rating) return;
-    var full = Math.round(d.rating);
-    var stars = '';
-    for(var i=0;i<5;i++){ stars += '<span'+(i<full?'':' class="dim"')+'><svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor"><path d="M12 2.5l2.9 6.6 7.1.7-5.4 4.7 1.6 7-6.2-3.8-6.2 3.8 1.6-7-5.4-4.7 7.1-.7z"/></svg></span>'; }
-    document.getElementById('rbStars').innerHTML = stars;
-    document.getElementById('rbRating').textContent = d.rating.toFixed(1);
-    document.getElementById('rbCount').textContent = ' · '+(d.reviewCount||0)+' Google reviews';
-    if(d.mapsUrl) document.getElementById('reviewsBadge').href = d.mapsUrl;
-    document.getElementById('reviewsBadge').style.display = 'flex';
-
-
-    renderTestimonials(d.reviews);
-
-    // Add live AggregateRating to the LocalBusiness schema so Google can
-    // show a star rating in search results — Google's crawler does render
-    // JS-injected structured data, so this stays accurate with no hardcoded/
-    // stale numbers to maintain by hand. Only added once real data is in
-    // (guarded by the `!d || !d.rating` check above), never a placeholder.
-    if(d.reviewCount){
-      try{
-        var schemaEl = document.getElementById('bizSchema');
-        var schema = JSON.parse(schemaEl.textContent);
-        schema.aggregateRating = {"@type":"AggregateRating","ratingValue":d.rating,"reviewCount":d.reviewCount};
-        schemaEl.textContent = JSON.stringify(schema);
-      }catch(e){}
-    }
+    var full = Math.round(d.rating), s = '';
+    for(var i = 0; i < 5; i++) s += i < full ? '★' : '☆';
+    $('#rbStars').textContent = s;
+    $('#rbRating').textContent = d.rating.toFixed(1);
+    $('#rbCount').textContent = '· ' + (d.reviewCount || 0) + ' Google reviews';
+    if(d.mapsUrl) $('#reviewsBadge').href = d.mapsUrl;
+    $('#reviewsBadge').hidden = false;
+    if(d.reviewCount){ try{ var el = $('#bizSchema'), sc = JSON.parse(el.textContent); sc.aggregateRating = { "@type":"AggregateRating", "ratingValue": d.rating, "reviewCount": d.reviewCount }; el.textContent = JSON.stringify(sc); }catch(e){} }
   }).catch(function(){});
 
-});
-</script>
+  // Live tariff (the same rate card the booking and quotes use)
+  var money = function(n){ return Math.round(Number(n) || 0).toLocaleString('en-IN'); };
+  fetch(PROXY_URL + '/public-packages').then(function(r){ return r.ok ? r.json() : null; }).then(function(d){
+    if(!d || !Array.isArray(d.zones)) return;
+    d.zones.forEach(function(z){
+      var g = document.querySelector('.pgroup[data-zone="' + z.zone + '"]'); if(!g) return;
+      (z.tiers || []).forEach(function(t, i){ var row = g.querySelector('.prow[data-hours="' + t.hours + '"] .pr'); if(row) row.textContent = (i === 0 ? '₹' : '') + money(t.price); });
+    });
+  }).catch(function(){});
 
-<script>
-// Hero video: set HERO_VIDEO to a clip in /assets/video/ (short, muted, ~10–15 s,
-// under ~4 MB) and it plays behind the headline. Until then — and for visitors
-// who prefer reduced motion or have data saver on — the photo stays.
-(function(){
-  var HERO_VIDEO = '';
-  var v = document.getElementById('heroVideo');
-  if(!HERO_VIDEO || !v) return;
-  if(window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-  if(navigator.connection && navigator.connection.saveData) return;
-  v.poster = '/assets/photos/hero.jpg';
-  v.src = HERO_VIDEO;
-  v.addEventListener('playing', function(){ v.hidden = false; var ph = document.getElementById('heroPhoto'); if(ph) ph.style.visibility = 'hidden'; }, { once: true });
-  var p = v.play(); if(p && p.catch) p.catch(function(){});
-})();
-</script>
-
-<script>
-(function(){
-  var nav = document.querySelector('.nav.nav-overlay');
-  if(!nav) return;
-  var onScroll = function(){ nav.classList.toggle('scrolled', window.scrollY > 60); };
-  document.addEventListener('scroll', onScroll, {passive:true});
-  onScroll();
-})();
-</script>
-
-<script>
-(function(){
-  var cue = document.getElementById('scrollCue');
-  if(!cue) return;
-  cue.addEventListener('click', function(){
-    var next = document.querySelector('#heroSection + .section');
-    if(next) next.scrollIntoView({behavior:'smooth'});
-  });
-  document.addEventListener('scroll', function(){
-    cue.style.opacity = window.scrollY > 80 ? '0' : '1';
-  }, {passive:true});
-})();
-</script>
-
-<script>
-(function(){
-  var items = Array.prototype.slice.call(document.querySelectorAll('.gallery-item'));
-  if(!items.length) return;
-  var lb = document.getElementById('lightbox'), img = document.getElementById('lbImg'), idx = 0;
-  function show(i){
-    idx = i;
-    var full = items[i].dataset.full, thumb = items[i].querySelector('img');
-    img.src = full; img.alt = thumb ? thumb.alt : '';
+  // The live thing: what's open this week, per room, from the studio diary.
+  var ZONE = 'Podcast', BUSY = null;
+  var DOW = ['sun','mon','tue','wed','thu','fri','sat'];
+  function fmt12(hhmm){ var p = hhmm.split(':').map(Number); var ap = p[0] >= 12 ? 'pm' : 'am'; return (p[0] % 12 || 12) + (p[1] ? ':' + String(p[1]).padStart(2,'0') : '') + ' ' + ap; }
+  function renderDays(){
+    var box = $('#days'); if(!box) return;
+    if(BUSY === null){ box.innerHTML = '<div class="day"><span class="d">Diary</span><span class="s">Couldn\'t load live availability — the booking page shows it as you pick a date.</span></div>'; return; }
+    var out = '', now = new Date();
+    for(var i = 0; i < 7; i++){
+      var d = new Date(now.getFullYear(), now.getMonth(), now.getDate() + i);
+      var iso = d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+      var dow = DOW[d.getDay()];
+      var taken = BUSY.filter(function(s){
+        if(s.zone !== ZONE.toLowerCase() && s.zone !== 'multi-zone') return false;
+        return s.date ? s.date === iso : (Array.isArray(s.days) && s.days.some(function(x){ return String(x).toLowerCase().slice(0,3) === dow; }));
+      }).sort(function(a,b){ return a.start < b.start ? -1 : 1; });
+      var label = i === 0 ? 'Today' : i === 1 ? 'Tomorrow' : d.toLocaleDateString('en-IN', { weekday:'short', day:'numeric', month:'short' });
+      var status = taken.length ? 'Booked ' + taken.map(function(s){ return fmt12(s.start) + '–' + fmt12(s.end); }).join(', ') + ' · the rest is open' : 'Nothing booked yet — the whole day is open';
+      out += '<div class="day"><span class="d">' + label + '</span><span class="s' + (taken.length ? '' : ' free') + '">' + status + '</span></div>';
+    }
+    box.innerHTML = out;
   }
-  function open(i){ show(i); lb.classList.add('open'); lb.setAttribute('aria-hidden','false'); document.body.style.overflow='hidden'; }
-  function close(){ lb.classList.remove('open'); lb.setAttribute('aria-hidden','true'); document.body.style.overflow=''; }
-  function step(d){ show((idx + d + items.length) % items.length); }
-  items.forEach(function(el, i){ el.addEventListener('click', function(){ open(i); }); });
-  document.getElementById('lbClose').addEventListener('click', close);
-  document.getElementById('lbPrev').addEventListener('click', function(){ step(-1); });
-  document.getElementById('lbNext').addEventListener('click', function(){ step(1); });
-  lb.addEventListener('click', function(e){ if(e.target === lb) close(); });
-  document.addEventListener('keydown', function(e){
-    if(!lb.classList.contains('open')) return;
-    if(e.key === 'Escape') close();
-    if(e.key === 'ArrowLeft') step(-1);
-    if(e.key === 'ArrowRight') step(1);
+  document.querySelectorAll('.zones button').forEach(function(b){
+    b.addEventListener('click', function(){
+      ZONE = b.dataset.zone;
+      document.querySelectorAll('.zones button').forEach(function(x){ x.setAttribute('aria-pressed', String(x === b)); });
+      renderDays();
+    });
   });
+  fetch(PROXY_URL + '/public-availability').then(function(r){ return r.ok ? r.json() : null; }).then(function(d){
+    BUSY = d && Array.isArray(d.busy) ? d.busy : null; renderDays();
+  }).catch(function(){ BUSY = null; renderDays(); });
 })();
 </script>
-
-<script>
-// Same DOMContentLoaded-wrap reasoning as the block above — GSAP now loads
-// via `defer`, so this waits for it instead of assuming it's already there.
-document.addEventListener('DOMContentLoaded', function(){
-  if (typeof gsap === 'undefined') return;
-  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-  gsap.registerPlugin(ScrollTrigger);
-
-  gsap.timeline({defaults:{ease:'expo.out', duration:.9}})
-    .from('.hero-inner h1', {y:24, opacity:0})
-    .from('.hero-inner p.lead', {y:16, opacity:0}, '-=.45')
-    .from('.hero-inner .ctas', {y:16, opacity:0}, '-=.45')
-    .from('.hero-inner .reviews-badge', {y:16, opacity:0}, '-=.4');
-
-  // Heading, then its text, then its picture — staggered, once per section.
-  document.querySelectorAll('.section-head').forEach(function(el){
-    gsap.from(el.children, {y:20, opacity:0, duration:.8, ease:'expo.out', stagger:.07,
-      scrollTrigger:{trigger:el, start:'top 85%', once:true}});
-  });
-  gsap.from('.why-section .prow', {y:16, opacity:0, duration:.7, ease:'expo.out', stagger:.07,
-    scrollTrigger:{trigger:'.why-section .plist', start:'top 85%', once:true}});
-  gsap.from('.why-photo img', {scale:1.08, duration:1.4, ease:'expo.out',
-    scrollTrigger:{trigger:'.why-photo', start:'top 85%', once:true}});
-  gsap.from('.cta-band > *', {y:20, opacity:0, duration:.8, ease:'expo.out', stagger:.07,
-    scrollTrigger:{trigger:'.cta-band', start:'top 85%', once:true}});
-  gsap.from('.zones .zone-card', {y:24, opacity:0, duration:.55, ease:'expo.out', stagger:.12,
-    scrollTrigger:{trigger:'.zones', start:'top 82%', once:true}});
-  gsap.from('.gallery-item', {y:16, opacity:0, duration:.5, ease:'expo.out', stagger:.05,
-    scrollTrigger:{trigger:'.gallery-grid', start:'top 85%', once:true}});
-  gsap.from('.testimonials-section .testimonial-track', {y:16, opacity:0, duration:.6, ease:'expo.out',
-    scrollTrigger:{trigger:'.testimonials-section', start:'top 82%', once:true}});
-  gsap.from('.insta-frame', {y:16, opacity:0, duration:.5, ease:'expo.out', stagger:.1,
-    scrollTrigger:{trigger:'.insta-embed', start:'top 85%', once:true}});
-});
-</script>
-
-<script src="/assets/site.js" defer></script>
 </body>
 </html>
