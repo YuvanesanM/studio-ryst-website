@@ -244,6 +244,14 @@
     /* force coloured backgrounds (green header bars, total chip) to print */
     #quoteDoc, #quoteDoc *{ -webkit-print-color-adjust:exact !important; print-color-adjust:exact !important }
   }
+
+  /* per-line GST breakup */
+  table.q-table{font-size:14px}
+  table.q-table th{font-size:13px;padding:9px 10px}
+  table.q-table td{padding:8px 10px}
+  table.q-table td .desc-cell{display:block}
+  table.q-table td .sac{display:block;margin-top:2px}
+  .gstp{display:block;font-size:11.5px;color:#8a8a8a;font-weight:400;margin-top:1px}
 </style>
 <link rel="stylesheet" href="assets/shell.css">
 </head>
@@ -386,13 +394,13 @@
         </div>
 
         <table class="q-table">
-          <thead><tr><th>Description</th><th class="amt">Price</th><th class="num">Qty</th><th class="amt">Total</th></tr></thead>
+          <thead><tr><th>Description</th><th class="amt">Rate</th><th class="num">Qty</th><th class="amt">Taxable value</th><th class="amt">GST</th><th class="amt">Amount</th></tr></thead>
           <tbody id="pRows"></tbody>
         </table>
 
         <div class="q-sums">
-          <div class="sline"><div class="sl">Subtotal</div><div class="sv" id="pSub"></div></div>
-          <div class="sline"><div class="sl" id="pGstLbl">GST</div><div class="sv" id="pGst"></div></div>
+          <div class="sline"><div class="sl">Taxable value</div><div class="sv" id="pSub"></div></div>
+          <div id="pGstLines"></div>
           <div class="sline disc-row" id="pDiscRow" style="display:none"><div class="sl">Discount</div><div class="sv" id="pDisc"></div></div>
           <div class="sline grand"><div class="sl">Total Inc. of GST</div><div class="sv" id="pTot"></div></div>
         </div>
@@ -659,6 +667,27 @@ function fmtDate(iso){ if(!iso) return ""; const [y,m,d]=iso.split("-"); return 
 // "— choose service —" never reaches the totals or the saved quote.
 function lineTotal(it){ if(!String(it.desc||'').trim()) return 0; return (parseFloat(it.price)||0)*(parseFloat(it.qty)||0); }
 function lineGst(it){ return lineTotal(it)*(parseFloat(it.gst)||0)/100; }
+
+// GST breakup for the totals: CGST + SGST (half each) when the client is in
+// Tamil Nadu (no GSTIN, or a 33… GSTIN), IGST when their GSTIN is from another
+// state. Grouped by rate; each rate's GST is rounded once and the halves are
+// split so they always add back up to it.
+function gstSplit(items, cgstin){
+  const inter=/^\d{2}/.test(cgstin||'') && String(cgstin).slice(0,2)!=='33';
+  const by={}; items.forEach(it=>{ const g=lineGst(it); if(g>0){ const r=parseFloat(it.gst)||0; by[r]=(by[r]||0)+g; } });
+  const out=[];
+  Object.keys(by).map(Number).sort((a,b)=>a-b).forEach(r=>{
+    const g=Math.round(by[r]);
+    if(inter) out.push(['IGST @ '+r+'%', g]);
+    else { const c=Math.round(g/2); out.push(['CGST @ '+(r/2)+'%', c], ['SGST @ '+(r/2)+'%', g-c]); }
+  });
+  return out.length ? out : [['GST', 0]];
+}
+function gstLinesHTML(items, cgstin, kind){
+  return gstSplit(items, cgstin).map(([l,v])=> kind==='sline'
+    ? `<div class="sline"><div class="sl">${l}</div><div class="sv">${money(v)}</div></div>`
+    : `<div class="trow"><span>${l}</span><span>${money(v)}</span></div>`).join('');
+}
 function reqText(){ const z=$("#zone").value, h=parseInt($("#hours").value,10)||1; return `${z} Zone — ${h} ${h===1?"Hour":"Hours"}`; }
 function findCard(desc){ const d=(desc||"").trim().toLowerCase(); return settings.rateCard.find(c=>(c.desc||"").trim().toLowerCase()===d); }
 
@@ -1157,8 +1186,10 @@ function render(){
       <td><div class="desc-cell"><span>${esc(it.desc)}</span>${it.sac?`<span class="sac">SAC: ${esc(it.sac)}</span>`:""}</div></td>
       <td class="amt">${it.price!==""?money(it.price):""}</td>
       <td class="num">${it.qty!==""?esc(it.qty):""}</td>
-      <td class="amt">${money(lineTotal(it))}</td></tr>`).join("")
-    : `<tr><td colspan="4" style="color:#aaa">Add line items…</td></tr>`;
+      <td class="amt">${money(lineTotal(it))}</td>
+      <td class="amt">${money(lineGst(it))}<span class="gstp">@ ${parseFloat(it.gst)||0}%</span></td>
+      <td class="amt">${money(lineTotal(it)+lineGst(it))}</td></tr>`).join("")
+    : `<tr><td colspan="6" style="color:#aaa">Add line items…</td></tr>`;
 
   const sub=items.reduce((s,it)=>s+lineTotal(it),0);
   const gst=items.reduce((s,it)=>s+lineGst(it),0);
@@ -1174,9 +1205,8 @@ function render(){
   const rates=[...new Set(active.filter(it=>lineTotal(it)>0).map(it=>parseFloat(it.gst)||0))];
   const gstLbl = rates.length===1 ? `GST (${rates[0]}%)` : "GST";
 
-  $("#pGstLbl").textContent=gstLbl;
   $("#pSub").textContent=money(sub);
-  $("#pGst").textContent=money(Math.round(gst));
+  $("#pGstLines").innerHTML=gstLinesHTML(active, $("#cgst").value.trim(), "sline");
   const pDiscRow=$("#pDiscRow");
   if(discount>0){ pDiscRow.style.display=""; $("#pDisc").textContent="− "+money(Math.round(discount)); }
   else { pDiscRow.style.display="none"; }
