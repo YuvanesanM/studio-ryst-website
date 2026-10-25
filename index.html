@@ -263,7 +263,10 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
 
 /* ---- footer: the name across the last photograph ---- */
 .foot{position:relative;height:100svh;overflow:hidden;color:var(--ink)}
-.foot > img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 45%;filter:brightness(.62)}
+.foot > img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 45%;filter:brightness(.48) contrast(1.04)}
+/* a neutral scrim under the two bands that carry text; the middle stays the photograph */
+.foot::before{content:'';position:absolute;inset:0;z-index:1;pointer-events:none;background:linear-gradient(180deg,rgba(10,8,7,.9) 0%,rgba(10,8,7,.55) 22%,rgba(10,8,7,.08) 42%,rgba(10,8,7,.08) 58%,rgba(10,8,7,.62) 78%,rgba(10,8,7,.94) 100%)}
+.foot .top,.foot .big,.foot .legal{z-index:2}
 .foot .top{position:absolute;top:32px;left:var(--m);right:var(--m);display:flex;justify-content:space-between;gap:24px;font-size:18px;line-height:1.7}
 .foot .top ul{max-width:25%}
 .foot .top a{text-decoration:none}
@@ -274,6 +277,7 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
 .foot .legal{position:absolute;left:var(--m);right:var(--m);bottom:22px;font-size:var(--small);color:var(--ink-2)}
 @media (max-width:860px){
   .foot{height:88svh}
+  .foot::before{background:linear-gradient(180deg,rgba(10,8,7,.94) 0%,rgba(10,8,7,.8) 45%,rgba(10,8,7,.15) 62%,rgba(10,8,7,.7) 82%,rgba(10,8,7,.96) 100%)}
   .foot .top{flex-direction:column;gap:18px}
   .foot .top ul{max-width:none}
   .foot .big{bottom:84px;font-size:15vw}
