@@ -109,15 +109,15 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
 .reviews{display:inline-flex;align-items:center;gap:10px;margin-top:22px;font-size:18px;color:var(--ink-2);text-decoration:none}
 .reviews .stars{color:var(--accent);letter-spacing:.06em}
 .reviews b{font-weight:500;color:var(--ink)}
-.wordmark{position:absolute;z-index:2;left:calc(47% - 10vw);right:var(--m);bottom:40px;font-size:clamp(96px,14vw,215px);font-weight:300;line-height:.9;letter-spacing:-.04em;white-space:nowrap;text-align:right;color:var(--ink);transform-origin:100% 100%;will-change:transform}
-.wordmark .line{display:block;overflow:hidden}
+.wordmark{position:absolute;z-index:2;left:calc(47% - 10vw);right:var(--m);bottom:40px;font-size:clamp(80px,11.2vw,172px);font-weight:300;line-height:1.08;letter-spacing:-.04em;white-space:nowrap;text-align:right;color:var(--ink);transform-origin:100% 100%;will-change:transform}
+.wordmark .line{display:block;overflow:hidden;padding-top:.06em}
 .wordmark .line span{display:inline-block}
 @media (max-width:860px){
   .hero{display:flex;flex-direction:column;min-height:0;padding-bottom:40px}
   .hero-pic{position:relative;top:0;height:58svh;margin:var(--m) var(--m) 0}
   .hero-right{display:block;order:3;padding:10px var(--m) 0;text-align:left}
   .hero-lead{max-width:none;font-size:18px}
-  .wordmark{position:relative;order:2;left:auto;right:auto;bottom:auto;margin:-1vw var(--m) 0;font-size:min(19vw,120px);line-height:1;text-align:left}
+  .wordmark{position:relative;order:2;left:auto;right:auto;bottom:auto;margin:-1vw var(--m) 0;font-size:min(16vw,100px);line-height:1.08;text-align:left}
   .nav{gap:16px}
   .nav .nav-lnk{display:none}
   .nav .menu-btn{display:inline-flex;align-items:center;min-height:44px;padding:0 10px;font-size:17px;color:var(--ink)}
@@ -273,7 +273,7 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
 .foot .top a:hover{text-decoration:underline}
 .foot .top .mark{display:flex;align-items:center;gap:12px;margin-bottom:14px}
 .foot .top .mark img{width:48px;height:48px;background:#fff;object-fit:contain}
-.foot .big{position:absolute;left:var(--m);right:var(--m);bottom:56px;font-size:16.5vw;font-weight:300;line-height:.85;letter-spacing:-.045em;white-space:nowrap;text-align:center;transform-origin:50% 100%}
+.foot .big{position:absolute;left:var(--m);right:var(--m);bottom:56px;font-size:15.5vw;font-weight:300;line-height:.85;letter-spacing:-.045em;white-space:nowrap;text-align:center;transform-origin:50% 100%}
 .foot .legal{position:absolute;left:var(--m);right:var(--m);bottom:22px;font-size:var(--small);color:var(--ink-2)}
 @media (max-width:860px){
   .foot{height:88svh}
@@ -328,7 +328,7 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
     <p class="hero-lead">A podcast room, a filmable kitchen and a photo studio under one roof in T. Nagar, Chennai. Booked by the hour.</p>
     <a class="reviews" id="reviewsBadge" href="https://maps.app.goo.gl/7YeM8gav8mYPg42XA" target="_blank" rel="noopener" data-load style="--d:520ms" hidden><span class="stars" id="rbStars"></span><b id="rbRating"></b><span id="rbCount"></span></a>
   </div>
-  <h1 class="wordmark" id="wordmark"><span class="line"><span style="--i:0">studio ryst</span></span></h1>
+  <h1 class="wordmark" id="wordmark"><span class="line"><span style="--i:0">Studio RYST</span></span></h1>
 </section>
 
 <section class="chapter rooms" aria-labelledby="roomsH">
@@ -504,7 +504,7 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
       <li><a href="https://instagram.com/studio.ryst" target="_blank" rel="noopener">@studio.ryst</a> · <a href="https://maps.app.goo.gl/PmPDiPyLWbVhLFef7" target="_blank" rel="noopener">Directions</a></li>
     </ul>
   </div>
-  <div class="big" id="footMark" aria-hidden="true">studio ryst</div>
+  <div class="big" id="footMark" aria-hidden="true">Studio RYST</div>
   <p class="legal">RYST is a registered trademark of Dreamour Multiventures · © 2026</p>
 </footer>
 
