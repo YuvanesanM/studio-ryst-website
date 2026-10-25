@@ -105,7 +105,8 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
 /* ---- hero: inset photograph, the name crossing it along the bottom ---- */
 .hero{position:relative;display:grid;grid-template-columns:47% 53%;min-height:100svh}
 .hero-pic{position:sticky;top:var(--m);height:calc(100svh - 2*var(--m));margin:var(--m) 0 var(--m) var(--m);overflow:hidden;background:#1a1613}
-.hero-pic img,.hero-pic video{width:100%;height:100%;object-fit:cover;object-position:62% 40%}
+.hero-pic img{width:100%;height:100%;object-fit:cover;object-position:62% 40%}
+.hero-pic video{width:100%;height:100%;object-fit:cover;object-position:50% 50%}
 .hero-pic video{position:absolute;inset:0}
 .hero-right{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 var(--m) 22svh;text-align:center}
 .hero-lead{max-width:26ch;font-size:var(--lead);line-height:1.35;color:var(--ink)}
@@ -123,7 +124,7 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
   .wordmark{position:relative;order:2;left:auto;right:auto;bottom:auto;margin:-1vw var(--m) 0;font-size:min(16vw,100px);line-height:1.08;text-align:left}
   .nav{gap:16px}
   .nav .nav-lnk{display:none}
-  .nav .menu-btn{display:inline-flex;align-items:center;min-height:44px;padding:0 10px;font-size:17px;color:var(--ink)}
+  .nav .menu-btn{display:inline-flex;align-items:center;min-height:44px;padding:0 14px;font-size:17px;color:var(--ink);background:rgba(14,12,11,.72)}
 }
 
 /* ---- chapters ---- */
@@ -333,7 +334,7 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
   <figure class="hero-pic">
     <picture><source type="image/webp" srcset="/assets/photos/hero.webp">
     <img id="heroPhoto" src="/assets/photos/hero.jpg" alt="A podcast interview being filmed at Studio RYST, T. Nagar — softboxes lit, the set glowing in a dark room" width="2400" height="1350" fetchpriority="high"></picture>
-    <video id="heroVideo" muted loop playsinline preload="none" poster="/assets/photos/hero.jpg" aria-hidden="true" hidden></video>
+    <video id="heroVideo" muted loop playsinline preload="none" poster="/assets/photos/hero.jpg" aria-hidden="true" hidden><source src="/assets/video/hero.webm" type="video/webm"><source src="/assets/video/hero.mp4" type="video/mp4"></video>
   </figure>
   <div class="hero-right">
     <p class="hero-lead">A podcast room, a filmable kitchen and a photo studio under one roof in T. Nagar, Chennai. Booked by the hour.</p>
@@ -535,13 +536,13 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
   menu.querySelectorAll('a').forEach(function(a){ a.addEventListener('click', function(){ openMenu(false); }); });
   document.addEventListener('keydown', function(e){ if(e.key === 'Escape' && !menu.hidden) openMenu(false); });
 
-  // Hero video: set HERO_VIDEO to a clip in /assets/video/ (short, muted, ~10–15 s,
-  // under ~4 MB) and it plays behind the name. Until then the photo stays.
-  var HERO_VIDEO = '';
+  // The moving picture: a 10 s muted loop of the kitchen walk-through
+  // (/assets/video/hero.webm + .mp4). The photograph stays until the clip is
+  // really playing, and for reduced motion or data saver it stays for good.
   var v = $('#heroVideo');
-  if(HERO_VIDEO && v && !reduce && !(navigator.connection && navigator.connection.saveData)){
-    v.poster = '/assets/photos/hero.jpg'; v.src = HERO_VIDEO;
+  if(v && !reduce && !(navigator.connection && navigator.connection.saveData)){
     v.addEventListener('playing', function(){ v.hidden = false; $('#heroPhoto').style.visibility = 'hidden'; }, { once:true });
+    v.preload = 'auto'; v.load();
     var pp = v.play(); if(pp && pp.catch) pp.catch(function(){});
   }
 
