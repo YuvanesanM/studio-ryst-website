@@ -189,6 +189,14 @@
   .q-contact-strip a{color:#777;text-decoration:none}
   .q-insta{display:inline-flex;align-items:center;gap:4px;text-decoration:none;color:#c13584;font-weight:600;font-size:13px;white-space:nowrap;margin-top:3px}
   .q-addr-link{color:inherit;text-decoration:none}
+
+  /* per-line GST breakup */
+  table.q-table{font-size:14px}
+  table.q-table th{font-size:13px;padding:9px 10px}
+  table.q-table td{padding:8px 10px}
+  table.q-table td .desc-cell{display:block}
+  table.q-table td .sac{display:block;margin-top:2px}
+  .gstp{display:block;font-size:11.5px;color:#8a8a8a;font-weight:400;margin-top:1px}
 </style>
 </head>
 <body>
@@ -219,13 +227,13 @@
       <div class="req" id="reqText" style="display:none"></div>
 
       <table>
-        <thead><tr><th>Description</th><th class="r">Price</th><th class="r">Qty</th><th class="r">Total</th></tr></thead>
+        <thead><tr><th>Description</th><th class="r">Taxable value</th><th class="r">GST</th><th class="r">Amount</th></tr></thead>
         <tbody id="itemRows"></tbody>
       </table>
 
       <div class="totals">
-        <div class="trow"><span>Subtotal</span><span id="tSub"></span></div>
-        <div class="trow" id="tGstRow"><span id="tGstLbl">GST</span><span id="tGst"></span></div>
+        <div class="trow"><span>Taxable value</span><span id="tSub"></span></div>
+        <div id="tGstLines"></div>
         <div class="trow" id="tDiscRow" style="display:none"><span>Discount</span><span id="tDisc"></span></div>
         <div class="trow grand"><span>Total</span><span id="tGrand"></span></div>
       </div>
@@ -392,13 +400,13 @@ Account Type: CURRENT</div>
   </div>
 
   <table class="q-table">
-    <thead><tr><th>Description</th><th class="amt">Price</th><th class="num">Qty</th><th class="amt">Total</th></tr></thead>
+    <thead><tr><th>Description</th><th class="amt">Rate</th><th class="num">Qty</th><th class="amt">Taxable value</th><th class="amt">GST</th><th class="amt">Amount</th></tr></thead>
     <tbody id="pRows"></tbody>
   </table>
 
   <div class="q-sums">
-    <div class="sline"><div class="sl">Subtotal</div><div class="sv" id="pSub"></div></div>
-    <div class="sline"><div class="sl" id="pGstLbl">GST</div><div class="sv" id="pGst"></div></div>
+    <div class="sline"><div class="sl">Taxable value</div><div class="sv" id="pSub"></div></div>
+    <div id="pGstLines"></div>
     <div class="sline disc-row" id="pDiscRow" style="display:none"><div class="sl">Discount</div><div class="sv" id="pDisc"></div></div>
     <div class="sline grand"><div class="sl">Total Inc. of GST</div><div class="sv" id="pTot"></div></div>
   </div>
@@ -444,6 +452,27 @@ function toast(msg, err){ const t=$('#toast'); t.textContent=msg; t.className='s
 
 function lineTotal(it){ return (parseFloat(it.price)||0)*(parseFloat(it.qty)||0); }
 function lineGst(it){ return lineTotal(it)*(parseFloat(it.gst)||0)/100; }
+
+// GST breakup for the totals: CGST + SGST (half each) when the client is in
+// Tamil Nadu (no GSTIN, or a 33… GSTIN), IGST when their GSTIN is from another
+// state. Grouped by rate; each rate's GST is rounded once and the halves are
+// split so they always add back up to it.
+function gstSplit(items, cgstin){
+  const inter=/^\d{2}/.test(cgstin||'') && String(cgstin).slice(0,2)!=='33';
+  const by={}; items.forEach(it=>{ const g=lineGst(it); if(g>0){ const r=parseFloat(it.gst)||0; by[r]=(by[r]||0)+g; } });
+  const out=[];
+  Object.keys(by).map(Number).sort((a,b)=>a-b).forEach(r=>{
+    const g=Math.round(by[r]);
+    if(inter) out.push(['IGST @ '+r+'%', g]);
+    else { const c=Math.round(g/2); out.push(['CGST @ '+(r/2)+'%', c], ['SGST @ '+(r/2)+'%', g-c]); }
+  });
+  return out.length ? out : [['GST', 0]];
+}
+function gstLinesHTML(items, cgstin, kind){
+  return gstSplit(items, cgstin).map(([l,v])=> kind==='sline'
+    ? `<div class="sline"><div class="sl">${l}</div><div class="sv">${money(v)}</div></div>`
+    : `<div class="trow"><span>${l}</span><span>${money(v)}</span></div>`).join('');
+}
 // Same math as renderQuote()'s totals — pulled out so the pay card can size
 // the 50%/full-balance buttons off the identical grand total.
 function grandTotalOf(q){
@@ -478,10 +507,10 @@ function renderQuote(q){
 
   const items = Array.isArray(q.items) ? q.items.filter(it=>it.desc||it.price) : [];
   $('#itemRows').innerHTML = items.length ? items.map(it=>`<tr>
-      <td><span class="desc">${esc(it.desc)}</span>${it.sac?`<span class="sac">SAC: ${esc(it.sac)}</span>`:''}</td>
-      <td class="r">${money(it.price)}</td>
-      <td class="r">${esc(it.qty)}</td>
+      <td><span class="desc">${esc(it.desc)}</span><span class="sac">${money(it.price)} × ${esc(it.qty)}${it.sac?` · SAC ${esc(it.sac)}`:''}</span></td>
       <td class="r">${money(lineTotal(it))}</td>
+      <td class="r">${money(lineGst(it))}<span class="gstp">@ ${parseFloat(it.gst)||0}%</span></td>
+      <td class="r">${money(lineTotal(it)+lineGst(it))}</td>
     </tr>`).join('') : '<tr><td colspan="4" style="color:var(--muted2);text-align:center;padding:16px">No items</td></tr>';
 
   const sub = items.reduce((s,it)=>s+lineTotal(it),0);
@@ -489,9 +518,8 @@ function renderQuote(q){
   const discount = Math.min(parseFloat(q.discount)||0, sub); // saved discount is trusted; the limit is enforced when it is set
   const grand = sub + gst - discount;
   const rates = [...new Set(items.filter(it=>lineTotal(it)>0).map(it=>parseFloat(it.gst)||0))];
-  $('#tGstLbl').textContent = rates.length===1 ? `GST (${rates[0]}%)` : 'GST';
   $('#tSub').textContent = money(sub);
-  $('#tGst').textContent = money(gst);
+  $('#tGstLines').innerHTML = gstLinesHTML(items, q.cgst, 'trow');
   if(discount>0){ $('#tDiscRow').style.display='flex'; $('#tDisc').textContent = '− '+money(discount); }
   $('#tGrand').textContent = money(grand);
 
@@ -652,17 +680,18 @@ function buildPdfDoc(q){
       <td><div class="desc-cell"><span>${esc(it.desc)}</span>${it.sac?`<span class="sac">SAC: ${esc(it.sac)}</span>`:''}</div></td>
       <td class="amt">${money(it.price)}</td>
       <td class="num">${esc(it.qty)}</td>
-      <td class="amt">${money(lineTotal(it))}</td></tr>`).join('')
-    : `<tr><td colspan="4" style="color:#aaa">No items</td></tr>`;
+      <td class="amt">${money(lineTotal(it))}</td>
+      <td class="amt">${money(lineGst(it))}<span class="gstp">@ ${parseFloat(it.gst)||0}%</span></td>
+      <td class="amt">${money(lineTotal(it)+lineGst(it))}</td></tr>`).join('')
+    : `<tr><td colspan="6" style="color:#aaa">No items</td></tr>`;
 
   const sub = items.reduce((s,it)=>s+lineTotal(it),0);
   const gst = items.reduce((s,it)=>s+lineGst(it),0);
   const discount = Math.min(parseFloat(q.discount)||0, sub); // saved discount is trusted; the limit is enforced when it is set
   const tot = sub+gst-discount;
   const rates=[...new Set(items.filter(it=>lineTotal(it)>0).map(it=>parseFloat(it.gst)||0))];
-  $('#pGstLbl').textContent = rates.length===1 ? `GST (${rates[0]}%)` : 'GST';
   $('#pSub').textContent = money(sub);
-  $('#pGst').textContent = money(Math.round(gst));
+  $('#pGstLines').innerHTML = gstLinesHTML(items, q.cgst, 'sline');
   if(discount>0){ $('#pDiscRow').style.display='flex'; $('#pDisc').textContent = '− '+money(Math.round(discount)); }
   else { $('#pDiscRow').style.display='none'; }
   $('#pTot').textContent = money(Math.round(tot));
