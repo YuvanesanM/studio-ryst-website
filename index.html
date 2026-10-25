@@ -476,6 +476,7 @@ footer{border-top:1px solid var(--line);padding:64px 0 30px;margin-top:0}
       alt="Behind the scenes at Studio RYST — a podcast interview being filmed with a full lighting rig in our T-Nagar podcast studio"
       width="2400" height="1350" loading="eager" fetchpriority="high"
       onerror="this.style.display='none'"></picture>
+    <video class="hero-video" id="heroVideo" muted loop playsinline preload="none" aria-hidden="true" hidden></video>
     <div class="hero-scrim"></div>
   </div>
   <div class="wrap hero-inner">
@@ -724,6 +725,23 @@ document.addEventListener('DOMContentLoaded', function(){
   }).catch(function(){});
 
 });
+</script>
+
+<script>
+// Hero video: set HERO_VIDEO to a clip in /assets/video/ (short, muted, ~10–15 s,
+// under ~4 MB) and it plays behind the headline. Until then — and for visitors
+// who prefer reduced motion or have data saver on — the photo stays.
+(function(){
+  var HERO_VIDEO = '';
+  var v = document.getElementById('heroVideo');
+  if(!HERO_VIDEO || !v) return;
+  if(window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  if(navigator.connection && navigator.connection.saveData) return;
+  v.poster = '/assets/photos/hero.jpg';
+  v.src = HERO_VIDEO;
+  v.addEventListener('playing', function(){ v.hidden = false; var ph = document.getElementById('heroPhoto'); if(ph) ph.style.visibility = 'hidden'; }, { once: true });
+  var p = v.play(); if(p && p.catch) p.catch(function(){});
+})();
 </script>
 
 <script>

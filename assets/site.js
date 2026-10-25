@@ -8,6 +8,20 @@
     on();
   }
 
+  // First-touch source: where this visitor first came from (an Instagram or
+  // Google link, or a ?utm_source= tag), kept so the booking form can
+  // pre-fill "How did you hear about us?". Stays on this device only.
+  try {
+    if (!localStorage.getItem('ryst_src')) {
+      var utm = (new URLSearchParams(location.search).get('utm_source') || '').toLowerCase();
+      var ref = (document.referrer || '').toLowerCase(), src = '';
+      if (/instagram|^ig$/.test(utm) || /instagram\.com|l\.instagram/.test(ref)) src = 'Instagram';
+      else if (/maps/.test(utm) || /maps\.google|google\.[a-z.]+\/maps|maps\.app\.goo\.gl|g\.page/.test(ref)) src = 'Google Maps';
+      else if (/google/.test(utm) || /google\./.test(ref)) src = 'Google Search';
+      if (src) localStorage.setItem('ryst_src', JSON.stringify({ src: src, at: Date.now() }));
+    }
+  } catch (e) {}
+
   // Scroll reveal for inner pages (the homepage uses GSAP for this): each
   // group's parts rise in once, heading first, staggered ~70ms, with a strong
   // ease-out. Content is only hidden once we know we can animate it, so a
