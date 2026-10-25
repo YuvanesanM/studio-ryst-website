@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8" />
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://www.googletagmanager.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://ryst-quss.onrender.com https://www.google-analytics.com https://analytics.google.com https://*.google-analytics.com https://*.analytics.google.com; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://www.googletagmanager.com https://checkout.razorpay.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://ryst-quss.onrender.com https://www.google-analytics.com https://analytics.google.com https://*.google-analytics.com https://*.analytics.google.com https://*.razorpay.com; frame-src https://checkout.razorpay.com https://api.razorpay.com; object-src 'none'; base-uri 'self'; form-action 'self'">
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-G00HG2N31H"></script>
 <script>
@@ -327,6 +327,8 @@ footer{border-top:1px solid var(--line);padding:64px 0 30px;margin-top:0}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{transition-duration:.001ms!important;animation-duration:.001ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important}}
 
 
+.pay-total{display:flex;justify-content:space-between;align-items:baseline;background:var(--surface,#fff);border-radius:4px;padding:14px 16px;font-size:16px}
+.pay-total b{font-size:24px;font-family:"Fraunces",Georgia,serif;font-weight:500}
 </style>
 <link rel="stylesheet" href="/assets/site.css">
 </head>
@@ -349,7 +351,7 @@ footer{border-top:1px solid var(--line);padding:64px 0 30px;margin-top:0}
 
 <section class="hero small has-fig"><div class="wrap inner">
   <div class="eyebrow">Book Now</div>
-  <h1>Request your session.</h1>
+  <h1>Book your session.</h1>
   <p class="lead">Pick a zone, date and duration and we'll create your
     booking — then send it to us on WhatsApp with one tap and we'll confirm
     your slot and share a payment link.</p>
@@ -387,25 +389,38 @@ footer{border-top:1px solid var(--line);padding:64px 0 30px;margin-top:0}
           <div class="field"><label>GST No. <span class="opt">(optional)</span></label><input type="text" id="fGst" placeholder="22AAAAA0000A1Z5" maxlength="20" style="text-transform:uppercase"></div>
           <div class="field"><label>Billing address <span class="opt">(optional)</span></label><textarea id="fAddr" placeholder="Chennai, India" maxlength="300" rows="1"></textarea></div>
         </div>
+        <div class="field"><label>How did you hear about us? <span class="opt">(optional)</span></label>
+          <select id="fSrc"><option value="">Choose one</option><option>Instagram</option><option>Google Search</option><option>Google Maps</option><option>Referral</option><option>Walk-in</option><option>Other</option></select></div>
 
-        <button type="button" class="btn btn-brass" id="bookBtn" style="width:100%" disabled><span id="bookBtnT">Request Booking</span></button>
+        <button type="button" class="btn btn-brass" id="bookBtn" style="width:100%" disabled><span id="bookBtnT">Continue to payment</span></button>
         <div class="bk-err" id="bkErr"></div>
-        <p style="margin-top:16px;font-size:14px;color:var(--ink-muted);line-height:1.6">See <a href="/packages/" style="color:var(--accent-strong);font-weight:600">Packages</a> for current pricing before you request — your exact total is confirmed with your quote.</p>
+        <p style="margin-top:16px;font-size:14px;color:var(--ink-muted);line-height:1.6">See <a href="/packages/" style="color:var(--accent-strong);font-weight:600">Packages</a> for current pricing before you request — you'll see your exact total incl. GST and can pay online on the next step.</p>
       </div>
 
       <div id="bookDone" style="display:none">
-        <h3 style="font-size:19px;margin-bottom:10px">Your booking request is ready</h3>
-        <p style="font-size:14px;color:var(--ink-muted);line-height:1.7;margin-bottom:22px">Quote <b class="mono" id="doneQno" style="color:var(--ink)"></b> has been created. Tap below to send it to Studio RYST on WhatsApp — we'll confirm your slot and reply with a payment link.</p>
-        <a class="btn btn-wa" id="waSendBtn" href="#" target="_blank" rel="noopener" style="width:100%"><span><svg viewBox="0 0 32 32" width="15" height="15" fill="currentColor"><path d="M16.004 3C9.377 3 4 8.373 4 15c0 2.31.652 4.47 1.78 6.307L4 29l7.86-1.746A11.94 11.94 0 0 0 16.004 27C22.63 27 28 21.627 28 15S22.63 3 16.004 3zm6.98 16.98c-.297.836-1.474 1.53-2.41 1.727-.64.135-1.474.243-4.286-.92-3.596-1.49-5.91-5.14-6.09-5.377-.176-.238-1.454-1.936-1.454-3.693 0-1.756.914-2.617 1.24-2.976.297-.325.65-.406.867-.406.217 0 .434.002.624.011.2.01.468-.076.732.56.297.72.998 2.486 1.084 2.666.087.18.144.39.03.628-.114.238-.172.386-.34.594-.17.207-.356.462-.508.62-.17.176-.348.368-.15.72.198.353.878 1.45 1.885 2.348 1.294 1.155 2.386 1.512 2.74 1.68.353.17.56.144.766-.086.207-.23.882-1.03 1.118-1.383.235-.353.47-.294.792-.176.325.117 2.06.972 2.414 1.148.353.176.588.264.674.412.087.148.087.856-.21 1.693z"/></svg> &nbsp;Send via WhatsApp</span></a>
+        <div id="payStep">
+          <h3 style="font-size:21px;margin-bottom:8px">Pay now to confirm your slot</h3>
+          <p style="font-size:16px;line-height:1.6;margin-bottom:18px">Quote <b id="doneQno"></b> · <span id="doneSummary"></span></p>
+          <div class="pay-total"><span>Total incl. GST</span><b id="doneGrand"></b></div>
+          <button class="btn btn-brass" id="payNowBtn" type="button" style="width:100%;margin-top:16px"><span id="payNowT">Pay now</span></button>
+          <div class="bk-err" id="payErr"></div>
+          <p style="margin:18px 0 10px;font-size:14px;color:var(--ink-muted)">Prefer to pay later? Send your request on WhatsApp and we'll share a payment link.</p>
+          <a class="btn btn-outline" id="waSendBtn" href="#" target="_blank" rel="noopener" style="width:100%"><span><svg viewBox="0 0 32 32" width="15" height="15" fill="currentColor"><path d="M16.004 3C9.377 3 4 8.373 4 15c0 2.31.652 4.47 1.78 6.307L4 29l7.86-1.746A11.94 11.94 0 0 0 16.004 27C22.63 27 28 21.627 28 15S22.63 3 16.004 3zm6.98 16.98c-.297.836-1.474 1.53-2.41 1.727-.64.135-1.474.243-4.286-.92-3.596-1.49-5.91-5.14-6.09-5.377-.176-.238-1.454-1.936-1.454-3.693 0-1.756.914-2.617 1.24-2.976.297-.325.65-.406.867-.406.217 0 .434.002.624.011.2.01.468-.076.732.56.297.72.998 2.486 1.084 2.666.087.18.144.39.03.628-.114.238-.172.386-.34.594-.17.207-.356.462-.508.62-.17.176-.348.368-.15.72.198.353.878 1.45 1.885 2.348 1.294 1.155 2.386 1.512 2.74 1.68.353.17.56.144.766-.086.207-.23.882-1.03 1.118-1.383.235-.353.47-.294.792-.176.325.117 2.06.972 2.414 1.148.353.176.588.264.674.412.087.148.087.856-.21 1.693z"/></svg> &nbsp;Send via WhatsApp</span></a>
+        </div>
+        <div id="paidStep" style="display:none">
+          <h3 style="font-size:21px;margin-bottom:8px" id="paidTitle">Booking confirmed</h3>
+          <p style="font-size:16px;line-height:1.6;margin-bottom:18px" id="paidMsg"></p>
+          <a class="btn btn-brass" id="viewQuoteBtn" href="#" style="width:100%"><span>View your quote &amp; receipt</span></a>
+        </div>
       </div>
     </div>
 
     <div class="bk-panel bk-steps">
       <h3 style="margin-bottom:16px;font-size:19px">How booking works</h3>
-      <ol class="steps-ol"><li>Pick your zone, date, duration &amp; hours</li>
-      <li>We create your booking request instantly</li>
-      <li>Send it to us on WhatsApp — one tap</li>
-      <li>We confirm your slot and share a payment link</li></ol>
+      <ol class="steps-ol"><li>Pick your zone, date, duration &amp; start time</li>
+      <li>See your exact total, GST included</li>
+      <li>Pay online — your slot is confirmed instantly</li>
+      <li>Prefer to pay later? Send the request on WhatsApp and we'll share a payment link</li></ol>
       <p style="margin-top:22px;font-size:13px;color:var(--ink-muted);line-height:1.7">Prefer to talk it through first? <a href="https://wa.me/917530011770?text=Hi!%20I%27d%20like%20to%20book%20a%20session%20at%20Studio%20RYST" target="_blank" rel="noopener" style="color:var(--accent-strong);font-weight:600">Message us on WhatsApp →</a></p>
     </div>
   </div>
@@ -519,6 +534,7 @@ footer{border-top:1px solid var(--line);padding:64px 0 30px;margin-top:0}
   dateInp.addEventListener('change', renderAvail);
   ['fName','fPhone','fStart'].forEach(function(id){ $('#'+id).addEventListener('input', validate); });
   $('#fPhone').addEventListener('input', function(e){ e.target.value = e.target.value.replace(/\D/g,'').slice(0,10); });
+  try{ var firstSrc=JSON.parse(localStorage.getItem('ryst_src')||'null'); if(firstSrc&&firstSrc.src) $('#fSrc').value=firstSrc.src; }catch(e){}
   $('#fGst').addEventListener('input', function(e){ e.target.value = e.target.value.toUpperCase(); });
 
   $('#bookBtn').addEventListener('click', function(){
@@ -529,12 +545,12 @@ footer{border-top:1px solid var(--line);padding:64px 0 30px;margin-top:0}
     fetch(PROXY_URL+'/public-booking', {
       method:'POST', headers:{'Content-Type':'application/json'},
       body: JSON.stringify({
-        name: name, phone: phone, cgst: gst, caddr: addr,
+        name: name, phone: phone, cgst: gst, caddr: addr, source: $('#fSrc').value,
         zone: state.zone, sessionDate: dateInp.value, sessionStart: $('#fStart').value, hours: state.hours
       })
     }).then(function(r){ return r.json().then(function(d){ return {ok:r.ok, d:d}; }); })
       .then(function(res){
-        if(!res.ok){ err.textContent = res.d.error || 'Could not create your booking — please try again.'; btn.disabled=false; btnT.textContent='Request Booking'; return; }
+        if(!res.ok){ err.textContent = res.d.error || 'Could not create your booking — please try again.'; btn.disabled=false; btnT.textContent='Continue to payment'; return; }
         var msg = 'Hi! I\'d like to request a booking at Studio RYST:\n\n'
           + 'Zone: '+state.zone+'\n'
           + 'Date: '+fmtDate(dateInp.value)+'\n'
@@ -548,11 +564,59 @@ footer{border-top:1px solid var(--line);padding:64px 0 30px;margin-top:0}
           + 'Estimated Total (before tax): '+money(res.d.price)+'\n\n'
           + 'Please confirm my slot!';
         $('#doneQno').textContent = res.d.qno;
+        $('#doneSummary').textContent = state.zone+' · '+fmtDate(dateInp.value)+', '+fmtTime12($('#fStart').value)+' · '+state.hours+' hr'+(state.hours===1?'':'s');
+        $('#doneGrand').textContent = money(res.d.grand || res.d.price);
+        $('#payNowT').textContent = 'Pay '+money(res.d.grand || res.d.price)+' now';
         $('#waSendBtn').href = 'https://wa.me/917530011770?text='+encodeURIComponent(msg);
+        $('#viewQuoteBtn').href = '/quote/?t='+encodeURIComponent(res.d.shareToken);
+        BOOKED = { token: res.d.shareToken, qno: res.d.qno, grand: res.d.grand, name: name, phone: phone };
+        if(res.d.payOnline === false){ $('#payNowBtn').style.display='none'; $('#payErr').textContent='Online payment is unavailable right now — please send your request on WhatsApp.'; }
         $('#bookForm').style.display='none';
         $('#bookDone').style.display='block';
       })
-      .catch(function(){ err.textContent='Network error — please try again.'; btn.disabled=false; btnT.textContent='Request Booking'; });
+      .catch(function(){ err.textContent='Network error — please try again.'; btn.disabled=false; btnT.textContent='Continue to payment'; });
+  });
+
+  // Pay now: same Razorpay order → checkout → server verification as the
+  // quote page; the server then marks the quote paid, puts it on the schedule
+  // and tells the team.
+  var BOOKED = null;
+  function payFail(m){ $('#payErr').textContent = m; $('#payNowBtn').disabled = false; }
+  $('#payNowBtn').addEventListener('click', function(){
+    if(!BOOKED) return;
+    $('#payErr').textContent=''; $('#payNowBtn').disabled = true;
+    if(typeof Razorpay === 'undefined'){ payFail('Payment gateway failed to load — check your connection and retry.'); return; }
+    fetch(PROXY_URL+'/quote-pay/order', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ token: BOOKED.token, amount: BOOKED.grand }) })
+      .then(function(r){ return r.json().then(function(d){ return {ok:r.ok, d:d}; }); })
+      .then(function(o){
+        if(!o.ok){ payFail(o.d.error || 'Could not start payment'); return; }
+        var rzp = new Razorpay({
+          key: o.d.keyId, amount: o.d.amount, currency: 'INR', order_id: o.d.orderId,
+          notes: { shareToken: BOOKED.token, quoteNo: BOOKED.qno },
+          name: 'Studio RYST', description: 'Booking '+BOOKED.qno,
+          prefill: { name: BOOKED.name, contact: '+91'+BOOKED.phone },
+          theme: { color: '#f8a61f' },
+          handler: function(resp){
+            fetch(PROXY_URL+'/quote-pay/verify', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ token: BOOKED.token, razorpay_order_id: resp.razorpay_order_id, razorpay_payment_id: resp.razorpay_payment_id, razorpay_signature: resp.razorpay_signature }) })
+              .then(function(r){ return r.json().then(function(d){ return {ok:r.ok, d:d}; }); })
+              .then(function(v){
+                if(!v.ok){ payFail(v.d.error || 'We could not confirm your payment — please contact Studio RYST on WhatsApp.'); return; }
+                $('#payStep').style.display='none'; $('#paidStep').style.display='block';
+                if(v.d.scheduleConflict){
+                  $('#paidTitle').textContent = 'Payment received';
+                  $('#paidMsg').textContent = 'Thank you! That time was just taken by another booking — our team will call you shortly to fix a slot.';
+                } else {
+                  $('#paidMsg').textContent = 'Thank you, '+BOOKED.name+'! Your '+$('#doneSummary').textContent+' session is confirmed. We\'ll see you at Studio RYST.';
+                }
+              })
+              .catch(function(){ payFail('Payment went through but we could not confirm it here — please contact Studio RYST on WhatsApp.'); });
+          },
+          modal: { ondismiss: function(){ $('#payNowBtn').disabled = false; } }
+        });
+        rzp.on('payment.failed', function(){ payFail('Payment failed — please try again.'); });
+        rzp.open();
+      })
+      .catch(function(){ payFail('Network error — please try again.'); });
   });
 
   fetch(PROXY_URL+'/public-availability').then(function(r){ return r.json(); }).then(function(d){
@@ -561,6 +625,7 @@ footer{border-top:1px solid var(--line);padding:64px 0 30px;margin-top:0}
 })();
 </script>
 
+<script src="https://checkout.razorpay.com/v1/checkout.js" defer></script>
 <script src="/assets/site.js" defer></script>
 </body>
 </html>
