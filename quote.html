@@ -347,7 +347,7 @@
         <button class="add-li" id="addLi">+ Add item</button>
 
         <div class="totals-mini">
-          <div><span>Subtotal</span><b id="mSub">₹0</b></div>
+          <div><span>Taxable value</span><b id="mSub">₹0</b></div>
           <div><span>GST</span><b id="mGst">₹0</b></div>
           <div class="disc-line">
             <span>Discount</span>
@@ -394,14 +394,12 @@
         </div>
 
         <table class="q-table">
-          <thead><tr><th>Description</th><th class="amt">Rate</th><th class="num">Qty</th><th class="amt">Taxable value</th><th class="amt">GST</th><th class="amt">Amount</th></tr></thead>
+          <thead id="pHead"></thead>
           <tbody id="pRows"></tbody>
         </table>
 
         <div class="q-sums">
-          <div class="sline"><div class="sl">Taxable value</div><div class="sv" id="pSub"></div></div>
-          <div id="pGstLines"></div>
-          <div class="sline disc-row" id="pDiscRow" style="display:none"><div class="sl">Discount</div><div class="sv" id="pDisc"></div></div>
+          <div id="pSumLines"></div>
           <div class="sline grand"><div class="sl">Total Inc. of GST</div><div class="sv" id="pTot"></div></div>
         </div>
 
@@ -457,6 +455,14 @@ const MAX_HOURS = 12;
 const FALLBACK_GST = 18;
 
 const K_SET = "ryst_quote_settings";
+
+// Older saved terms → current policy: full advance only, GST as applicable.
+function normalizeTerms(t){
+  return String(t||"")
+    .replace("Photography & videography bookings require 50% advance to confirm; the balance is payable before the session.\nStudio rentals require 100% advance payment to confirm the booking.","Full (100%) advance payment is required to confirm the booking.")
+    .replace("Prices are inclusive of GST at prevailing rates.","GST as applicable.")
+    .replace("GST and other applicable taxes are charged as per prevailing rates.","GST as applicable.");
+}
 let quotesCache = [];   // loaded from GitHub on init
 
 const DEFAULT_SETTINGS = {
@@ -485,12 +491,11 @@ Account Type: CURRENT`,
   ],
   terms:
 `This quotation is valid for 7 days from the date of issue.
-Photography & videography bookings require 50% advance to confirm; the balance is payable before the session.
-Studio rentals require 100% advance payment to confirm the booking.
+Full (100%) advance payment is required to confirm the booking.
 All payments are non-refundable.
 One complimentary reschedule is permitted if requested at least 48 hours prior to the booked slot.
 No refund or reschedule is available within 48 hours of the booked slot.
-GST and other applicable taxes are charged as per prevailing rates.`
+GST as applicable.`
 };
 
 let settings = loadSettings();
@@ -529,6 +534,7 @@ const discCeiling = (sub, pct) => Math.floor(sub*pct/100 + 1e-6);
 function loadSettings(){
   try{
     const s = Object.assign({}, DEFAULT_SETTINGS, JSON.parse(localStorage.getItem(K_SET)||"{}"));
+    s.terms=normalizeTerms(s.terms);
     if(!Array.isArray(s.rateCard) || !s.rateCard.length) s.rateCard = DEFAULT_SETTINGS.rateCard.map(x=>({...x}));
     normalizeRateCard(s.rateCard);
     // A previously-saved settings.html write can carry an explicit blank
@@ -669,25 +675,66 @@ function fmtDate(iso){ if(!iso) return ""; const [y,m,d]=iso.split("-"); return 
 function lineTotal(it){ return (parseFloat(it.price)||0)*(parseFloat(it.qty)||0); }
 function lineGst(it){ return lineTotal(it)*(parseFloat(it.gst)||0)/100; }
 
-// GST breakup for the totals: CGST + SGST (half each) when the client is in
+// ── Quote money: one breakup used by every view and the server ──
+// The discount is spread over the lines in proportion to their value and
+// comes off BEFORE GST, so each line's GST is charged on its discounted
+// (taxable) value. Lines are rounded to the rupee and the last rupee of
+// rounding goes to the biggest line, so the lines always add up to the total.
+function quoteBreakup(q){
+  const its=(Array.isArray(q&&q.items)?q.items:[]).filter(it=>it&&(String(it.desc||'').trim()||String(it.price||'').trim()));
+  const val=it=>(parseFloat(it.price)||0)*(parseFloat(it.qty)||0);
+  const sub=its.reduce((s,it)=>s+val(it),0);
+  const discount=Math.min(Math.max(parseFloat(q&&q.discount)||0,0),sub);
+  const rows=its.map(it=>{ const v=val(it), d=sub?discount*v/sub:0, r=parseFloat(it.gst)||0; return {it:it, value:v, rate:r, tx:v-d, gx:(v-d)*r/100}; });
+  const grand=Math.round(sub-discount+rows.reduce((s,x)=>s+x.gx,0));
+  rows.forEach(x=>{ x.taxable=Math.floor(x.tx+1e-9); });
+  let left=Math.round(sub-discount)-rows.reduce((s,x)=>s+x.taxable,0);
+  rows.slice().sort((a,b)=>(b.tx-b.taxable)-(a.tx-a.taxable)).forEach(x=>{ if(left>0){ x.taxable++; left--; } });
+  rows.forEach(x=>{ x.discount=Math.round(x.value-x.taxable); x.gst=Math.round(x.gx); });
+  const off=grand-rows.reduce((s,x)=>s+x.taxable+x.gst,0);
+  if(off&&rows.length){ rows.reduce((a,b)=>b.gx>a.gx?b:a).gst+=off; }
+  rows.forEach(x=>{ x.amount=x.taxable+x.gst; });
+  return {rows:rows, sub:sub, discount:discount, taxable:rows.reduce((s,x)=>s+x.taxable,0), gst:rows.reduce((s,x)=>s+x.gst,0), grand:grand};
+}
+// GST split for the totals: CGST + SGST (half each) when the client is in
 // Tamil Nadu (no GSTIN, or a 33… GSTIN), IGST when their GSTIN is from another
-// state. Grouped by rate; each rate's GST is rounded once and the halves are
-// split so they always add back up to it.
-function gstSplit(items, cgstin){
+// state. Grouped by rate from the per-line GST, so it adds up exactly.
+function gstSplit(b, cgstin){
   const inter=/^\d{2}/.test(cgstin||'') && String(cgstin).slice(0,2)!=='33';
-  const by={}; items.forEach(it=>{ const g=lineGst(it); if(g>0){ const r=parseFloat(it.gst)||0; by[r]=(by[r]||0)+g; } });
+  const by={}; b.rows.forEach(x=>{ if(x.gst){ by[x.rate]=(by[x.rate]||0)+x.gst; } });
   const out=[];
-  Object.keys(by).map(Number).sort((a,b)=>a-b).forEach(r=>{
-    const g=Math.round(by[r]);
+  Object.keys(by).map(Number).sort((a,c)=>a-c).forEach(r=>{
+    const g=by[r];
     if(inter) out.push(['IGST @ '+r+'%', g]);
     else { const c=Math.round(g/2); out.push(['CGST @ '+(r/2)+'%', c], ['SGST @ '+(r/2)+'%', g-c]); }
   });
   return out.length ? out : [['GST', 0]];
 }
-function gstLinesHTML(items, cgstin, kind){
-  return gstSplit(items, cgstin).map(([l,v])=> kind==='sline'
-    ? `<div class="sline"><div class="sl">${l}</div><div class="sv">${money(v)}</div></div>`
-    : `<div class="trow"><span>${l}</span><span>${money(v)}</span></div>`).join('');
+// Value → Discount → Taxable value → GST lines (the grand total row stays in the page).
+function sumLinesHTML(b, cgstin, kind){
+  const rows=[];
+  if(b.discount>0) rows.push(['Value', money(b.sub)], ['Discount', '− '+money(b.discount)]);
+  rows.push(['Taxable value', money(b.taxable)]);
+  gstSplit(b, cgstin).forEach(([l,v])=>rows.push([l, money(v)]));
+  return rows.map(([l,v])=> kind==='sline'
+    ? `<div class="sline"><div class="sl">${l}</div><div class="sv">${v}</div></div>`
+    : `<div class="trow"><span>${l}</span><span>${v}</span></div>`).join('');
+}
+// Printable quote: table head + rows (a Discount column only when there is one).
+function docHeadHTML(b){
+  return `<tr><th>Description</th><th class="amt">Rate</th><th class="num">Qty</th>${b.discount>0?'<th class="amt">Discount</th>':''}<th class="amt">Taxable value</th><th class="amt">GST</th><th class="amt">Amount</th></tr>`;
+}
+function docRowsHTML(b, emptyText){
+  const cols=b.discount>0?7:6;
+  if(!b.rows.length) return `<tr><td colspan="${cols}" style="color:#aaa">${emptyText}</td></tr>`;
+  return b.rows.map(x=>`<tr>
+      <td><div class="desc-cell"><span>${esc(x.it.desc)}</span>${x.it.sac?`<span class="sac">SAC: ${esc(x.it.sac)}</span>`:''}</div></td>
+      <td class="amt">${x.it.price!==''?money(x.it.price):''}</td>
+      <td class="num">${x.it.qty!==''?esc(x.it.qty):''}</td>
+      ${b.discount>0?`<td class="amt">${x.discount?'− '+money(x.discount):'—'}</td>`:''}
+      <td class="amt">${money(x.taxable)}</td>
+      <td class="amt">${money(x.gst)}<span class="gstp">@ ${x.rate}%</span></td>
+      <td class="amt">${money(x.amount)}</td></tr>`).join('');
 }
 function reqText(){ const z=$("#zone").value, h=parseInt($("#hours").value,10)||1; return `${z} Zone — ${h} ${h===1?"Hour":"Hours"}`; }
 function findCard(desc){ const d=(desc||"").trim().toLowerCase(); return settings.rateCard.find(c=>(c.desc||"").trim().toLowerCase()===d); }
@@ -1204,18 +1251,7 @@ function render(){
     ? `<img src="${settings.qr}" alt="Payment QR"><div class="cap">Scan to pay</div>`
     : `<div class="ph">UPI / Payment QR<br>(add in Settings)</div><div class="cap">Scan to pay</div>`;
 
-  const active = items.filter(it=> it.desc!=="" || it.price!=="");
-  $("#pRows").innerHTML = active.length ? active.map(it=>`<tr>
-      <td><div class="desc-cell"><span>${esc(it.desc)}</span>${it.sac?`<span class="sac">SAC: ${esc(it.sac)}</span>`:""}</div></td>
-      <td class="amt">${it.price!==""?money(it.price):""}</td>
-      <td class="num">${it.qty!==""?esc(it.qty):""}</td>
-      <td class="amt">${money(lineTotal(it))}</td>
-      <td class="amt">${money(lineGst(it))}<span class="gstp">@ ${parseFloat(it.gst)||0}%</span></td>
-      <td class="amt">${money(lineTotal(it)+lineGst(it))}</td></tr>`).join("")
-    : `<tr><td colspan="6" style="color:#aaa">Add line items…</td></tr>`;
-
   const sub=items.reduce((s,it)=>s+lineTotal(it),0);
-  const gst=items.reduce((s,it)=>s+lineGst(it),0);
   const discPct=Math.max(maxDiscPct(), discFloorPct);
   const maxDisc=discCeiling(sub,discPct);
   const discInp=$("#discountInp");
@@ -1224,19 +1260,14 @@ function render(){
   const rawDisc=parseFloat(discInp.value)||0;
   const discount=Math.min(rawDisc,maxDisc);
   if(rawDisc>maxDisc){ discInp.value=String(maxDisc); discInp.classList.add("warn"); setTimeout(()=>discInp.classList.remove("warn"),600); toast(`Discount capped at ${+discPct.toFixed(2)}% of pre-tax value`); }
-  const tot=sub+gst-discount;
-  const rates=[...new Set(active.filter(it=>lineTotal(it)>0).map(it=>parseFloat(it.gst)||0))];
-  const gstLbl = rates.length===1 ? `GST (${rates[0]}%)` : "GST";
-
-  $("#pSub").textContent=money(sub);
-  $("#pGstLines").innerHTML=gstLinesHTML(active, $("#cgst").value.trim(), "sline");
-  const pDiscRow=$("#pDiscRow");
-  if(discount>0){ pDiscRow.style.display=""; $("#pDisc").textContent="− "+money(Math.round(discount)); }
-  else { pDiscRow.style.display="none"; }
-  $("#pTot").textContent=money(Math.round(tot));
-  $("#mSub").textContent=money(sub);
-  $("#mGst").textContent=money(Math.round(gst));
-  $("#mTot").textContent=money(Math.round(tot));
+  const b=quoteBreakup({items:items, discount:discount});
+  $("#pHead").innerHTML=docHeadHTML(b);
+  $("#pRows").innerHTML=docRowsHTML(b,"Add line items…");
+  $("#pSumLines").innerHTML=sumLinesHTML(b, $("#cgst").value.trim(), "sline");
+  $("#pTot").textContent=money(b.grand);
+  $("#mSub").textContent=money(b.taxable);
+  $("#mGst").textContent=money(b.gst);
+  $("#mTot").textContent=money(b.grand);
 
   const terms=($("#terms").value||"").split("\n").map(t=>t.trim()).filter(Boolean);
   $("#pTerms").innerHTML=terms.map(t=>`<li>${esc(t)}</li>`).join("");
@@ -1246,7 +1277,7 @@ function render(){
   $("#pPreparedBy").textContent = preparedByName;
   $("#pPreparedBy").hidden = !preparedByName;
   $("#pPreparedBySep").hidden = !preparedByName;
-  updateQBalance(Math.round(tot));
+  updateQBalance(b.grand);
 }
 
 /* ---------- SAVE / LOAD QUOTES ---------- */
@@ -1401,16 +1432,7 @@ async function shareQuote(){
 // from the live render() calc, which only applies to the quote currently
 // being edited. "Fully paid" here means the same thing as "converted to
 // invoice" per Studio RYST's workflow: payments cover the full total.
-function quoteGrandTotal(q){
-  const items=q.items||[];
-  const sub=items.reduce((s,it)=>s+lineTotal(it),0);
-  const gst=items.reduce((s,it)=>s+lineGst(it),0);
-  // Reads back an already-saved discount for a paid-total check. The limit is
-  // enforced when a discount is set or raised (editor + proxy), so a saved
-  // discount is trusted here — changing the limit never re-prices old quotes.
-  const discount=Math.min(parseFloat(q.discount)||0, sub);
-  return Math.round(sub+gst-discount);
-}
+function quoteGrandTotal(q){ return quoteBreakup(q).grand; }
 function quotePaidTotal(q){ return (q.payments||[]).reduce((s,p)=>s+(Number(p.amount)||0),0); }
 function isQuoteFullyPaid(q){ const tot=quoteGrandTotal(q); return tot>0 && quotePaidTotal(q)>=tot; }
 
