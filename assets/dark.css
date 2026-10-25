@@ -1,0 +1,79 @@
+/* Studio RYST — the dark room, on the inner pages.
+   Loaded after site.css. The inner pages are built on shared variables, so
+   this remaps them to the homepage's world (one deep ground, paper ink, gold
+   for the single action, Newsreader throughout) and settles the few places
+   that hard-coded a light value. The customer quote page stays paper-white:
+   it is a document. */
+:root{
+  color-scheme:dark;
+  --bg:#141110; --surface:#1e1a17; --surface-2:#1e1a17; --line:#2a2522;
+  --ink:#ede6d9; --ink-muted:#b1a695;
+  --accent:#f8a61f; --accent-strong:#f3b24a; --accent-ink:#171310;
+  --paper:#ffffff; --paper-ink:#17130f; --wa:#2f9a5b; --danger:#ff8a7a;
+  --zone-photo:#e4535f; --zone-photo-strong:#ff8f97;
+  --zone-podcast:#2cb0c6; --zone-podcast-strong:#6fd3e3;
+  --zone-culinary:#8dc042; --zone-culinary-strong:#b6dc7c;
+  --quote-green:#3d9b69;
+}
+html{background:var(--bg);scrollbar-color:#3a332f transparent}
+body{background:var(--bg);background-image:none;color:var(--ink);font-family:"Newsreader",Georgia,"Times New Roman",serif;font-optical-sizing:auto}
+h1,h2,h3,h4,.btn,.zpill,.hpill,.tag,.field label{font-family:"Newsreader",Georgia,serif}
+h1,h2,h3{font-weight:300;letter-spacing:-.02em}
+.prow h3,.pgroup h3,.faq-item summary,.foot-col h4,.info-row .v,.btn{font-weight:500}
+::selection{background:var(--accent);color:var(--accent-ink)}
+:focus-visible{outline-color:var(--accent)}
+
+/* header: same compact bar, no shadow line */
+.nav,.nav.nav-overlay::before{background:var(--bg)}
+.nav.scrolled{box-shadow:none}
+.navlinks a.active{color:var(--accent)}
+.navlinks a::after{background:var(--accent)}
+.brand img{background:var(--paper)}
+@media (max-width:860px){.navlinks{background:var(--bg)}}
+
+/* the one accent, the one button shape */
+.btn{border-radius:0}
+.btn-outline{color:var(--ink);border-color:#3a332f}
+.btn-outline-invert{border-color:rgba(255,255,255,.35)}
+@media (hover:hover) and (pointer:fine){
+  .btn-outline:hover{border-color:var(--ink)}
+}
+.btn-wa{background:var(--wa);color:#fff;border-color:var(--wa)}
+
+/* surfaces are a tone step, never a line */
+.zone-card,.zone-card:hover,.usefor-card,.faq-item,.bk-panel,.info-card,.price-table,.price-note,.testimonial-card,.t-arrow,.insta-follow-chip,.social-btn,.fi{background:var(--surface);border-color:transparent}
+@media (hover:hover) and (pointer:fine){.zone-card:hover{background:#262120}}
+.zone-card-media,.hero-fig{background:#1a1613}
+.price-table .ph h3{color:var(--ink)}
+.tier .price{color:var(--ink)}
+.badge{background:#3a2f17;color:var(--accent)}
+.hero-fig img,.zone-card-media img,.why-photo img,.pt-img,.gallery-item img{filter:brightness(.92)}
+.steps-ol li::marker{color:var(--accent)}
+
+/* the closing band: the deepest tone, not an inverted paper block */
+.cta-band{background:#0e0c0b;color:var(--ink)}
+.cta-band h2{color:var(--ink)}
+.cta-band p{color:var(--ink-muted)}
+.cta-band .btn-outline{color:var(--ink);border-color:rgba(255,255,255,.35)}
+
+/* forms: dark fields with a visible edge and the gold focus */
+.field input,.field select,.field textarea{background:#0f0d0c;border-color:#3a332f;color:var(--ink)}
+.field input::placeholder,.field textarea::placeholder{color:#7d7366}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(248,166,31,.22)}
+.zpill,.hpill{background:var(--surface);border-color:#3a332f;color:var(--ink-muted)}
+.zpill.on,.hpill.on{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.zpill[data-zone="Photography"].on{background:var(--zone-photo);border-color:var(--zone-photo);color:#fff}
+.zpill[data-zone="Podcast"].on{background:var(--zone-podcast);border-color:var(--zone-podcast);color:#0e0c0b}
+.zpill[data-zone="Culinary"].on{background:var(--zone-culinary);border-color:var(--zone-culinary);color:#0e0c0b}
+.pay-total{background:var(--surface)}
+.pay-total b{font-family:"Newsreader",Georgia,serif;font-weight:300}
+.bk-err{color:var(--danger)}
+
+/* footer: a tone step down to the end */
+footer{background:#0e0c0b}
+.foot-brand img{background:var(--paper)}
+.foot-col a:hover{color:var(--accent)}
+
+/* contrast on dark: muted text must still read */
+.section-head p,.hero p.lead,.zone-card p,.prow p,.faq-item p,.t-text,.legal p,.legal li{color:var(--ink)}
+.price-note,.avail-note,.min-note,.sd{color:var(--ink-muted)}
