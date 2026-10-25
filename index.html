@@ -93,6 +93,9 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
 .nav .nav-act{opacity:1;min-height:44px;padding:0 18px;background:var(--accent);color:var(--accent-ink);display:inline-flex;align-items:center;font-weight:500;transition:transform .16s var(--ease-out)}
 .nav .nav-act:active{transform:scale(.97)}
 .nav .menu-btn{display:none}
+.nav .mark{margin-right:auto;opacity:1;display:block;line-height:0}
+.nav .mark img{width:64px;height:64px;background:#fff;object-fit:contain}
+@media (max-width:860px){.nav .mark img{width:52px;height:52px}}
 .menu{position:fixed;inset:0;z-index:30;background:var(--ground-deep);display:none;flex-direction:column;padding:var(--m)}
 .menu.open{display:flex}
 .menu a{font-size:34px;font-weight:300;text-decoration:none;padding:14px 0;color:var(--ink)}
@@ -174,19 +177,26 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
 .gallery .mid{position:relative;z-index:2;max-width:34ch}
 .gallery h2{font-size:var(--big);font-weight:300;line-height:1.1}
 .gallery p{margin-top:16px;color:var(--ink)}
-.gallery .mid a{display:inline-block;margin-top:12px;color:var(--ink-2)}
+.gallery .mid a{display:block;margin-top:12px;color:var(--ink-2)}
+.gallery .mid a + a{margin-top:6px}
 .gallery .ph{position:absolute;width:clamp(150px,13vw,200px);aspect-ratio:9/10;overflow:hidden;will-change:transform}
 .gallery .ph img{width:100%;height:100%;object-fit:cover}
-.gallery .ph a{display:block;height:100%}
-.ph1{left:23%;top:6%}  .ph2{left:62%;top:9%}  .ph3{left:66%;top:40%}
-.ph4{left:24%;top:48%} .ph5{left:41%;top:72%} .ph6{left:56%;top:68%}
+.gallery .ph a{display:block;height:100%;position:relative}
+.ph1{left:41%;top:2%}  .ph2{left:62%;top:9%}  .ph3{left:66%;top:40%}
+.ph4{left:26%;top:64%} .ph5{left:43%;top:74%} .ph6{left:58%;top:68%}
+.gallery .reel{left:22%;top:6%;width:clamp(160px,14vw,220px);aspect-ratio:9/16}
+.reel .play{position:absolute;left:50%;top:50%;width:64px;height:64px;margin:-32px 0 0 -32px;background:rgba(14,12,11,.72);display:flex;align-items:center;justify-content:center;transition:transform .16s var(--ease-out)}
+.reel .play svg{display:block;margin-left:3px}
+.reel a:active .play{transform:scale(.94)}
+@media (hover:hover) and (pointer:fine){.reel a:hover .play{background:var(--accent)}.reel a:hover .play svg path{fill:var(--accent-ink)}}
 @media (max-width:860px){
   .gallery{display:block;min-height:0;padding:60px var(--m)}
   .gallery .mid{margin:28px auto}
   .gallery h2{font-size:7vw}
   .gallery .ph{position:static;width:30%;display:inline-block;vertical-align:top;margin:0 2% 12px}
-  .gallery .row{display:flex;justify-content:center;gap:4%}
-  .gallery .row.up{padding-right:22%}
+  .gallery .row{display:flex;flex-wrap:wrap;justify-content:center;align-items:flex-start;gap:4%}
+  .gallery .row.up{padding-right:0}
+  .gallery .reel{width:38%;aspect-ratio:9/16}
   .gallery .row.down{padding-left:10%}
 }
 
@@ -272,7 +282,7 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
 .foot .top a{text-decoration:none}
 .foot .top a:hover{text-decoration:underline}
 .foot .top .mark{display:flex;align-items:center;gap:12px;margin-bottom:14px}
-.foot .top .mark img{width:48px;height:48px;background:#fff;object-fit:contain}
+.foot .top .mark img{width:72px;height:72px;background:#fff;object-fit:contain}
 .foot .big{position:absolute;left:var(--m);right:var(--m);bottom:56px;font-size:15.5vw;font-weight:300;line-height:.85;letter-spacing:-.045em;white-space:nowrap;text-align:center;transform-origin:50% 100%}
 .foot .legal{position:absolute;left:var(--m);right:var(--m);bottom:22px;font-size:var(--small);color:var(--ink-2)}
 @media (max-width:860px){
@@ -303,6 +313,7 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
 <body>
 
 <header class="nav" aria-label="Site">
+  <a class="mark" href="/" aria-label="Studio RYST — home"><img src="/assets/logo-300.png" alt="" width="64" height="64"></a>
   <a class="nav-lnk" href="/studio/">The studio</a>
   <a class="nav-lnk" href="/packages/">Rates</a>
   <a class="nav-lnk" href="/contact/">Contact</a>
@@ -399,15 +410,17 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
 
 <section class="gallery" id="gallery" aria-labelledby="galH">
   <div class="row up">
+    <figure class="ph reel" data-rate="5"><a href="https://www.instagram.com/reel/De3vtgHBJ--/" target="_blank" rel="noopener" aria-label="Watch a reel from the studio on Instagram" title="Watch a reel from the studio"><img src="/assets/photos/hero.jpg" alt="" width="2400" height="1350" loading="lazy" style="object-position:38% 50%"><span class="play"><svg width="22" height="24" viewBox="0 0 22 24" aria-hidden="true"><path d="M2 2l18 10L2 22z" fill="#ede6d9"/></svg></span></a></figure>
     <figure class="ph ph1" data-rate="7"><a href="/assets/photos/gallery-01.jpg" target="_blank" rel="noopener"><img src="/assets/photos/gallery-01.jpg" alt="A live shoot at Studio RYST — the full lighting rig and crew" width="1400" height="1080" loading="lazy"></a></figure>
-    <figure class="ph ph2" data-rate="-5"><a href="/assets/photos/gallery-03.jpg" target="_blank" rel="noopener"><img src="/assets/photos/gallery-03.jpg" alt="A recording session in the podcast room" width="1400" height="1080" loading="lazy"></a></figure>
-  </div>
+      </div>
   <div class="mid">
     <h2 id="galH" data-rv>A closer look<br>at the space.</h2>
     <p data-rv style="--i:1">Every picture here was taken in this studio, on a working day.</p>
-    <a class="tlink" data-rv style="--i:2" href="https://instagram.com/studio.ryst" target="_blank" rel="noopener">More on Instagram, @studio.ryst</a>
+    <a class="tlink" data-rv style="--i:2" href="https://www.instagram.com/reel/De3vtgHBJ--/" target="_blank" rel="noopener">Watch a reel from the studio →</a>
+    <a class="tlink" data-rv style="--i:3" href="https://instagram.com/studio.ryst" target="_blank" rel="noopener">@studio.ryst</a>
   </div>
   <div class="row down">
+    <figure class="ph ph2" data-rate="-5"><a href="/assets/photos/gallery-03.jpg" target="_blank" rel="noopener"><img src="/assets/photos/gallery-03.jpg" alt="A recording session in the podcast room" width="1400" height="1080" loading="lazy"></a></figure>
     <figure class="ph ph3" data-rate="9"><a href="/assets/photos/gallery-05.jpg" target="_blank" rel="noopener"><img src="/assets/photos/gallery-05.jpg" alt="An interview set up and lit in the podcast room" width="1400" height="1080" loading="lazy"></a></figure>
     <figure class="ph ph4" data-rate="-8"><a href="/assets/photos/gallery-06.jpg" target="_blank" rel="noopener"><img src="/assets/photos/gallery-06.jpg" alt="A product photography session in the photo studio" width="1400" height="1080" loading="lazy"></a></figure>
     <figure class="ph ph5" data-rate="4"><a href="/assets/photos/gallery-04.jpg" target="_blank" rel="noopener"><img src="/assets/photos/gallery-04.jpg" alt="A cooking shoot in the kitchen studio" width="1400" height="1080" loading="lazy"></a></figure>
@@ -489,7 +502,7 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
   <img src="/assets/photos/gallery-01.jpg" alt="" width="1400" height="1080" loading="eager" fetchpriority="low">
   <div class="top">
     <ul>
-      <li class="mark"><img src="/assets/logo-300.png" alt="Studio RYST" width="48" height="48"></li>
+      <li class="mark"><img src="/assets/logo-300.png" alt="Studio RYST" width="72" height="72"></li>
       <li><a href="/studio/">The studio</a></li>
       <li><a href="/packages/">Rates</a></li>
       <li><a href="/booking/">Book a session</a></li>
