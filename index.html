@@ -2,16 +2,18 @@
 <html lang="en">
 <head>
 <meta charset="utf-8" />
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; media-src 'self'; connect-src 'self' https://ryst-quss.onrender.com https://www.google-analytics.com https://analytics.google.com https://*.google-analytics.com https://*.analytics.google.com; object-src 'none'; base-uri 'self'; form-action 'self'">
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-G00HG2N31H"></script>
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: https:; media-src 'self'; connect-src 'self' https://ryst-quss.onrender.com https://www.google-analytics.com https://analytics.google.com https://*.google-analytics.com https://*.analytics.google.com; object-src 'none'; base-uri 'self'; form-action 'self'">
+<!-- Google tag (gtag.js): the script itself is loaded by /assets/consent.js only after the visitor accepts analytics -->
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
+  gtag('consent', 'default', { ad_storage: 'denied', ad_user_data: 'denied', ad_personalization: 'denied', analytics_storage: 'denied', wait_for_update: 500 });
+  try { if (localStorage.getItem('ryst_consent') === 'granted') gtag('consent', 'update', { analytics_storage: 'granted' }); } catch (e) {}
   gtag('js', new Date());
 
   gtag('config', 'G-G00HG2N31H');
 </script>
+<script src="/assets/consent.js" defer></script>
 <script>document.documentElement.classList.add('js')</script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Podcast Studio &amp; Kitchen Studio in Chennai | Studio RYST</title>
@@ -34,9 +36,7 @@
 <meta name="twitter:description" content="Podcast studio, kitchen studio and photography studio in T-Nagar, Chennai — one 3-in-1 creator space. Book by the hour with instant confirmation.">
 <meta name="twitter:image" content="https://studio.ryst.in/assets/og-share.jpg">
 <link rel="icon" href="/assets/logo-300.png">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300..500;1,6..72,300..500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/fonts/newsreader.css">
 <link rel="preload" as="image" href="/assets/photos/hero.jpg" fetchpriority="high">
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebSite", "@id": "https://studio.ryst.in/#website", "url": "https://studio.ryst.in/", "name": "Studio RYST", "alternateName": ["Studio RYST Chennai", "RYST Studio"], "publisher": {"@id": "https://studio.ryst.in/#business"}, "inLanguage": "en-IN"}</script>
 <script type="application/ld+json" id="bizSchema">{"@context": "https://schema.org", "@type": "LocalBusiness", "@id": "https://studio.ryst.in/#business", "name": "Studio RYST", "alternateName": "Studio RYST - Podcast, Photography & Kitchen Content Studio", "description": "Chennai's first-of-its-kind 3-in-1 content production studio — Podcast, Photography and Culinary zones, available by the hour in T-Nagar.", "url": "https://studio.ryst.in/", "image": "https://studio.ryst.in/assets/logo-300.png", "logo": "https://studio.ryst.in/assets/logo-300.png", "telephone": "+91-75300-11770", "priceRange": "₹₹", "address": {"@type": "PostalAddress", "streetAddress": "52, Ankur Plaza, Gopathy Narayana Rd", "addressLocality": "T Nagar, Chennai", "addressRegion": "Tamil Nadu", "postalCode": "600017", "addressCountry": "IN"}, "geo": {"@type": "GeoCoordinates", "latitude": 13.0441808, "longitude": 80.2392505}, "hasMap": "https://maps.app.goo.gl/PmPDiPyLWbVhLFef7", "sameAs": ["https://instagram.com/studio.ryst"], "areaServed": {"@type": "City", "name": "Chennai"}}</script>
@@ -519,7 +519,7 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
     </ul>
   </div>
   <div class="big" id="footMark" aria-hidden="true">Studio RYST</div>
-  <p class="legal">RYST is a registered trademark of Dreamour Multiventures · © 2026</p>
+  <p class="legal">Studio RYST is operated by Dreamour Multiventures, Chennai · RYST is a registered trademark · © 2026 · <a href="#" data-consent-open>Cookie choices</a></p>
 </footer>
 
 <script>

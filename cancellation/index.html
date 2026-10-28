@@ -2,16 +2,18 @@
 <html lang="en">
 <head>
 <meta charset="utf-8" />
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://www.googletagmanager.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://ryst-quss.onrender.com https://www.google-analytics.com https://analytics.google.com https://*.google-analytics.com https://*.analytics.google.com; object-src 'none'; base-uri 'self'; form-action 'self'">
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-G00HG2N31H"></script>
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://www.googletagmanager.com; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: https:; connect-src 'self' https://ryst-quss.onrender.com https://www.google-analytics.com https://analytics.google.com https://*.google-analytics.com https://*.analytics.google.com; object-src 'none'; base-uri 'self'; form-action 'self'">
+<!-- Google tag (gtag.js): the script itself is loaded by /assets/consent.js only after the visitor accepts analytics -->
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
+  gtag('consent', 'default', { ad_storage: 'denied', ad_user_data: 'denied', ad_personalization: 'denied', analytics_storage: 'denied', wait_for_update: 500 });
+  try { if (localStorage.getItem('ryst_consent') === 'granted') gtag('consent', 'update', { analytics_storage: 'granted' }); } catch (e) {}
   gtag('js', new Date());
 
   gtag('config', 'G-G00HG2N31H');
 </script>
+<script src="/assets/consent.js" defer></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Refund and Cancellation · Studio RYST</title>
 <meta name="description" content="Studio RYST's refund and cancellation policy.">
@@ -32,9 +34,7 @@
 <meta name="twitter:description" content="Studio RYST's refund and cancellation policy.">
 <meta name="twitter:image" content="https://studio.ryst.in/assets/og-share.jpg">
 <link rel="icon" href="/assets/logo-300.png">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300..500;1,6..72,300..500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/fonts/newsreader.css">
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "LocalBusiness", "@id": "https://studio.ryst.in/#business", "name": "Studio RYST", "alternateName": "Studio RYST - Podcast, Photography & Kitchen Content Studio", "description": "Chennai's first-of-its-kind 3-in-1 content production studio — Podcast, Photography and Culinary zones, available by the hour in T-Nagar.", "url": "https://studio.ryst.in/", "image": "https://studio.ryst.in/assets/logo-300.png", "logo": "https://studio.ryst.in/assets/logo-300.png", "telephone": "+91-75300-11770", "priceRange": "₹₹", "address": {"@type": "PostalAddress", "streetAddress": "52, Ankur Plaza, Gopathy Narayana Rd", "addressLocality": "T Nagar, Chennai", "addressRegion": "Tamil Nadu", "postalCode": "600017", "addressCountry": "IN"}, "geo": {"@type": "GeoCoordinates", "latitude": 13.0441808, "longitude": 80.2392505}, "hasMap": "https://maps.app.goo.gl/PmPDiPyLWbVhLFef7", "sameAs": ["https://instagram.com/studio.ryst"], "areaServed": {"@type": "City", "name": "Chennai"}}</script>
 
 <style>
@@ -350,42 +350,7 @@ footer{border-top:1px solid var(--line);padding:64px 0 30px;margin-top:0}
 
 <section class="hero small"><div class="wrap inner"><div class="eyebrow">Legal</div><h1>Refund and Cancellation</h1></div></section>
 <section class="section"><div class="wrap" style="max-width:800px">
-  <div class="legal"><p class="updated">Effective Date: February 1st, 2026</p>
-<p>Studio RYST reserves time slots and resources for confirmed bookings, and
-enforces the following cancellation and refund policy for operational
-fairness.</p>
-<h2>1. Booking Confirmation</h2>
-<p>Bookings are confirmed only after full payment is received. Once
-confirmed, the time slot is exclusively reserved for you.</p>
-<h2>2. Cancellation Policy</h2>
-<p>All bookings are non-refundable. If you need to cancel, a one-time free
-reschedule is available instead — see Section 3. No refund is issued for
-cancellations at any point, including no-shows.</p>
-<h2>3. Rescheduling Policy</h2>
-<p>One rescheduling is allowed per booking, if requested at least 48 hours
-before the session, subject to availability. Requests made less than 48
-hours before the session are not eligible for rescheduling or a refund.
-No-shows are not eligible for rescheduling.</p>
-<h2>4. Late Arrival &amp; Overtime</h2>
-<p>Your booked time begins at the scheduled start time regardless of late
-arrival. Overtime is charged at ₹2,500 per hour, plus applicable taxes,
-subject to studio availability — if your slot is followed by another
-booking, no overtime is permitted and the session must conclude strictly
-on time.</p>
-<h2>5. Studio-Initiated Cancellation</h2>
-<p>If the studio needs to cancel a confirmed booking, clients receive
-either a full refund or a free rescheduling. The studio is not responsible
-for any indirect expenses this may cause.</p>
-<h2>6. Refund Processing</h2>
-<p>Approved refunds are processed within 7–10 business days to the original
-payment method.</p>
-<h2>7. Non-Refundable Situations</h2>
-<p>No refunds are issued for rule violations, misconduct, property damage,
-or early termination of a session caused by the client.</p>
-<h2>8. Special Event / Bulk Bookings</h2>
-<p>Separate terms may apply for full-day or event bookings — these are
-communicated at the time of confirmation.</p>
-</div>
+  <div class="legal"><p><b>Effective 28 October 2026.</b> First published 1 February 2026. This policy forms part of our <a href="/terms-and-conditions/">Terms and Conditions</a>.</p><h2>At a glance</h2><ul><li><b>You cancel:</b> no refund. Instead, one free reschedule with at least 48 hours' notice.</li><li><b>Less than 48 hours' notice, or no-show:</b> no reschedule and no refund.</li><li><b>We cancel:</b> your choice of a new date or a full refund.</li><li><b>Emergency beyond anyone's control:</b> a new date; a full refund if no date within 60 days suits you.</li><li><b>Paid twice, or a failed payment that was still charged:</b> refunded in full, automatically.</li></ul><h2>1. When a booking is confirmed</h2><p>A booking is confirmed only when we receive full payment. From then on the slot is reserved for you alone, and other enquiries for that time are turned away — which is why confirmed bookings are non-refundable.</p><h2>2. Cancelling</h2><p>If you cancel a confirmed booking we do not refund it, at any time and for any reason, including no-shows. You can reschedule instead, as set out in section 3. This is shown to you before you pay.</p><h2>3. Rescheduling</h2><ul><li>One free reschedule per booking, to any available date, if you ask at least 48 hours before the session starts.</li><li>Requests with less than 48 hours' notice cannot be rescheduled or refunded.</li><li>A rescheduled booking cannot be rescheduled again, and a no-show forfeits the booking.</li><li>Ask on WhatsApp (+91 75300 11770) or by email; we confirm the new date in writing.</li></ul><h2>4. Late arrival and overtime</h2><p>Your time starts at the booked start whether or not you have arrived. If the studio is free afterwards, you may extend at ₹2,500 per hour plus GST; if another booking follows yours, the session must end on time.</p><h2>5. If we cancel, and emergencies</h2><ul><li>If we have to cancel a confirmed booking, you choose between a new date and a full refund.</li><li>If a session cannot go ahead because of something outside anyone's control — a power failure, flooding, a government order, a safety emergency — we offer a new date first, and a full refund if we cannot offer a date within 60 days that suits you.</li><li>We are not responsible for travel, crew or other costs you incur in either case.</li></ul><h2>6. How refunds are paid</h2><ul><li>Refunds go back to the method you paid with, through Razorpay, within 7–10 working days of our confirmation. Your bank may take a few more days to show it.</li><li>Duplicate payments, and payments that failed but were still charged, are refunded in full without you having to ask; tell us if you spot one we have missed.</li><li>We never ask for your card or bank details to make a refund.</li></ul><h2>7. When no refund is due</h2><p>No refund is given where a session is ended early because of a serious breach of our Terms, unsafe behaviour, or damage to the studio.</p><h2>8. Events and full-day bookings</h2><p>Multi-day, event or custom-quoted bookings may carry their own cancellation terms, set out in writing on the quote before you pay. Where the quote says nothing, this policy applies.</p><h2>9. Your statutory rights</h2><p>Nothing in this policy takes away rights you have under the Consumer Protection Act, 2019, or, if you are a consumer elsewhere, under the mandatory consumer law of your country.</p><h2>10. Questions and complaints</h2><ul><li><b>Operator:</b> Dreamour Multiventures (trading as Studio RYST), GSTIN 33AAVFD1588M1ZR</li><li><b>Address:</b> 52, Ankur Plaza, Gopathy Narayana Road, T. Nagar, Chennai 600017, Tamil Nadu, India</li><li><b>Email:</b> <a href="mailto:info@dreamour.in">info@dreamour.in</a> · <b>Phone / WhatsApp:</b> <a href="tel:+917530011770">+91 75300 11770</a></li><li><b>Grievance Officer:</b> Proprietor, Dreamour Multiventures — <a href="mailto:info@dreamour.in">info@dreamour.in</a>, +91 75300 11770 (we acknowledge complaints within 48 hours and aim to resolve them within one month)</li></ul></div>
 </div></section>
 
 <footer><div class="wrap">
@@ -409,7 +374,7 @@ communicated at the time of confirmation.</p>
       </div>
     </div>
     <div class="foot-bottom">
-      <p>RYST is a registered Trademark of Dreamour Multiventures. All rights reserved.</p>
+      <p>Studio RYST is operated by Dreamour Multiventures, Chennai. RYST is a registered trademark. · <a href="#" data-consent-open>Cookie choices</a></p>
       <p>© 2026 Dreamour Multiventures.</p>
     </div>
   </div></footer>

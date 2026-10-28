@@ -2,16 +2,18 @@
 <html lang="en">
 <head>
 <meta charset="utf-8" />
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://www.googletagmanager.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://ryst-quss.onrender.com https://www.google-analytics.com https://analytics.google.com https://*.google-analytics.com https://*.analytics.google.com; object-src 'none'; base-uri 'self'; form-action 'self'">
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-G00HG2N31H"></script>
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://www.googletagmanager.com; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: https:; connect-src 'self' https://ryst-quss.onrender.com https://www.google-analytics.com https://analytics.google.com https://*.google-analytics.com https://*.analytics.google.com; object-src 'none'; base-uri 'self'; form-action 'self'">
+<!-- Google tag (gtag.js): the script itself is loaded by /assets/consent.js only after the visitor accepts analytics -->
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
+  gtag('consent', 'default', { ad_storage: 'denied', ad_user_data: 'denied', ad_personalization: 'denied', analytics_storage: 'denied', wait_for_update: 500 });
+  try { if (localStorage.getItem('ryst_consent') === 'granted') gtag('consent', 'update', { analytics_storage: 'granted' }); } catch (e) {}
   gtag('js', new Date());
 
   gtag('config', 'G-G00HG2N31H');
 </script>
+<script src="/assets/consent.js" defer></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Terms and Conditions · Studio RYST</title>
 <meta name="description" content="Studio RYST's terms and conditions.">
@@ -32,9 +34,7 @@
 <meta name="twitter:description" content="Studio RYST's terms and conditions.">
 <meta name="twitter:image" content="https://studio.ryst.in/assets/og-share.jpg">
 <link rel="icon" href="/assets/logo-300.png">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300..500;1,6..72,300..500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/fonts/newsreader.css">
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "LocalBusiness", "@id": "https://studio.ryst.in/#business", "name": "Studio RYST", "alternateName": "Studio RYST - Podcast, Photography & Kitchen Content Studio", "description": "Chennai's first-of-its-kind 3-in-1 content production studio — Podcast, Photography and Culinary zones, available by the hour in T-Nagar.", "url": "https://studio.ryst.in/", "image": "https://studio.ryst.in/assets/logo-300.png", "logo": "https://studio.ryst.in/assets/logo-300.png", "telephone": "+91-75300-11770", "priceRange": "₹₹", "address": {"@type": "PostalAddress", "streetAddress": "52, Ankur Plaza, Gopathy Narayana Rd", "addressLocality": "T Nagar, Chennai", "addressRegion": "Tamil Nadu", "postalCode": "600017", "addressCountry": "IN"}, "geo": {"@type": "GeoCoordinates", "latitude": 13.0441808, "longitude": 80.2392505}, "hasMap": "https://maps.app.goo.gl/PmPDiPyLWbVhLFef7", "sameAs": ["https://instagram.com/studio.ryst"], "areaServed": {"@type": "City", "name": "Chennai"}}</script>
 
 <style>
@@ -350,79 +350,7 @@ footer{border-top:1px solid var(--line);padding:64px 0 30px;margin-top:0}
 
 <section class="hero small"><div class="wrap inner"><div class="eyebrow">Legal</div><h1>Terms and Conditions</h1></div></section>
 <section class="section"><div class="wrap" style="max-width:800px">
-  <div class="legal"><p class="updated">Effective Date: February 1st, 2026</p>
-<p>Welcome to Studio RYST. These Terms and Conditions govern your use of our
-website and facility. By booking a session or using this website, you agree
-to these terms.</p>
-<h2>1. Studio Booking &amp; Usage</h2>
-<p>Bookings must be made through official channels. A booking is confirmed
-only upon receipt of payment. Clients must strictly adhere to their booked
-time slot — setup and wrap-up time are included within the booked hours.
-Overstaying incurs additional charges.</p>
-<h2>2. Payments</h2>
-<p>Payment is required via the approved methods on our website. Prices are
-subject to change, and applicable taxes are added as needed.</p>
-<h2>3. Cancellation &amp; Rescheduling</h2>
-<p>Cancellation requests must be made in writing. Refund eligibility depends
-on the timing of the request (see our Refund and Cancellation Policy).
-Rescheduling is subject to availability. No-shows forfeit the booking fee.</p>
-<h2>4. Studio Conduct &amp; Responsibilities</h2>
-<p>Clients must maintain cleanliness and use equipment properly. Any damage
-caused is chargeable to the client. Illegal or unsafe activities are
-prohibited. Open flames and hazardous materials require prior written
-approval. The studio must be left in the condition it was found —
-permanent damage to walls, furniture, or flooring will incur professional
-repair/cleaning fees.</p>
-<h2>5. Guest &amp; Team Policy</h2>
-<p>A maximum of 8 persons are permitted per session. Only declared crew
-members are allowed on the premises. Uninvited guests are not permitted.</p>
-<h2>6. Wall &amp; Property Policy</h2>
-<p>Nailing, drilling, taping, or affixing anything to walls, ceilings,
-floors or furniture is strictly prohibited. Furniture and sets may not be
-rearranged without prior approval.</p>
-<h2>7. Footwear Policy</h2>
-<p>Outdoor footwear is not permitted inside the studio. Please use the shoe
-rack provided at the entrance before entering.</p>
-<h2>8. Shared Space &amp; Restricted Access</h2>
-<p>All three studios share a common space. Please use only the equipment
-and props specific to your booked session, and be mindful of the other
-setups and sessions within the space.</p>
-<h2>9. Equipment Usage</h2>
-<p>All equipment must be handled carefully. Any malfunction must be reported
-immediately. Damage caused by negligence is the client's liability.
-Cameras, lenses, memory cards, and recording devices are not provided —
-clients must bring their own camera equipment, or add a camera
-operator/cinematographer as a paid add-on.</p>
-<h2>10. Kitchen Usage</h2>
-<p>The kitchen must be used responsibly and hygienically. The studio
-disclaims liability for food contamination or related health incidents.</p>
-<h2>11. Media &amp; Content Responsibility</h2>
-<p>Clients bear sole responsibility for the content they produce. The studio
-is not liable for copyright violations, and clients must secure any
-necessary rights and permissions themselves.</p>
-<h2>12. Liability Limitation</h2>
-<p>The studio excludes liability for personal injury, lost belongings,
-equipment malfunctions, and indirect damages arising from use of the
-facility.</p>
-<h2>13. Indemnification</h2>
-<p>Clients agree to indemnify the studio from claims arising from their use
-of the facility, content they produce, or any legal violations on their
-part.</p>
-<h2>14. Force Majeure</h2>
-<p>The studio is not responsible for service failures caused by natural
-disasters, power outages, or other unforeseen events beyond its control.</p>
-<h2>15. Privacy</h2>
-<p>Use of our website is also governed by our separate Privacy Policy.</p>
-<h2>16. Modifications</h2>
-<p>The studio reserves the right to update these terms at any time.
-Continued use of our services indicates acceptance of the updated terms.</p>
-<h2>17. Governing Law</h2>
-<p>These terms are governed by Indian law. Disputes are subject to the
-jurisdiction of the courts in Chennai, Tamil Nadu.</p>
-<h2>18. Contact Information</h2>
-<p>Studio RYST<br>Email: <a href="mailto:info@dreamour.in">info@dreamour.in</a><br>
-Phone: +91-7530011770<br>Address: 52 Ankur Plaza, Gopathy Narayana Road, T-Nagar, Chennai</p>
-</div>
+  <div class="legal"><p><b>Effective 28 October 2026.</b> First published 1 February 2026. The version in force when you book applies to that booking.</p><h2>1. Who we are and what these terms cover</h2><p>Studio RYST is operated by Dreamour Multiventures, Chennai ("we", "us"). "RYST" is our registered trademark. These terms apply to studio.ryst.in, to quotes and bookings made through it or with our team on WhatsApp, email or phone, and to your use of the studio at 52, Ankur Plaza, Gopathy Narayana Road, T. Nagar, Chennai 600017, Tamil Nadu, India. By requesting a quote, paying for a booking or using the studio you agree to them, together with our <a href="/cancellation/">Refund and Cancellation Policy</a> and <a href="/privacy-policy/">Privacy Policy</a>. You must be 18 or older, and if you book for a company you confirm you may bind it.</p><h2>2. Quotes, bookings and when a contract is formed</h2><ul><li>A request on our website creates a quote. A quote is an offer that stays open for 7 days; it does not hold the slot.</li><li>A booking is confirmed, and a contract formed, only when we receive full payment. Until then the slot may be taken by someone else, in which case we will offer an alternative time or a full refund of anything paid.</li><li>Your booked hours include setting up and wrapping up. Sessions start and end at the booked times whether or not you arrive late.</li><li>Overtime, where the studio is free, is charged at ₹2,500 per hour plus GST. If another booking follows yours, no overtime is possible and the session must end on time.</li><li>Up to 8 people may be on the premises per session. Only the crew and guests you have declared may enter.</li><li>Bookings are personal to you and may not be resold or transferred without our agreement.</li></ul><h2>3. Prices, taxes and payment</h2><ul><li>Prices are in Indian rupees. Rates on the website are shown before GST; GST (currently 18%) is added and shown separately on your quote, and the total you pay is shown before you pay.</li><li>Online payments are taken by Razorpay. We never see or store your card or UPI details. A tax invoice is issued for every payment.</li><li>We may change our rates at any time, but the price of a confirmed booking does not change.</li></ul><h2>4. Cancellation, rescheduling and refunds</h2><p>Bookings are non-refundable once confirmed. One free reschedule is available with at least 48 hours' notice. If we have to cancel, you may choose a new date or a full refund. The full rules, including what happens in an emergency beyond anyone's control, are in our <a href="/cancellation/">Refund and Cancellation Policy</a>, which forms part of these terms.</p><h2>5. Using the studio</h2><ul><li>Treat the space, furniture, props and equipment with care, and leave the studio as you found it. Cleaning or repair caused by your session is charged at cost, with receipts.</li><li>Nothing may be nailed, drilled, taped or fixed to walls, ceilings, floors or furniture. Furniture and sets stay where they are unless we have agreed to a change.</li><li>Outdoor footwear stays on the rack at the entrance.</li><li>The three studios share one space. Use only the equipment and props for the room you have booked and be considerate of other sessions.</li><li>Report any fault with our equipment at once. Damage caused by careless use is your responsibility.</li><li>Cameras, lenses, memory cards and recorders are not provided; bring your own or add a cinematographer as a paid extra.</li><li>In the kitchen, you are responsible for the ingredients you bring and the food you prepare, and for hygiene while you cook.</li><li>Nothing illegal, unsafe or dangerous to others. Open flames beyond the hob and any hazardous material need our written agreement in advance.</li><li>We may end a session early, without refund, if these rules are seriously broken or anyone's safety is at risk.</li></ul><h2>6. Your content and ours</h2><ul><li>Everything you record or photograph in the studio is yours. You are responsible for it: for the rights, releases and permissions you need, and for what you do with it.</li><li>With your agreement on the day, we sometimes photograph or film behind the scenes for our own website and social media. Tell our coordinator if you would rather not appear, and we won't use it. You can withdraw that agreement later by writing to us, and we will take the material down from channels we control.</li><li>Our name, logo, photographs and website are ours, and may not be used without permission.</li></ul><h2>7. Our liability</h2><ul><li>Nothing in these terms limits or excludes our liability for death or personal injury caused by our negligence, for fraud, or for anything that cannot be limited by law.</li><li>Otherwise, our total liability to you for a booking is limited to the amount you paid for it.</li><li>We are not liable for loss of profit, business or opportunity, for your own equipment, belongings or content except where we were negligent, or for services provided by third parties such as payment providers.</li><li>These limits apply to the extent the law allows. Your statutory rights as a consumer are not affected.</li></ul><h2>8. Your responsibility to us</h2><p>You will cover any loss we suffer from claims about your content, from your or your crew's breach of these terms, or from damage caused by you or your guests.</p><h2>9. Events beyond our control</h2><p>If a session cannot go ahead because of something neither of us can control, such as a power failure, flooding, a government order or a safety emergency, we will offer a new date, and a full refund if no date within 60 days suits you. We are not liable for other costs you incur.</p><h2>10. Messages and privacy</h2><p>We will contact you about your quote and booking on WhatsApp, email, SMS or phone using the details you give us. How we handle your personal data is explained in our <a href="/privacy-policy/">Privacy Policy</a>.</p><h2>11. Complaints</h2><p>Tell us if something is wrong and we will put it right where we can. Complaints go to our Grievance Officer at the contact details below; we acknowledge them within 48 hours and aim to resolve them within one month.</p><h2>12. Law and disputes</h2><p>These terms are governed by the laws of India, and the courts and consumer forums at Chennai have jurisdiction. If you are a consumer in another country, nothing here takes away protections you have under the law where you live that cannot be waived.</p><h2>13. Changes</h2><p>We may update these terms. The date at the top shows the current version; material changes are announced on this page. The version in force when you book governs that booking.</p><h2>14. Contact</h2><ul><li><b>Operator:</b> Dreamour Multiventures (trading as Studio RYST), GSTIN 33AAVFD1588M1ZR</li><li><b>Address:</b> 52, Ankur Plaza, Gopathy Narayana Road, T. Nagar, Chennai 600017, Tamil Nadu, India</li><li><b>Email:</b> <a href="mailto:info@dreamour.in">info@dreamour.in</a> · <b>Phone / WhatsApp:</b> <a href="tel:+917530011770">+91 75300 11770</a></li><li><b>Grievance Officer:</b> Proprietor, Dreamour Multiventures — <a href="mailto:info@dreamour.in">info@dreamour.in</a>, +91 75300 11770 (we acknowledge complaints within 48 hours and aim to resolve them within one month)</li></ul></div>
 </div></section>
 
 <footer><div class="wrap">
@@ -446,7 +374,7 @@ Phone: +91-7530011770<br>Address: 52 Ankur Plaza, Gopathy Narayana Road, T-Nagar
       </div>
     </div>
     <div class="foot-bottom">
-      <p>RYST is a registered Trademark of Dreamour Multiventures. All rights reserved.</p>
+      <p>Studio RYST is operated by Dreamour Multiventures, Chennai. RYST is a registered trademark. · <a href="#" data-consent-open>Cookie choices</a></p>
       <p>© 2026 Dreamour Multiventures.</p>
     </div>
   </div></footer>
