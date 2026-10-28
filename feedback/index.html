@@ -2,16 +2,18 @@
 <html lang="en">
 <head>
 <meta charset="utf-8" />
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://www.googletagmanager.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://ryst-quss.onrender.com https://www.google-analytics.com https://analytics.google.com https://*.google-analytics.com https://*.analytics.google.com; object-src 'none'; base-uri 'self'; form-action 'self'">
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-G00HG2N31H"></script>
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://www.googletagmanager.com; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: https:; connect-src 'self' https://ryst-quss.onrender.com https://www.google-analytics.com https://analytics.google.com https://*.google-analytics.com https://*.analytics.google.com; object-src 'none'; base-uri 'self'; form-action 'self'">
+<!-- Google tag (gtag.js): the script itself is loaded by /assets/consent.js only after the visitor accepts analytics -->
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
+  gtag('consent', 'default', { ad_storage: 'denied', ad_user_data: 'denied', ad_personalization: 'denied', analytics_storage: 'denied', wait_for_update: 500 });
+  try { if (localStorage.getItem('ryst_consent') === 'granted') gtag('consent', 'update', { analytics_storage: 'granted' }); } catch (e) {}
   gtag('js', new Date());
 
   gtag('config', 'G-G00HG2N31H');
 </script>
+<script src="/assets/consent.js" defer></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Feedback · Studio RYST</title>
 <meta name="robots" content="noindex, nofollow">
@@ -28,9 +30,7 @@
 <meta name="twitter:title" content="Share Your Feedback · Studio RYST">
 <meta name="twitter:description" content="Tell us about your session at Studio RYST.">
 <meta name="twitter:image" content="https://studio.ryst.in/assets/og-share.jpg">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;1,500&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/fonts/quote.css">
 <style>
   :root{
     --bg:#f3f4f1; --panel:#ffffff; --panel2:#f7f8f5;

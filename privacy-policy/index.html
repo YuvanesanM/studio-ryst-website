@@ -2,16 +2,18 @@
 <html lang="en">
 <head>
 <meta charset="utf-8" />
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://www.googletagmanager.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://ryst-quss.onrender.com https://www.google-analytics.com https://analytics.google.com https://*.google-analytics.com https://*.analytics.google.com; object-src 'none'; base-uri 'self'; form-action 'self'">
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-G00HG2N31H"></script>
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://www.googletagmanager.com; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: https:; connect-src 'self' https://ryst-quss.onrender.com https://www.google-analytics.com https://analytics.google.com https://*.google-analytics.com https://*.analytics.google.com; object-src 'none'; base-uri 'self'; form-action 'self'">
+<!-- Google tag (gtag.js): the script itself is loaded by /assets/consent.js only after the visitor accepts analytics -->
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
+  gtag('consent', 'default', { ad_storage: 'denied', ad_user_data: 'denied', ad_personalization: 'denied', analytics_storage: 'denied', wait_for_update: 500 });
+  try { if (localStorage.getItem('ryst_consent') === 'granted') gtag('consent', 'update', { analytics_storage: 'granted' }); } catch (e) {}
   gtag('js', new Date());
 
   gtag('config', 'G-G00HG2N31H');
 </script>
+<script src="/assets/consent.js" defer></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Privacy Policy · Studio RYST</title>
 <meta name="description" content="Studio RYST's privacy policy.">
@@ -32,9 +34,7 @@
 <meta name="twitter:description" content="Studio RYST's privacy policy.">
 <meta name="twitter:image" content="https://studio.ryst.in/assets/og-share.jpg">
 <link rel="icon" href="/assets/logo-300.png">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300..500;1,6..72,300..500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/fonts/newsreader.css">
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "LocalBusiness", "@id": "https://studio.ryst.in/#business", "name": "Studio RYST", "alternateName": "Studio RYST - Podcast, Photography & Kitchen Content Studio", "description": "Chennai's first-of-its-kind 3-in-1 content production studio — Podcast, Photography and Culinary zones, available by the hour in T-Nagar.", "url": "https://studio.ryst.in/", "image": "https://studio.ryst.in/assets/logo-300.png", "logo": "https://studio.ryst.in/assets/logo-300.png", "telephone": "+91-75300-11770", "priceRange": "₹₹", "address": {"@type": "PostalAddress", "streetAddress": "52, Ankur Plaza, Gopathy Narayana Rd", "addressLocality": "T Nagar, Chennai", "addressRegion": "Tamil Nadu", "postalCode": "600017", "addressCountry": "IN"}, "geo": {"@type": "GeoCoordinates", "latitude": 13.0441808, "longitude": 80.2392505}, "hasMap": "https://maps.app.goo.gl/PmPDiPyLWbVhLFef7", "sameAs": ["https://instagram.com/studio.ryst"], "areaServed": {"@type": "City", "name": "Chennai"}}</script>
 
 <style>
@@ -350,65 +350,7 @@ footer{border-top:1px solid var(--line);padding:64px 0 30px;margin-top:0}
 
 <section class="hero small"><div class="wrap inner"><div class="eyebrow">Legal</div><h1>Privacy Policy</h1></div></section>
 <section class="section"><div class="wrap" style="max-width:800px">
-  <div class="legal"><p class="updated">Effective Date: February 1st, 2026</p>
-<p>Welcome to Studio RYST ("we," "our," "us"). This Privacy Policy explains
-how we collect, use, disclose, and safeguard your information when you
-visit <a href="https://studio.ryst.in">studio.ryst.in</a> and use our studio
-booking services. By accessing or using our website, you agree to the terms
-of this Privacy Policy.</p>
-<h2>1. Information We Collect</h2>
-<p><b>Personal information:</b> when you book studio time, fill out contact
-forms, subscribe to updates, or make payments, we may collect your full
-name, email address, phone number, billing address, business/brand name (if
-applicable), and payment details processed via secure third-party payment
-gateways.</p>
-<p><b>Automatically collected information:</b> when you visit our website,
-we may collect your IP address, browser type, device information, pages
-visited, time spent on pages, and referring website.</p>
-<h2>2. How We Use Your Information</h2>
-<p>We use your information to process studio bookings, confirm reservations,
-communicate regarding bookings or inquiries, send invoices and payment
-confirmations, improve our website and services, respond to support
-requests, and comply with legal obligations. We do not sell or rent your
-personal data to third parties.</p>
-<h2>3. Payment Processing</h2>
-<p>Payments made on our website are processed through secure third-party
-payment providers (such as Razorpay or other integrated gateways). We do
-not store your complete card details on our servers.</p>
-<h2>4. Cookies &amp; Tracking Technologies</h2>
-<p>Our website may use cookies to improve user experience, analyze traffic,
-and remember preferences. You may disable cookies through your browser
-settings, but some features may not function properly as a result.</p>
-<h2>5. Data Sharing &amp; Disclosure</h2>
-<p>We may share your information with service providers assisting in
-website hosting, booking systems, or payment processing; if required by law
-or legal process; or to protect our rights, property, or safety. We do not
-share your personal information for marketing by third parties.</p>
-<h2>6. Data Security</h2>
-<p>We implement appropriate technical and organizational measures to
-protect your personal data. However, no online transmission or storage
-system is 100% secure, and we cannot guarantee absolute security.</p>
-<h2>7. Data Retention</h2>
-<p>We retain your information only as long as necessary to fulfill booking
-and legal requirements, maintain business records, and resolve disputes.</p>
-<h2>8. Your Rights</h2>
-<p>You may request to access your personal information, correct inaccurate
-information, or request deletion of your data (subject to legal
-obligations). To exercise these rights, contact us using the details
-below.</p>
-<h2>9. Third-Party Links</h2>
-<p>Our website may contain links to third-party websites. We are not
-responsible for their privacy practices or content.</p>
-<h2>10. Children's Privacy</h2>
-<p>Our services are not intended for individuals under 18 years of age. We
-do not knowingly collect personal data from minors.</p>
-<h2>11. Changes to This Privacy Policy</h2>
-<p>We may update this Privacy Policy from time to time. Changes will be
-posted on this page with an updated effective date.</p>
-<h2>12. Contact Us</h2>
-<p>Studio RYST<br>Email: <a href="mailto:info@dreamour.in">info@dreamour.in</a><br>
-Phone: +91 7530011770<br>Address: 52, Ankur Plaza, Gopathy Narayana Road, T-Nagar, Chennai — 600017, Tamil Nadu, India</p>
-</div>
+  <div class="legal"><p><b>Effective 28 October 2026.</b> First published 1 February 2026.</p><h2>1. Who is responsible for your data</h2><p>Studio RYST is operated by Dreamour Multiventures, Chennai, which is the data fiduciary (controller) for personal data collected through studio.ryst.in, our WhatsApp and phone enquiries, and our bookings. Contact details and our Grievance Officer are in section 13.</p><h2>2. What we collect</h2><ul><li><b>You give us:</b> your name, phone number, email, company or brand name, GST number and billing address if you want them on your invoice, the room, date and hours you want, messages you send us, how you heard about us, and any feedback or review you leave.</li><li><b>Payments:</b> Razorpay handles your card, UPI or wallet details; we never receive them. We receive the amount, a payment reference and the status.</li><li><b>Automatically, only if you accept analytics:</b> pages visited, time on page, device and browser type, approximate location and a truncated IP address, through Google Analytics. Nothing is collected until you accept in the cookie bar.</li><li><b>On the day:</b> with your agreement, behind-the-scenes photographs or video in which you may appear (see our Terms, section 6).</li></ul><h2>3. Why we use it, and the legal basis</h2><ul><li>To prepare your quote, confirm and run your booking, issue invoices and take payment — to perform our contract with you.</li><li>To keep tax and accounting records — a legal obligation under Indian GST and income-tax law.</li><li>To answer enquiries, send booking reminders and ask for feedback after a session — on the basis of our legitimate interest in running the studio, or your consent where the law requires it.</li><li>To understand how the website is used (analytics) and to use behind-the-scenes material — only with your consent, which you can withdraw at any time.</li><li>We do not sell personal data, and we do not use it for automated decisions about you.</li></ul><h2>4. Cookies and analytics</h2><ul><li>Google Analytics is switched off until you choose "Accept analytics" in the cookie bar. You can change your choice any time from "Cookie choices" in the footer of every page.</li><li>We use no advertising or cross-site tracking cookies.</li><li>Essential storage, which needs no consent: your cookie choice, a draft booking kept on your own device, and the sign-in of our staff.</li><li>The booking and quote pages load Razorpay's checkout when you choose to pay; Razorpay may set its own cookies for fraud prevention, under <a href="https://razorpay.com/privacy/" target="_blank" rel="noopener">its privacy policy</a>.</li></ul><h2>5. Who we share it with</h2><ul><li><b>Razorpay</b> (payments, India).</li><li><b>Google</b>: Analytics, only if you accept it; Google Calendar, where our team keeps the studio schedule (your name and session time); Google Maps/Places, to show our public reviews.</li><li><b>Meta (WhatsApp)</b>, when you message us or we message you there.</li><li><b>Supabase</b> (database hosting, Mumbai, India), <b>Render</b> (our server, United States) and <b>GitHub</b> (backups, United States), which store our booking records on our behalf.</li><li><b>Telegram</b>, which delivers booking alerts to our own staff (your name and the session summary).</li><li>Our accountants, and authorities or courts when the law requires it.</li></ul><p>Each provider acts on our instructions under its own data-processing terms, and may use the data only to provide its service to us.</p><h2>6. Where your data is kept</h2><p>Your data is stored primarily in India. Some providers listed above are in the United States; for visitors from the EU or UK, those transfers rely on the providers' standard contractual clauses and equivalent safeguards. You can ask us for details.</p><h2>7. How long we keep it</h2><ul><li>Quotes, bookings, invoices and payment records: 8 years, as Indian tax and accounting rules require.</li><li>Enquiries that do not become a booking, and WhatsApp conversations: up to 24 months.</li><li>Analytics data: up to 14 months, in aggregate form.</li><li>Behind-the-scenes photographs and video: until you ask us to remove them.</li></ul><h2>8. Security</h2><p>Booking and customer records are encrypted at rest, access is limited to our staff by individual sign-in, and payments are handled entirely by Razorpay. No system is perfectly secure; if a breach affects you, we will tell you and the authorities as the law requires.</p><h2>9. Your rights</h2><p>Wherever you are, you can ask us to tell you what personal data we hold about you, correct it, delete it (unless we must keep it for tax or legal reasons), or stop using it; you can withdraw any consent you have given; and you can complain to us or to the regulator in your country.</p><ul><li><b>India (Digital Personal Data Protection Act, 2023):</b> access, correction, erasure, withdrawal of consent, nominating someone to act for you, and the right to raise a grievance with our Grievance Officer, then with the Data Protection Board of India.</li><li><b>EU and UK (GDPR):</b> access, rectification, erasure, restriction, portability, objection, withdrawal of consent, and the right to lodge a complaint with your supervisory authority.</li><li><b>California (CCPA/CPRA):</b> the right to know, delete and correct, and to opt out of sale or sharing — we do neither.</li></ul><p>To use any of these, email <a href="mailto:info@dreamour.in">info@dreamour.in</a>. We may ask you to confirm your identity, and we reply within 30 days.</p><h2>10. Children</h2><p>The studio and this website are for people aged 18 and over. We do not knowingly collect data from anyone younger; if you believe we have, contact us and we will delete it.</p><h2>11. Links to other sites</h2><p>Links to Instagram, Google Maps, WhatsApp and other services take you to their sites, which have their own privacy policies.</p><h2>12. Changes</h2><p>We will post any change here with a new effective date, and tell you directly if the change matters to a booking you already have.</p><h2>13. Contact and Grievance Officer</h2><ul><li><b>Operator:</b> Dreamour Multiventures (trading as Studio RYST), GSTIN 33AAVFD1588M1ZR</li><li><b>Address:</b> 52, Ankur Plaza, Gopathy Narayana Road, T. Nagar, Chennai 600017, Tamil Nadu, India</li><li><b>Email:</b> <a href="mailto:info@dreamour.in">info@dreamour.in</a> · <b>Phone / WhatsApp:</b> <a href="tel:+917530011770">+91 75300 11770</a></li><li><b>Grievance Officer:</b> Proprietor, Dreamour Multiventures — <a href="mailto:info@dreamour.in">info@dreamour.in</a>, +91 75300 11770 (we acknowledge complaints within 48 hours and aim to resolve them within one month)</li></ul></div>
 </div></section>
 
 <footer><div class="wrap">
@@ -432,7 +374,7 @@ Phone: +91 7530011770<br>Address: 52, Ankur Plaza, Gopathy Narayana Road, T-Naga
       </div>
     </div>
     <div class="foot-bottom">
-      <p>RYST is a registered Trademark of Dreamour Multiventures. All rights reserved.</p>
+      <p>Studio RYST is operated by Dreamour Multiventures, Chennai. RYST is a registered trademark. · <a href="#" data-consent-open>Cookie choices</a></p>
       <p>© 2026 Dreamour Multiventures.</p>
     </div>
   </div></footer>
