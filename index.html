@@ -38,6 +38,7 @@
 <link rel="icon" href="/assets/logo-300.png">
 <link rel="stylesheet" href="/assets/fonts/newsreader.css">
 <link rel="preload" as="image" href="/assets/photos/hero.jpg" fetchpriority="high">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "VideoObject", "name": "Studio RYST kitchen studio walkthrough", "description": "A short walk through the kitchen studio at Studio RYST, T. Nagar, Chennai — a working kitchen built to be filmed in, next to the podcast and photography studios.", "thumbnailUrl": "https://studio.ryst.in/assets/photos/hero.jpg", "contentUrl": "https://studio.ryst.in/assets/video/hero.mp4", "uploadDate": "2026-10-27", "duration": "PT10S", "publisher": {"@id": "https://studio.ryst.in/#business"}}</script>
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebSite", "@id": "https://studio.ryst.in/#website", "url": "https://studio.ryst.in/", "name": "Studio RYST", "alternateName": ["Studio RYST Chennai", "RYST Studio"], "publisher": {"@id": "https://studio.ryst.in/#business"}, "inLanguage": "en-IN"}</script>
 <script type="application/ld+json" id="bizSchema">{"@context": "https://schema.org", "@type": "LocalBusiness", "@id": "https://studio.ryst.in/#business", "name": "Studio RYST", "alternateName": "Studio RYST - Podcast, Photography & Kitchen Content Studio", "description": "Chennai's first-of-its-kind 3-in-1 content production studio — Podcast, Photography and Culinary zones, available by the hour in T-Nagar.", "url": "https://studio.ryst.in/", "image": "https://studio.ryst.in/assets/logo-300.png", "logo": "https://studio.ryst.in/assets/logo-300.png", "telephone": "+91-75300-11770", "priceRange": "₹₹", "address": {"@type": "PostalAddress", "streetAddress": "52, Ankur Plaza, Gopathy Narayana Rd", "addressLocality": "T Nagar, Chennai", "addressRegion": "Tamil Nadu", "postalCode": "600017", "addressCountry": "IN"}, "geo": {"@type": "GeoCoordinates", "latitude": 13.0441808, "longitude": 80.2392505}, "hasMap": "https://maps.app.goo.gl/PmPDiPyLWbVhLFef7", "sameAs": ["https://instagram.com/studio.ryst"], "areaServed": {"@type": "City", "name": "Chennai"}}</script>
 
@@ -114,6 +115,7 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
 .reviews .stars{color:var(--accent);letter-spacing:.06em}
 .reviews b{font-weight:500;color:var(--ink)}
 .wordmark{position:absolute;z-index:2;left:calc(47% - 10vw);right:var(--m);bottom:40px;font-size:clamp(80px,11.2vw,172px);font-weight:300;line-height:1.08;letter-spacing:-.04em;white-space:nowrap;text-align:right;color:var(--ink);transform-origin:100% 100%;will-change:transform}
+.vh{position:absolute;width:1px;height:1px;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
 .wordmark .line{display:block;overflow:hidden;padding-top:.06em}
 .wordmark .line span{display:inline-block}
 @media (max-width:860px){
@@ -274,7 +276,7 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
 
 /* ---- footer: the name across the last photograph ---- */
 .foot{position:relative;height:100svh;overflow:hidden;color:var(--ink)}
-.foot > img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 45%;filter:brightness(.48) contrast(1.04)}
+.foot > img,.foot > .pc > img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 45%;filter:brightness(.48) contrast(1.04)}
 /* a neutral scrim under the two bands that carry text; the middle stays the photograph */
 .foot::before{content:'';position:absolute;inset:0;z-index:1;pointer-events:none;background:linear-gradient(180deg,rgba(10,8,7,.9) 0%,rgba(10,8,7,.55) 22%,rgba(10,8,7,.08) 42%,rgba(10,8,7,.08) 58%,rgba(10,8,7,.62) 78%,rgba(10,8,7,.94) 100%)}
 .foot .top,.foot .big,.foot .legal{z-index:2}
@@ -309,6 +311,7 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
 @keyframes load{to{opacity:1;transform:none}}
 @keyframes settle{to{transform:none}}
 @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}.btn:active,.nav .nav-act:active{transform:none}}
+.pc{display:contents}.pc source{display:none}
 </style>
 </head>
 <body>
@@ -337,10 +340,10 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
     <video id="heroVideo" muted loop playsinline preload="none" poster="/assets/photos/hero.jpg" aria-hidden="true" hidden><source src="/assets/video/hero.webm" type="video/webm"><source src="/assets/video/hero.mp4" type="video/mp4"></video>
   </figure>
   <div class="hero-right">
-    <p class="hero-lead">A podcast room, a filmable kitchen and a photo studio under one roof in T. Nagar, Chennai. Booked by the hour.</p>
+    <p class="hero-lead">A podcast studio, a kitchen studio and a photography studio under one roof in T. Nagar, Chennai. Rent them by the hour.</p>
     <a class="reviews" id="reviewsBadge" href="https://maps.app.goo.gl/7YeM8gav8mYPg42XA" target="_blank" rel="noopener" data-load style="--d:520ms" hidden><span class="stars" id="rbStars"></span><b id="rbRating"></b><span id="rbCount"></span></a>
   </div>
-  <h1 class="wordmark" id="wordmark"><span class="line"><span style="--i:0">Studio RYST</span></span></h1>
+  <h1 class="wordmark" id="wordmark"><span class="line"><span style="--i:0">Studio RYST</span></span><span class="vh"> — podcast, kitchen and photography studio in Chennai</span></h1>
 </section>
 
 <section class="chapter rooms" aria-labelledby="roomsH">
@@ -354,8 +357,8 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
     <span>on one booking.</span>
   </p>
   <div class="intro-pics">
-    <img data-rv style="--i:1" src="/assets/photos/gallery-02.jpg" alt="Two guests in conversation on the podcast sofa at Studio RYST" width="1400" height="1080" loading="lazy">
-    <img data-rv style="--i:2" src="/assets/photos/gallery-04.jpg" alt="A cooking shoot in progress in the Studio RYST kitchen" width="1400" height="1080" loading="lazy">
+    <picture class="pc"><source type="image/webp" srcset="/assets/photos/gallery-02.webp"><img data-rv style="--i:1" src="/assets/photos/gallery-02.jpg" alt="Two guests in conversation on the podcast sofa at Studio RYST" width="1400" height="1080" loading="lazy"></picture>
+    <picture class="pc"><source type="image/webp" srcset="/assets/photos/gallery-04.webp"><img data-rv style="--i:2" src="/assets/photos/gallery-04.jpg" alt="A cooking shoot in progress in the Studio RYST kitchen" width="1400" height="1080" loading="lazy"></picture>
   </div>
   <p class="intro-note" data-rv style="--i:3">52, Ankur Plaza, Gopathy Narayana Road, T. Nagar. Two-hour minimum for the podcast and photo studios, four for the kitchen. Semi-acoustic, climate-controlled, confirmed the moment you pay.</p>
   </div>
@@ -363,7 +366,7 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
   <article class="room">
     <figure><picture><source type="image/webp" srcset="/assets/photos/zone-podcast.webp"><img src="/assets/photos/zone-podcast.jpg" alt="The podcast room at Studio RYST — sofa seating, microphones on stands, warm ambient light" width="1400" height="1050" loading="lazy"></picture></figure>
     <div class="txt">
-      <h3 data-rv>The podcast room</h3>
+      <h3 data-rv>The podcast studio</h3>
       <p data-rv style="--i:1">An acoustically treated room with broadcast microphones and sofa seating for a host and guests, lit for video. Book from 2 hours.</p>
       <ul data-rv style="--i:2">
         <li>Broadcast microphones for host and guests</li>
@@ -372,7 +375,7 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
         <li>Camera-ready ambient lighting</li>
         <li>Bring your camera, or add a cinematographer</li>
       </ul>
-      <a class="tlink" data-rv style="--i:3" href="/podcast-studio-chennai/">About the podcast room →</a>
+      <a class="tlink" data-rv style="--i:3" href="/podcast-studio-chennai/">Podcast studio in Chennai →</a>
     </div>
   </article>
 
@@ -388,14 +391,14 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
         <li>Room for recipe videos, demos and photography</li>
         <li>Bring your camera, or add a cinematographer</li>
       </ul>
-      <a class="tlink" data-rv style="--i:3" href="/kitchen-studio-chennai/">About the kitchen studio →</a>
+      <a class="tlink" data-rv style="--i:3" href="/kitchen-studio-chennai/">Kitchen studio in Chennai →</a>
     </div>
   </article>
 
   <article class="room">
     <figure><picture><source type="image/webp" srcset="/assets/photos/zone-photography.webp"><img src="/assets/photos/zone-photography.jpg" alt="The photo studio at Studio RYST — green screen, continuous LED lights and softboxes" width="1400" height="1050" loading="lazy"></picture></figure>
     <div class="txt">
-      <h3 data-rv>The photo studio</h3>
+      <h3 data-rv>The photography studio</h3>
       <p data-rv style="--i:1">Continuous LED lighting with a green screen available, for product shoots, editorials, headshots and e-commerce. Book from 2 hours.</p>
       <ul data-rv style="--i:2">
         <li>Continuous LED lighting</li>
@@ -404,7 +407,7 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
         <li>Headshots and portrait sessions</li>
         <li>Bring your camera, or add a cinematographer</li>
       </ul>
-      <a class="tlink" data-rv style="--i:3" href="/studio/">About the photo studio →</a>
+      <a class="tlink" data-rv style="--i:3" href="/photography-studio-chennai/">Photography studio in Chennai →</a>
     </div>
   </article>
 </section>
@@ -412,7 +415,7 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
 <section class="gallery" id="gallery" aria-labelledby="galH">
   <div class="row up">
     <figure class="ph reel" data-rate="5"><a href="https://www.instagram.com/reel/De3vtgHBJ--/" target="_blank" rel="noopener" aria-label="Watch a reel from the studio on Instagram" title="Watch a reel from the studio"><img src="/assets/photos/hero.jpg" alt="" width="2400" height="1350" loading="lazy" style="object-position:38% 50%"><span class="play"><svg width="22" height="24" viewBox="0 0 22 24" aria-hidden="true"><path d="M2 2l18 10L2 22z" fill="#ede6d9"/></svg></span></a></figure>
-    <figure class="ph ph1" data-rate="7"><a href="/assets/photos/gallery-01.jpg" target="_blank" rel="noopener"><img src="/assets/photos/gallery-01.jpg" alt="A live shoot at Studio RYST — the full lighting rig and crew" width="1400" height="1080" loading="lazy"></a></figure>
+    <figure class="ph ph1" data-rate="7"><a href="/assets/photos/gallery-01.jpg" target="_blank" rel="noopener"><picture class="pc"><source type="image/webp" srcset="/assets/photos/gallery-01.webp"><img src="/assets/photos/gallery-01.jpg" alt="A live shoot at Studio RYST — the full lighting rig and crew" width="1400" height="1080" loading="lazy"></picture></a></figure>
       </div>
   <div class="mid">
     <h2 id="galH" data-rv>A closer look<br>at the space.</h2>
@@ -421,11 +424,11 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
     <a class="tlink" data-rv style="--i:3" href="https://instagram.com/studio.ryst" target="_blank" rel="noopener">@studio.ryst</a>
   </div>
   <div class="row down">
-    <figure class="ph ph2" data-rate="-5"><a href="/assets/photos/gallery-03.jpg" target="_blank" rel="noopener"><img src="/assets/photos/gallery-03.jpg" alt="A recording session in the podcast room" width="1400" height="1080" loading="lazy"></a></figure>
-    <figure class="ph ph3" data-rate="9"><a href="/assets/photos/gallery-05.jpg" target="_blank" rel="noopener"><img src="/assets/photos/gallery-05.jpg" alt="An interview set up and lit in the podcast room" width="1400" height="1080" loading="lazy"></a></figure>
-    <figure class="ph ph4" data-rate="-8"><a href="/assets/photos/gallery-06.jpg" target="_blank" rel="noopener"><img src="/assets/photos/gallery-06.jpg" alt="A product photography session in the photo studio" width="1400" height="1080" loading="lazy"></a></figure>
-    <figure class="ph ph5" data-rate="4"><a href="/assets/photos/gallery-04.jpg" target="_blank" rel="noopener"><img src="/assets/photos/gallery-04.jpg" alt="A cooking shoot in the kitchen studio" width="1400" height="1080" loading="lazy"></a></figure>
-    <figure class="ph ph6" data-rate="-11"><a href="/assets/photos/gallery-02.jpg" target="_blank" rel="noopener"><img src="/assets/photos/gallery-02.jpg" alt="Two guests recording a podcast conversation" width="1400" height="1080" loading="lazy"></a></figure>
+    <figure class="ph ph2" data-rate="-5"><a href="/assets/photos/gallery-03.jpg" target="_blank" rel="noopener"><picture class="pc"><source type="image/webp" srcset="/assets/photos/gallery-03.webp"><img src="/assets/photos/gallery-03.jpg" alt="A recording session in the podcast room" width="1400" height="1080" loading="lazy"></picture></a></figure>
+    <figure class="ph ph3" data-rate="9"><a href="/assets/photos/gallery-05.jpg" target="_blank" rel="noopener"><picture class="pc"><source type="image/webp" srcset="/assets/photos/gallery-05.webp"><img src="/assets/photos/gallery-05.jpg" alt="An interview set up and lit in the podcast room" width="1400" height="1080" loading="lazy"></picture></a></figure>
+    <figure class="ph ph4" data-rate="-8"><a href="/assets/photos/gallery-06.jpg" target="_blank" rel="noopener"><picture class="pc"><source type="image/webp" srcset="/assets/photos/gallery-06.webp"><img src="/assets/photos/gallery-06.jpg" alt="A product photography session in the photo studio" width="1400" height="1080" loading="lazy"></picture></a></figure>
+    <figure class="ph ph5" data-rate="4"><a href="/assets/photos/gallery-04.jpg" target="_blank" rel="noopener"><picture class="pc"><source type="image/webp" srcset="/assets/photos/gallery-04.webp"><img src="/assets/photos/gallery-04.jpg" alt="A cooking shoot in the kitchen studio" width="1400" height="1080" loading="lazy"></picture></a></figure>
+    <figure class="ph ph6" data-rate="-11"><a href="/assets/photos/gallery-02.jpg" target="_blank" rel="noopener"><picture class="pc"><source type="image/webp" srcset="/assets/photos/gallery-02.webp"><img src="/assets/photos/gallery-02.jpg" alt="Two guests recording a podcast conversation" width="1400" height="1080" loading="lazy"></picture></a></figure>
   </div>
 </section>
 
@@ -433,7 +436,7 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
   <div class="prices">
     <div class="lead-col">
       <h2 id="ratesH" data-rv>Hourly rates</h2>
-      <img data-rv style="--i:1" src="/assets/photos/gallery-06.jpg" alt="A product shoot in the Studio RYST photo studio" width="1400" height="1080" loading="lazy">
+      <picture class="pc"><source type="image/webp" srcset="/assets/photos/gallery-06.webp"><img data-rv style="--i:1" src="/assets/photos/gallery-06.jpg" alt="A product shoot in the Studio RYST photo studio" width="1400" height="1080" loading="lazy"></picture>
     </div>
     <div class="menu-cols" id="menuCols">
       <div>
@@ -500,11 +503,11 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
 </section>
 
 <footer class="foot">
-  <img src="/assets/photos/gallery-01.jpg" alt="" width="1400" height="1080" loading="eager" fetchpriority="low">
+  <picture class="pc"><source type="image/webp" srcset="/assets/photos/gallery-01.webp"><img src="/assets/photos/gallery-01.jpg" alt="" width="1400" height="1080" loading="eager" fetchpriority="low"></picture>
   <div class="top">
     <ul>
       <li class="mark"><img src="/assets/logo-300.png" alt="Studio RYST" width="72" height="72"></li>
-      <li><a href="/studio/">The studio</a></li>
+      <li><a href="/studio/">The studio</a> · <a href="/podcast-studio-chennai/">Podcast</a> · <a href="/kitchen-studio-chennai/">Kitchen</a> · <a href="/photography-studio-chennai/">Photography</a></li>
       <li><a href="/packages/">Rates</a></li>
       <li><a href="/booking/">Book a session</a></li>
       <li><a href="/contact/">Contact</a></li>

@@ -82,3 +82,6 @@ footer{background:#0e0c0b}
 .legal h2{font-family:"Newsreader",Georgia,serif;font-weight:500;font-size:22px;letter-spacing:0}
 .legal ul{padding-left:20px}.legal li{margin:6px 0}
 .legal a{color:var(--ink)}
+
+/* a sub-pixel overflow on wide screens made the page scroll sideways by 1px */
+html,body{overflow-x:clip}
