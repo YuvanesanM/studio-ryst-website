@@ -343,7 +343,7 @@
       <div class="group">
         <p class="gh">Line items</p>
         <div class="li-head"><div>Description</div><div class="num">Price</div><div class="num">Qty</div><div class="num">Total</div><div></div></div>
-        <p class="hint" id="valueLockNote" hidden style="margin:0 0 10px;color:var(--accent-d,#8a6d1c)">🔒 An advance is recorded on this quote, so its items, prices, duration and discount are locked. Ask an admin if they need to change.</p>
+        <p class="hint" id="valueLockNote" hidden style="margin:0 0 10px;color:var(--accent-d,#8a6d1c)">🔒 An advance is recorded. You can add items or raise quantities, prices and hours, and update the GST number and company details. Lowering the quote, raising the discount or changing the room needs an admin.</p>
         <div id="liBody"></div>
         <button class="add-li" id="addLi">+ Add item</button>
 
@@ -1134,24 +1134,59 @@ function newQuote(){
 }
 
 /* ---------- LINE ITEM EDITOR ---------- */
-// Once a payment is saved on a quote, its value is fixed for coordinators
-// (the server refuses the change too). Admins can still edit.
-function valueSig(q){
-  const its=(q.items||[]).map(it=>[String(it.desc||"").trim(),Number(it.price)||0,Number(it.qty!=null&&it.qty!==""?it.qty:1)||0,Number(it.gst!=null&&it.gst!==""?it.gst:18)||0]);
-  return JSON.stringify([its,Number(q.discount)||0,String(q.zone||""),Number(q.hours)||0]);
+// Once a payment is saved on a quote, a coordinator can only add to it:
+// saved lines can't be removed or lowered, hours can't drop, the discount
+// can't grow and the room is fixed. The server enforces the same rule.
+function normLine(it){ return {desc:String(it.desc||"").trim(), price:Number(it.price)||0, qty:Number(it.qty!=null&&it.qty!==""?it.qty:1)||0, gst:Number(it.gst!=null&&it.gst!==""?it.gst:18)||0}; }
+function quoteReduction(o,n){
+  const oi=(o.items||[]).map(normLine), ni=(n.items||[]).map(normLine);
+  if(String(o.zone||"")!==String(n.zone||"")) return "the room can't be changed";
+  if((Number(n.hours)||0)<(Number(o.hours)||0)) return "the duration can't be shortened";
+  if((Number(n.discount)||0)>(Number(o.discount)||0)) return "the discount can't be increased";
+  if(ni.length<oi.length) return "a line can't be removed";
+  for(let i=0;i<oi.length;i++){
+    const a=oi[i], c=ni[i];
+    if(a.desc!==c.desc||a.gst!==c.gst) return `"${a.desc}" can't be removed or replaced`;
+    if(c.price<a.price) return `the price of "${a.desc}" can't be lowered`;
+    if(c.qty<a.qty) return `the quantity of "${a.desc}" can't be lowered`;
+  }
+  return null;
 }
-function valueLocked(){
-  if(IS_ADMIN || !editingKey) return false;
+function lockedBase(){
+  if(IS_ADMIN || !editingKey) return null;
   const q=getQuotes().find(x=>x.qno===editingKey);
-  return !!q && (q.payments||[]).some(p=>Number(p.amount)>0);
+  return (q && (q.payments||[]).some(p=>Number(p.amount)>0)) ? q : null;
 }
 function applyValueLock(){
-  const L=valueLocked();
-  ["zone","hours","discountInp"].forEach(id=>{ const el=$("#"+id); if(el){ el.disabled=L; el.title=L?"Locked: an advance is recorded":""; } });
-  $("#addLi").hidden=L;
-  $("#liBody").querySelectorAll("select,input:not(.tot),button").forEach(el=>{ if(L) el.disabled=true; });
+  const base=lockedBase(), L=!!base;
+  $("#zone").disabled=L; $("#zone").title=L?"Locked: an advance is recorded":"";
+  const minH=L?(Number(base.hours)||0):0;
+  [...$("#hours").options].forEach(o=>{ o.disabled = L && Number(o.value)<minH; });
+  const di=$("#discountInp"); di.dataset.ceil = L ? String(Number(base.discount)||0) : "";
+  di.title = L ? "Can't go above the saved discount" : "";
   $("#valueLockNote").hidden=!L;
+  if(!L) return;
+  const saved=(base.items||[]).map(normLine);
+  $("#liBody").querySelectorAll(".li-row").forEach((row,i)=>{
+    if(i>=saved.length) return;
+    const sel=row.querySelector(".li-sel"); if(sel) sel.disabled=true;
+    const del=row.querySelector("[data-del]"); if(del) del.style.visibility="hidden";
+    const p=row.querySelector('[data-k="price"]'); if(p && !p.readOnly){ p.dataset.floor=saved[i].price; p.min=saved[i].price; }
+    const q=row.querySelector('[data-k="qty"]'); if(q && !q.readOnly){ q.dataset.floor=saved[i].qty; q.min=saved[i].qty; }
+  });
 }
+// Snap a field back to its floor/ceiling when the coordinator leaves it.
+document.addEventListener("focusout", e=>{
+  const t=e.target;
+  if(t && t.dataset && t.dataset.floor!=null && t.dataset.floor!=="" && (parseFloat(t.value)||0)<Number(t.dataset.floor)){
+    t.value=t.dataset.floor; const i=+t.dataset.i; if(items[i]) items[i][t.dataset.k]=t.value;
+    const cell=t.closest(".li-row")&&t.closest(".li-row").querySelector(".tot"); if(cell&&items[i]) cell.value=money(lineTotal(items[i]));
+    render(); toast("An advance is recorded — this can't go below the saved value");
+  }
+  if(t && t.id==="discountInp" && t.dataset.ceil!=="" && t.dataset.ceil!=null && (parseFloat(t.value)||0)>Number(t.dataset.ceil)){
+    t.value=Number(t.dataset.ceil)?t.dataset.ceil:""; render(); toast("An advance is recorded — the discount can't be increased");
+  }
+});
 function renderItems(){
   const body=$("#liBody"); body.innerHTML="";
   items.forEach((it,i)=>{
@@ -1349,9 +1384,9 @@ async function saveQuote(silent){
       renderQPayments();
     }
   }
-  if(!IS_ADMIN && fresh && (fresh.payments||[]).some(p=>Number(p.amount)>0) && valueSig(fresh)!==valueSig(q)){
-    toast("An advance is recorded on "+q.qno+" — only an admin can change its items, prices, discount or duration");
-    loadQuote(q.qno); return;
+  if(!IS_ADMIN && fresh && (fresh.payments||[]).some(p=>Number(p.amount)>0)){
+    const why=quoteReduction(fresh,q);
+    if(why){ toast("An advance is recorded on "+q.qno+": "+why+". Only an admin can reduce a quote"); return; }
   }
   const all=getQuotes(); const key=editingKey||q.qno; const idx=all.findIndex(x=>x.qno===key);
   // Footer attribution — see the curCreatedBy comment above. A quote already
