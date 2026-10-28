@@ -94,6 +94,7 @@ function renderForm(alreadySubmitted){
     <p class="lead">${CNAME?`Hi ${esc(CNAME)}, thank`:'Thank'} you for choosing Studio RYST! How was your experience?</p>
     <div class="stars" id="stars">${[1,2,3,4,5].map(n=>`<button type="button" class="star" data-n="${n}">★</button>`).join('')}</div>
     <textarea id="comment" placeholder="Tell us a bit more (optional)…"></textarea>
+    <p style="font-size:12.5px;color:var(--muted2,#777);line-height:1.5;margin:10px 0 4px">Your rating and comment are kept with your booking and used only to improve the studio. We won't publish them without asking you first. <a href="https://studio.ryst.in/privacy-policy/" target="_blank" rel="noopener">Privacy policy</a></p>
     <button class="submit-btn" id="submitBtn" disabled>Submit feedback</button>
     <div class="err" id="err"></div>`;
   $('#stars').addEventListener('click', e=>{

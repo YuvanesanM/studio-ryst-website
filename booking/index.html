@@ -535,7 +535,7 @@ footer{border-top:1px solid var(--line);padding:64px 0 30px;margin-top:0}
   dateInp.addEventListener('change', renderAvail);
   ['fName','fPhone','fStart'].forEach(function(id){ $('#'+id).addEventListener('input', validate); });
   $('#fPhone').addEventListener('input', function(e){ e.target.value = e.target.value.replace(/\D/g,'').slice(0,10); });
-  try{ var firstSrc=JSON.parse(localStorage.getItem('ryst_src')||'null'); if(firstSrc&&firstSrc.src) $('#fSrc').value=firstSrc.src; }catch(e){}
+  try{ var firstSrc=JSON.parse(sessionStorage.getItem('ryst_src')||'null'); if(firstSrc&&firstSrc.src) $('#fSrc').value=firstSrc.src; }catch(e){}
   $('#fGst').addEventListener('input', function(e){ e.target.value = e.target.value.toUpperCase(); });
 
   $('#bookBtn').addEventListener('click', function(){
@@ -582,12 +582,22 @@ footer{border-top:1px solid var(--line);padding:64px 0 30px;margin-top:0}
   // quote page; the server then marks the quote paid, puts it on the schedule
   // and tells the team.
   var BOOKED = null;
+function loadRazorpay(){
+  // Razorpay's checkout script is fetched only when someone chooses to pay,
+  // so the gateway sees nothing about visitors who merely read the page.
+  return new Promise(function(res,rej){
+    if(typeof Razorpay!=='undefined') return res();
+    var s=document.createElement('script'); s.src='https://checkout.razorpay.com/v1/checkout.js';
+    s.onload=function(){ res(); }; s.onerror=function(){ rej(new Error('Payment gateway failed to load — check your connection and retry')); };
+    document.head.appendChild(s);
+  });
+}
   function payFail(m){ $('#payErr').textContent = m; $('#payNowBtn').disabled = false; }
   $('#payNowBtn').addEventListener('click', function(){
     if(!BOOKED) return;
     $('#payErr').textContent=''; $('#payNowBtn').disabled = true;
-    if(typeof Razorpay === 'undefined'){ payFail('Payment gateway failed to load — check your connection and retry.'); return; }
-    fetch(PROXY_URL+'/quote-pay/order', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ token: BOOKED.token, amount: BOOKED.grand }) })
+    loadRazorpay().catch(function(e){ payFail(e.message); throw e; }).then(function(){
+    return fetch(PROXY_URL+'/quote-pay/order', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ token: BOOKED.token, amount: BOOKED.grand }) })
       .then(function(r){ return r.json().then(function(d){ return {ok:r.ok, d:d}; }); })
       .then(function(o){
         if(!o.ok){ payFail(o.d.error || 'Could not start payment'); return; }
@@ -618,6 +628,7 @@ footer{border-top:1px solid var(--line);padding:64px 0 30px;margin-top:0}
         rzp.open();
       })
       .catch(function(){ payFail('Network error — please try again.'); });
+    });
   });
 
   fetch(PROXY_URL+'/public-availability').then(function(r){ return r.json(); }).then(function(d){
@@ -626,7 +637,6 @@ footer{border-top:1px solid var(--line);padding:64px 0 30px;margin-top:0}
 })();
 </script>
 
-<script src="https://checkout.razorpay.com/v1/checkout.js" defer></script>
 <script src="/assets/site.js" defer></script>
 </body>
 </html>
