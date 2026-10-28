@@ -343,6 +343,7 @@
       <div class="group">
         <p class="gh">Line items</p>
         <div class="li-head"><div>Description</div><div class="num">Price</div><div class="num">Qty</div><div class="num">Total</div><div></div></div>
+        <p class="hint" id="valueLockNote" hidden style="margin:0 0 10px;color:var(--accent-d,#8a6d1c)">🔒 An advance is recorded on this quote, so its items, prices, duration and discount are locked. Ask an admin if they need to change.</p>
         <div id="liBody"></div>
         <button class="add-li" id="addLi">+ Add item</button>
 
@@ -1133,6 +1134,24 @@ function newQuote(){
 }
 
 /* ---------- LINE ITEM EDITOR ---------- */
+// Once a payment is saved on a quote, its value is fixed for coordinators
+// (the server refuses the change too). Admins can still edit.
+function valueSig(q){
+  const its=(q.items||[]).map(it=>[String(it.desc||"").trim(),Number(it.price)||0,Number(it.qty!=null&&it.qty!==""?it.qty:1)||0,Number(it.gst!=null&&it.gst!==""?it.gst:18)||0]);
+  return JSON.stringify([its,Number(q.discount)||0,String(q.zone||""),Number(q.hours)||0]);
+}
+function valueLocked(){
+  if(IS_ADMIN || !editingKey) return false;
+  const q=getQuotes().find(x=>x.qno===editingKey);
+  return !!q && (q.payments||[]).some(p=>Number(p.amount)>0);
+}
+function applyValueLock(){
+  const L=valueLocked();
+  ["zone","hours","discountInp"].forEach(id=>{ const el=$("#"+id); if(el){ el.disabled=L; el.title=L?"Locked: an advance is recorded":""; } });
+  $("#addLi").hidden=L;
+  $("#liBody").querySelectorAll("select,input:not(.tot),button").forEach(el=>{ if(L) el.disabled=true; });
+  $("#valueLockNote").hidden=!L;
+}
 function renderItems(){
   const body=$("#liBody"); body.innerHTML="";
   items.forEach((it,i)=>{
@@ -1226,6 +1245,7 @@ function renderItems(){
       renderItems(); render();
     });
   });
+  applyValueLock();
 }
 
 /* ---------- RENDER PREVIEW ---------- */
@@ -1329,6 +1349,10 @@ async function saveQuote(silent){
       renderQPayments();
     }
   }
+  if(!IS_ADMIN && fresh && (fresh.payments||[]).some(p=>Number(p.amount)>0) && valueSig(fresh)!==valueSig(q)){
+    toast("An advance is recorded on "+q.qno+" — only an admin can change its items, prices, discount or duration");
+    loadQuote(q.qno); return;
+  }
   const all=getQuotes(); const key=editingKey||q.qno; const idx=all.findIndex(x=>x.qno===key);
   // Footer attribution — see the curCreatedBy comment above. A quote already
   // in the array (idx>=0) keeps whatever createdBy it already had (undefined
@@ -1344,6 +1368,7 @@ async function saveQuote(silent){
   setQuotes(all); editingKey=q.qno; syncPdfBtn(); syncLoadQuoteBtnLabel(); renderLoadQuotePanel();
   render(); // picks up the just-set curCreatedBy/curLastEditedBy in the footer
   await pushQuotes();
+  applyValueLock();
   if(!silent) toast("Quote "+q.qno+" saved");
   if(leadLink && leadLink.id){ await linkQuoteToLead(leadLink.id, q.qno, q.status==='Confirmed'); }
   await syncToSchedule(q);
