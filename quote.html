@@ -968,8 +968,8 @@ async function syncToSchedule(q){
     const i=sessions.findIndex(s=>s.id===sid);
     if(i>=0) sessions[i]=session; else sessions.push(session);
     const pr=await fetch(PROXY_URL+"/schedule",{method:"PUT",headers:{"X-Token":proxyToken,"Content-Type":"application/json"},body:JSON.stringify({...sched,sessions})});
-    if(pr.status===403){ toast("Completed sessions are locked for your account"); updateSchedStatus(); return; }
-    if(!pr.ok){ toast("Could not update the schedule ("+pr.status+")"); updateSchedStatus(); return; }
+    if(pr.status===403){ toast("⚠ Not updated on the TV schedule — ask an admin"); updateSchedStatus("Not on the TV schedule: a past session can only be changed by an admin"); return; }
+    if(!pr.ok){ toast("⚠ Could not update the TV schedule ("+pr.status+")"); updateSchedStatus("Not on the TV schedule: the update failed ("+pr.status+"), save again to retry"); return; }
 
     const wasNew=!curScheduleId;
     curScheduleId=sid; curScheduleConflict=false; updateSchedStatus();
