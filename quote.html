@@ -300,7 +300,10 @@
           <label class="f"><span>Quote no. (auto)</span><input class="t locked" id="qno" readonly tabindex="-1"></label>
           <label class="f"><span>Date (auto)</span><input class="t locked" id="qdate" readonly tabindex="-1"></label>
         </div>
-        <label class="f"><span>Invoice no. <span style="font-weight:400;color:var(--muted2)">(set once paid/invoiced)</span></span><input class="t" id="invoiceNo" placeholder="e.g. DD17M27S1"></label>
+        <div class="row2">
+          <label class="f"><span>Invoice no. <span style="font-weight:400;color:var(--muted2)">(set once paid/invoiced)</span></span><input class="t" id="invoiceNo" placeholder="e.g. DD17M27S1"></label>
+          <label class="f"><span>Invoice date <span style="font-weight:400;color:var(--muted2)">(counts the sale)</span></span><input class="t" id="invoiceDate" type="date"></label>
+        </div>
         <div class="row2">
           <label class="f"><span>Zone</span><select class="t" id="zone"></select></label>
           <label class="f"><span>Duration</span><select class="t" id="hours"></select></label>
@@ -1123,7 +1126,7 @@ function newQuote(){
   curQno=nextQuoteNo(); curDateISO=localISO();
   curShareToken=genToken(); curSharedAt=null; renderClientResp(null);
   $("#qno").value=curQno; $("#qdate").value=fmtDate(curDateISO);
-  $("#invoiceNo").value="";
+  $("#invoiceNo").value=""; $("#invoiceDate").value=curDateISO;
   $("#zone").value=ZONES[0]; $("#hours").value=String(DEFAULT_HOURS);
   $("#cname").value=""; $("#cphone").value=""; $("#cgst").value=""; $("#caddr").value=""; $("#terms").value=settings.terms; $("#discountInp").value=""; discFloorPct=0;
   $("#sessDate").value=""; $("#sessStart").value=""; curScheduleId=null; curScheduleConflict=false; updateSchedStatus();
@@ -1344,7 +1347,7 @@ function render(){
 function collect(){
   const payments = qPaymentsDraft.map(p=>({...p}));
   const paid = payments.reduce((s,p)=>s+(Number(p.amount)||0),0);
-  return { qno:curQno, date:curDateISO, invoiceNo:$("#invoiceNo").value.trim(), zone:$("#zone").value, hours:$("#hours").value, req:reqText(),
+  return { qno:curQno, date:curDateISO, invoiceNo:$("#invoiceNo").value.trim(), invoiceDate:$("#invoiceDate").value||curDateISO, zone:$("#zone").value, hours:$("#hours").value, req:reqText(),
     cname:$("#cname").value, cphone:$("#cphone").value.trim(), cgst:$("#cgst").value.trim(), caddr:$("#caddr").value, terms:$("#terms").value,
     discount: parseFloat($("#discountInp").value)||0,
     sessionDate:$("#sessDate").value, sessionStart:$("#sessStart").value, scheduleId:curScheduleId, scheduleConflict:curScheduleConflict,
@@ -1414,6 +1417,8 @@ function loadQuote(qno){
   curCreatedBy=q.createdBy||null; curLastEditedBy=q.lastEditedBy||null;
   $("#qno").value=curQno; $("#qdate").value=fmtDate(curDateISO);
   $("#invoiceNo").value=q.invoiceNo||"";
+  // Sales count from the invoice date; until one is set it is the quote date.
+  $("#invoiceDate").value=q.invoiceDate||q.date||"";
   $("#zone").value=ZONES.includes(q.zone)?q.zone:ZONES[0];
   $("#hours").value=(q.hours&&+q.hours>=MIN_HOURS&&+q.hours<=MAX_HOURS)?q.hours:String(DEFAULT_HOURS);
   $("#cname").value=q.cname; $("#cphone").value=q.cphone||""; $("#cgst").value=q.cgst||""; $("#caddr").value=q.caddr; $("#terms").value=q.terms; $("#discountInp").value=q.discount?String(q.discount):"";
