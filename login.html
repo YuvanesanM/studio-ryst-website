@@ -448,12 +448,22 @@ async function sendWaReminder(qno, kind){
   // Full-array overwrite, same pattern as quote.html's pushQuotes() — a quote
   // edited elsewhere at the same moment could be raced, but that risk already
   // exists wherever the app persists quotes today.
+  // Re-read the stored quotes and change only this one field, so a payment or
+  // edit saved elsewhere since this page loaded is never overwritten.
+  const field=kind+'SentAt', stamp=q[field];
   try{
-    await fetch(PROXY_URL+'/quotes', {
+    const gr=await fetch(PROXY_URL+'/quotes',{headers:{'X-Token':proxyToken}});
+    if(!gr.ok) throw new Error('read '+gr.status);
+    const fresh=await gr.json(); const list=Array.isArray(fresh.quotes)?fresh.quotes:[];
+    const fq=list.find(x=>x.qno===qno); if(!fq) throw new Error('quote not found');
+    fq[field]=stamp;
+    const pr=await fetch(PROXY_URL+'/quotes', {
       method:'PUT', headers:{'X-Token':proxyToken,'Content-Type':'application/json'},
-      body: JSON.stringify({version:1, quotes: WA_QUOTES})
+      body: JSON.stringify({...fresh, version:fresh.version||1, quotes:list})
     });
-  }catch(e){}
+    if(!pr.ok){ const d=await pr.json().catch(()=>({})); throw new Error(d.error||('HTTP '+pr.status)); }
+    WA_QUOTES=list; renderWaReminders();
+  }catch(e){ toast('Sent, but the "sent" mark was not saved ('+(e.message||'error')+')'); }
 }
 
 // Admin-only cards (e.g. Settings) are hidden from coordinators.

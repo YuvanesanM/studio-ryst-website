@@ -643,6 +643,7 @@ async function sendTemplatedWa(kind){
 // field on the stored record — never the live form — so an in-progress
 // unsaved edit can't be persisted as a side effect of tapping Send.
 async function markWaSent(qno, kind){
+  await fetchQuotesFromProxy();   // write onto the latest copy, not this tab's
   const all = getQuotes();
   const idx = all.findIndex(x=>x.qno===qno);
   if(idx<0) return;
@@ -674,10 +675,27 @@ async function pushQuotes(){
       method:'PUT', headers:{'X-Token':proxyToken,'Content-Type':'application/json'},
       body: JSON.stringify({version:1, quotes: quotesCache})
     });
-    if(res.status===401){ handleExpired(); return; }
-    if(!res.ok) console.error('Quote save error HTTP', res.status);
-  } catch(e){ console.error('Quote push failed', e); }
+    if(res.status===401){ handleExpired(); return false; }
+    if(!res.ok){
+      const d=await res.json().catch(()=>({}));
+      console.error('Quote save error HTTP', res.status, d);
+      showSaveError(d.error || ("the server refused the save ("+res.status+")"));
+      await fetchQuotesFromProxy();   // put back what is really stored
+      return false;
+    }
+    return true;
+  } catch(e){ console.error('Quote push failed', e); showSaveError("no connection to the server"); return false; }
 }
+// A save that didn't reach the server must never look like it did: show the
+// reason in a banner that stays until the next successful save.
+function showSaveError(msg){
+  let el=document.getElementById('saveErrBanner');
+  if(!el){ el=document.createElement('div'); el.id='saveErrBanner'; el.setAttribute('role','alert');
+    el.style.cssText='position:fixed;left:50%;transform:translateX(-50%);bottom:20px;z-index:9999;max-width:min(560px,92vw);background:#c0584b;color:#fff;padding:12px 16px;border-radius:10px;font:600 14px/1.45 Outfit,system-ui,sans-serif;box-shadow:0 8px 24px rgba(0,0,0,.25);cursor:pointer';
+    el.title='Click to dismiss'; el.addEventListener('click',()=>el.remove()); document.body.appendChild(el); }
+  el.textContent='⚠ Not saved — '+msg;
+}
+function clearSaveError(){ const el=document.getElementById('saveErrBanner'); if(el) el.remove(); }
 function toast(msg){ const t=$("#toast"); t.textContent=msg; t.classList.add("show"); setTimeout(()=>t.classList.remove("show"),2200); }
 
 function fmtDate(iso){ if(!iso) return ""; const [y,m,d]=iso.split("-"); return `${d}/${m}/${y}`; }
@@ -1010,8 +1028,9 @@ async function initApp(){
     }
     // Rebuild the studio line from the freshly-loaded rate card so its
     // description and price reflect the real (possibly renamed) entry,
-    // not the default used during the instant first paint.
-    syncZoneItem();
+    // not the default used during the instant first paint. Only for a new
+    // quote: a saved quote keeps the prices it was saved with.
+    if(!editingKey) syncZoneItem();
     render();
   }
 }
@@ -1128,6 +1147,7 @@ function bind(){
 
 /* ---------- NEW QUOTE ---------- */
 function newQuote(){
+  document.querySelectorAll('#zone option[data-legacy],#hours option[data-legacy]').forEach(o=>o.remove());
   editingKey=null; syncPdfBtn(); clearLeadLink();
   curCreatedBy=null; curLastEditedBy=null;
   curQno=nextQuoteNo(); curDateISO=localISO();
@@ -1149,8 +1169,9 @@ function newQuote(){
 // can't grow and the room is fixed. The server enforces the same rule.
 function normLine(it){ return {desc:String(it.desc||"").trim(), price:Number(it.price)||0, qty:Number(it.qty!=null&&it.qty!==""?it.qty:1)||0, gst:Number(it.gst!=null&&it.gst!==""?it.gst:18)||0}; }
 function quoteReduction(o,n){
-  const oi=(o.items||[]).map(normLine), ni=(n.items||[]).map(normLine);
-  if(String(o.zone||"")!==String(n.zone||"")) return "the room can't be changed";
+  const real=it=>it&&(String(it.desc||"").trim()||String(it.price||"").trim());
+  const oi=(o.items||[]).filter(real).map(normLine), ni=(n.items||[]).filter(real).map(normLine);
+  if(String(o.zone||"").trim().toLowerCase()!==String(n.zone||"").trim().toLowerCase()) return "the room can't be changed";
   if((Number(n.hours)||0)<(Number(o.hours)||0)) return "the duration can't be shortened";
   if((Number(n.discount)||0)!==(Number(o.discount)||0)) return "the discount can't be changed";
   if(ni.length<oi.length) return "a line can't be removed";
@@ -1183,7 +1204,7 @@ function applyValueLock(){
   delete di.dataset.ceil;
   $("#valueLockNote").hidden=!L;
   if(!L) return;
-  const saved=(base.items||[]).map(normLine);
+  const saved=(base.items||[]).filter(it=>it&&(String(it.desc||"").trim()||String(it.price||"").trim())).map(normLine);
   $("#liBody").querySelectorAll(".li-row").forEach((row,i)=>{
     if(i>=saved.length) return;
     const sel=row.querySelector(".li-sel"); if(sel) sel.disabled=true;
@@ -1374,7 +1395,9 @@ async function saveQuote(silent){
   const q=collect(); if(!q.qno){ toast("No quote number"); return; }
   // All bookings originate from a quote, so the session date/time that makes
   // this a real booking (not just a draft) is required before it's saved.
-  if(!q.sessionDate || !q.sessionStart){
+  const stored0=editingKey && getQuotes().find(x=>x.qno===editingKey);
+  const legacyNoSession = stored0 && (!stored0.sessionDate || !stored0.sessionStart) && q.sessionDate===(stored0.sessionDate||"") && q.sessionStart===(stored0.sessionStart||"");
+  if((!q.sessionDate || !q.sessionStart) && !legacyNoSession){
     toast("Set a session date and start time before saving");
     (q.sessionDate ? $("#sessStart") : $("#sessDate")).focus();
     return;
@@ -1420,11 +1443,30 @@ async function saveQuote(silent){
   if(idx>=0) all[idx]=q; else all.push(q);
   setQuotes(all); editingKey=q.qno; syncPdfBtn(); syncLoadQuoteBtnLabel(); renderLoadQuotePanel();
   render(); // picks up the just-set curCreatedBy/curLastEditedBy in the footer
-  await pushQuotes();
+  const saved=await pushQuotes();
+  if(!saved){ if(getQuotes().some(x=>x.qno===q.qno)) loadQuote(q.qno); return; }
+  clearSaveError();
   applyValueLock();
   if(!silent) toast("Quote "+q.qno+" saved");
   if(leadLink && leadLink.id){ await linkQuoteToLead(leadLink.id, q.qno, q.status==='Confirmed'); }
+  // A shoot that's already happened only needs the schedule touched if its
+  // booking itself changed (an invoice number or GST detail doesn't).
+  const bookingChanged = !prev || ['sessionDate','sessionStart','zone','hours','status','clientStatus','cname'].some(k=>String(prev[k]??'')!==String(q[k]??''));
+  if(!q.sessionDate || !q.sessionStart) return;
+  if(q.sessionDate < localISO() && !bookingChanged) return;
   await syncToSchedule(q);
+}
+// Select a value even when it isn't one of the standard options (an older
+// quote's room or duration): a one-off option is added so the quote is shown,
+// and saved again, exactly as stored.
+function setSelectKeep(sel, v, emptyLabel, fmt){
+  sel.querySelectorAll('option[data-legacy]').forEach(o=>o.remove());
+  if(![...sel.options].some(o=>o.value===v)){
+    const o=document.createElement('option'); o.value=v; o.dataset.legacy="1";
+    o.textContent = v==="" ? emptyLabel : (fmt?fmt(v):v);
+    sel.appendChild(o);
+  }
+  sel.value=v;
 }
 function loadQuote(qno){
   const q=getQuotes().find(x=>x.qno===qno); if(!q) return;
@@ -1434,8 +1476,8 @@ function loadQuote(qno){
   $("#invoiceNo").value=q.invoiceNo||"";
   // Sales count from the invoice date; until one is set it is the quote date.
   $("#invoiceDate").value=q.invoiceDate||q.date||"";
-  $("#zone").value=ZONES.includes(q.zone)?q.zone:ZONES[0];
-  $("#hours").value=(q.hours&&+q.hours>=MIN_HOURS&&+q.hours<=MAX_HOURS)?q.hours:String(DEFAULT_HOURS);
+  setSelectKeep($("#zone"), ZONES.find(z=>z.toLowerCase()===String(q.zone||"").trim().toLowerCase()) || String(q.zone||""), "(not set)");
+  setSelectKeep($("#hours"), q.hours==null?"":String(q.hours), "(not set)", v=>`${v} Hours`);
   $("#cname").value=q.cname; $("#cphone").value=q.cphone||""; $("#cgst").value=q.cgst||""; $("#caddr").value=q.caddr; $("#terms").value=q.terms; $("#discountInp").value=q.discount?String(q.discount):"";
   $("#sessDate").value=q.sessionDate||""; $("#sessStart").value=q.sessionStart||""; curScheduleId=q.scheduleId||null; curScheduleConflict=!!q.scheduleConflict;
   updateSchedStatus(q.scheduleConflict ? "Schedule conflict — resolve and re-save to add this to the calendar" : null);
@@ -1564,7 +1606,7 @@ async function deleteQuote(qno){
   if(!IS_ADMIN) return;
   if(!confirm(`Delete quote ${qno}? This cannot be undone.`)) return;
   setQuotes(getQuotes().filter(q=>q.qno!==qno));
-  await pushQuotes();
+  if(!(await pushQuotes())){ renderLoadQuotePanel(); return; }
   toast(`Deleted ${qno}`);
   if(editingKey===qno) newQuote();
   renderLoadQuotePanel();
