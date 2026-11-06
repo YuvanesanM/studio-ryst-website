@@ -533,6 +533,8 @@ const $ = s => document.querySelector(s);
 const esc = s => (s||"").toString().replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c]));
 const inr = n => Number(n||0).toLocaleString("en-IN",{maximumFractionDigits:2});
 const money = n => "₹"+inr(n);
+// Rupees and paise, for GST and line amounts.
+const money2 = n => '₹' + (Number(n)||0).toLocaleString('en-IN',{minimumFractionDigits:2,maximumFractionDigits:2});
 // Max discount (% of pre-tax value) comes from Settings → Rate Card. It only
 // gates SETTING or RAISING a discount: a loaded quote keeps the % it was saved
 // with (discFloorPct), so lowering the limit later never re-prices old quotes.
@@ -690,32 +692,34 @@ function lineGst(it){ return lineTotal(it)*(parseFloat(it.gst)||0)/100; }
 // (taxable) value. Lines are rounded to the rupee and the last rupee of
 // rounding goes to the biggest line, so the lines always add up to the total.
 function quoteBreakup(q){
+  // Taxable value is whole rupees per line (the discount is spread across lines
+  // by value). GST is worked out to the paisa as two equal halves, so CGST and
+  // SGST always match; the total is rounded to the rupee with a round-off line.
   const its=(Array.isArray(q&&q.items)?q.items:[]).filter(it=>it&&(String(it.desc||'').trim()||String(it.price||'').trim()));
   const val=it=>(parseFloat(it.price)||0)*(parseFloat(it.qty)||0);
+  const p2=n=>Math.round((n+Number.EPSILON)*100)/100;
   const sub=its.reduce((s,it)=>s+val(it),0);
   const discount=Math.min(Math.max(parseFloat(q&&q.discount)||0,0),sub);
-  const rows=its.map(it=>{ const v=val(it), d=sub?discount*v/sub:0, r=parseFloat(it.gst)||0; return {it:it, value:v, rate:r, tx:v-d, gx:(v-d)*r/100}; });
-  const grand=Math.round(sub-discount+rows.reduce((s,x)=>s+x.gx,0));
+  const rows=its.map(it=>{ const v=val(it), d=sub?discount*v/sub:0, r=parseFloat(it.gst)||0; return {it:it, value:v, rate:r, tx:v-d}; });
   rows.forEach(x=>{ x.taxable=Math.floor(x.tx+1e-9); });
   let left=Math.round(sub-discount)-rows.reduce((s,x)=>s+x.taxable,0);
   rows.slice().sort((a,b)=>(b.tx-b.taxable)-(a.tx-a.taxable)).forEach(x=>{ if(left>0){ x.taxable++; left--; } });
-  rows.forEach(x=>{ x.discount=Math.round(x.value-x.taxable); x.gst=Math.round(x.gx); });
-  const off=grand-rows.reduce((s,x)=>s+x.taxable+x.gst,0);
-  if(off&&rows.length){ rows.reduce((a,b)=>b.gx>a.gx?b:a).gst+=off; }
-  rows.forEach(x=>{ x.amount=x.taxable+x.gst; });
-  return {rows:rows, sub:sub, discount:discount, taxable:rows.reduce((s,x)=>s+x.taxable,0), gst:rows.reduce((s,x)=>s+x.gst,0), grand:grand};
+  rows.forEach(x=>{ x.discount=Math.round(x.value-x.taxable); x.half=p2(x.taxable*x.rate/200); x.gst=p2(x.half*2); x.amount=p2(x.taxable+x.gst); });
+  const taxable=rows.reduce((s,x)=>s+x.taxable,0), gst=p2(rows.reduce((s,x)=>s+x.gst,0));
+  const exact=p2(taxable+gst), grand=Math.round(exact);
+  return {rows:rows, sub:sub, discount:discount, taxable:taxable, gst:gst, roundOff:p2(grand-exact), grand:grand};
 }
 // GST split for the totals: CGST + SGST (half each) when the client is in
 // Tamil Nadu (no GSTIN, or a 33… GSTIN), IGST when their GSTIN is from another
 // state. Grouped by rate from the per-line GST, so it adds up exactly.
 function gstSplit(b, cgstin){
   const inter=/^\d{2}/.test(cgstin||'') && String(cgstin).slice(0,2)!=='33';
-  const by={}; b.rows.forEach(x=>{ if(x.gst){ by[x.rate]=(by[x.rate]||0)+x.gst; } });
+  const by={}; b.rows.forEach(x=>{ if(x.gst){ by[x.rate]=Math.round(((by[x.rate]||0)+x.gst)*100)/100; } });
   const out=[];
   Object.keys(by).map(Number).sort((a,c)=>a-c).forEach(r=>{
     const g=by[r];
     if(inter) out.push(['IGST @ '+r+'%', g]);
-    else { const c=Math.round(g/2); out.push(['CGST @ '+(r/2)+'%', c], ['SGST @ '+(r/2)+'%', g-c]); }
+    else { const c=Math.round(g*50)/100; out.push(['CGST @ '+(r/2)+'%', c], ['SGST @ '+(r/2)+'%', c]); }
   });
   return out.length ? out : [['GST', 0]];
 }
@@ -724,7 +728,8 @@ function sumLinesHTML(b, cgstin, kind){
   const rows=[];
   if(b.discount>0) rows.push(['Value', money(b.sub)], ['Discount', '− '+money(b.discount)]);
   rows.push(['Taxable value', money(b.taxable)]);
-  gstSplit(b, cgstin).forEach(([l,v])=>rows.push([l, money(v)]));
+  gstSplit(b, cgstin).forEach(([l,v])=>rows.push([l, money2(v)]));
+  if(b.roundOff) rows.push(['Round off', (b.roundOff<0?'− ':'+ ')+money2(Math.abs(b.roundOff))]);
   return rows.map(([l,v])=> kind==='sline'
     ? `<div class="sline"><div class="sl">${l}</div><div class="sv">${v}</div></div>`
     : `<div class="trow"><span>${l}</span><span>${v}</span></div>`).join('');
@@ -742,8 +747,8 @@ function docRowsHTML(b, emptyText){
       <td class="num">${x.it.qty!==''?esc(x.it.qty):''}</td>
       ${b.discount>0?`<td class="amt">${x.discount?'− '+money(x.discount):'—'}</td>`:''}
       <td class="amt">${money(x.taxable)}</td>
-      <td class="amt">${money(x.gst)}<span class="gstp">@ ${x.rate}%</span></td>
-      <td class="amt">${money(x.amount)}</td></tr>`).join('');
+      <td class="amt">${money2(x.gst)}<span class="gstp">@ ${x.rate}%</span></td>
+      <td class="amt">${money2(x.amount)}</td></tr>`).join('');
 }
 function reqText(){ const z=$("#zone").value, h=parseInt($("#hours").value,10)||1; return `${z} Zone — ${h} ${h===1?"Hour":"Hours"}`; }
 function findCard(desc){ const d=(desc||"").trim().toLowerCase(); return settings.rateCard.find(c=>(c.desc||"").trim().toLowerCase()===d); }
@@ -1336,7 +1341,7 @@ function render(){
   $("#pSumLines").innerHTML=sumLinesHTML(b, $("#cgst").value.trim(), "sline");
   $("#pTot").textContent=money(b.grand);
   $("#mSub").textContent=money(b.taxable);
-  $("#mGst").textContent=money(b.gst);
+  $("#mGst").textContent=money2(b.gst);
   $("#mTot").textContent=money(b.grand);
 
   const terms=($("#terms").value||"").split("\n").map(t=>t.trim()).filter(Boolean);
