@@ -306,12 +306,22 @@ async function sendRequest(qno){
   render();
   // Full-array overwrite, same pattern used everywhere else this app writes
   // quotes back (login.html's WA reminders, quote.html's pushQuotes).
+  // Re-read the stored quotes and change only this one field, so a payment or
+  // edit saved elsewhere since this page loaded is never overwritten.
+  const stamp=q.feedbackSentAt;
   try{
-    await fetch(PROXY_URL+'/quotes', {
+    const gr=await fetch(PROXY_URL+'/quotes',{headers:{'X-Token':TOKEN}});
+    if(!gr.ok) throw new Error('read '+gr.status);
+    const fresh=await gr.json(); const list=Array.isArray(fresh.quotes)?fresh.quotes:[];
+    const fq=list.find(x=>x.qno===qno); if(!fq) throw new Error('quote not found');
+    fq.feedbackSentAt=stamp;
+    const pr=await fetch(PROXY_URL+'/quotes', {
       method:'PUT', headers:{'X-Token':TOKEN,'Content-Type':'application/json'},
-      body: JSON.stringify({version:1, quotes: QUOTES})
+      body: JSON.stringify({...fresh, version:fresh.version||1, quotes:list})
     });
-  }catch(e){ toast('Sent, but could not save the "sent" status — it may ask again next visit','err'); }
+    if(!pr.ok){ const d=await pr.json().catch(()=>({})); throw new Error(d.error||('HTTP '+pr.status)); }
+    QUOTES=list; render();
+  }catch(e){ toast('Sent, but the "sent" status was not saved ('+(e.message||'error')+') — it may ask again next visit','err'); }
 }
 
 async function copyFeedback(qno){
