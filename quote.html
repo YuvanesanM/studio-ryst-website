@@ -310,7 +310,7 @@
         </div>
         <div class="row2">
           <label class="f"><span>Session date <span style="color:#c0584b">*</span></span><input class="t" id="sessDate" type="date" required></label>
-          <label class="f"><span>Start time <span style="color:#c0584b">*</span></span><input class="t" id="sessStart" type="time" required></label>
+          <label class="f"><span>Start time <span style="font-weight:400;color:var(--muted2)">(puts it on the schedule)</span></span><input class="t" id="sessStart" type="time"></label>
         </div>
         <div style="display:flex;align-items:center;gap:10px;margin-top:2px;flex-wrap:wrap">
           <span id="schedStatus" style="font-size:12px;color:var(--muted2)"></span>
@@ -858,7 +858,7 @@ function updateSchedStatus(conflictText){
   const el=$("#schedStatus"); if(!el) return;
   if(conflictText){ el.textContent="⚠ "+conflictText; el.style.color="#c0584b"; return; }
   el.style.color="";
-  el.textContent = curScheduleId ? "✓ On the schedule" : "Added to the schedule automatically once confirmed";
+  el.textContent = curScheduleId ? "✓ On the schedule and TV display" : "Added to the schedule and TV once a date and start time are set";
 }
 
 /* ---------- PAYMENTS → Confirmed status ----------
@@ -948,14 +948,15 @@ async function removeFromSchedule(q){
     curScheduleId=null; curScheduleConflict=false; updateSchedStatus();
     const all=getQuotes(); const idx=all.findIndex(x=>x.qno===q.qno);
     if(idx>=0){ all[idx].scheduleId=null; all[idx].scheduleConflict=false; setQuotes(all); await pushQuotes(); }
-    toast("No payment on file — removed from the schedule");
+    toast("Removed from the schedule and TV display");
   }catch(e){ toast("Could not reach the schedule"); }
 }
 async function syncToSchedule(q){
-  if(!curScheduleId && q.status!=='Confirmed'){ updateSchedStatus(); return; }
-  // A booking exists only while the quote is paid and not declined (same rule
-  // as the Google Calendar sync) — otherwise take it back off the schedule.
-  if(curScheduleId && (q.status!=='Confirmed' || q.clientStatus==='Declined')){ await removeFromSchedule(q); return; }
+  // Any quote with a session date and start time is a scheduled shoot, paid
+  // or not (same rule as the Google Calendar sync); it comes off the schedule
+  // if the time is cleared or the client declines.
+  const scheduled = !!(q.sessionDate && q.sessionStart) && q.clientStatus!=='Declined';
+  if(!scheduled){ if(curScheduleId) await removeFromSchedule(q); else updateSchedStatus(); return; }
   try{
     const hours=parseInt($("#hours").value,10)||DEFAULT_HOURS;
     const end=addHoursTime(q.sessionStart, hours);
@@ -1004,7 +1005,7 @@ async function syncToSchedule(q){
     if(idx>=0){ all[idx].scheduleId=sid; all[idx].scheduleConflict=false; setQuotes(all); }
     await pushQuotes();
     if(leadLink && leadLink.id){ await linkLeadSchedule(leadLink.id, sid, q.sessionDate, q.sessionStart); }
-    if(wasNew) toast("Confirmed — added to schedule");
+    if(wasNew) toast("Added to the schedule and TV display");
   }catch(e){ toast("Could not reach the schedule"); updateSchedStatus(); }
 }
 
@@ -1395,11 +1396,13 @@ async function saveQuote(silent){
   const q=collect(); if(!q.qno){ toast("No quote number"); return; }
   // All bookings originate from a quote, so the session date/time that makes
   // this a real booking (not just a draft) is required before it's saved.
+  // A session date is required; the start time is optional — with one, the
+  // quote goes on the schedule, TV display and calendar straight away.
   const stored0=editingKey && getQuotes().find(x=>x.qno===editingKey);
-  const legacyNoSession = stored0 && (!stored0.sessionDate || !stored0.sessionStart) && q.sessionDate===(stored0.sessionDate||"") && q.sessionStart===(stored0.sessionStart||"");
-  if((!q.sessionDate || !q.sessionStart) && !legacyNoSession){
-    toast("Set a session date and start time before saving");
-    (q.sessionDate ? $("#sessStart") : $("#sessDate")).focus();
+  const legacyNoDate = stored0 && !stored0.sessionDate && !q.sessionDate;
+  if(!q.sessionDate && !legacyNoDate){
+    toast("Set a session date before saving");
+    $("#sessDate").focus();
     return;
   }
   // Refresh from the cloud right before writing so anything recorded
@@ -1452,7 +1455,7 @@ async function saveQuote(silent){
   // A shoot that's already happened only needs the schedule touched if its
   // booking itself changed (an invoice number or GST detail doesn't).
   const bookingChanged = !prev || ['sessionDate','sessionStart','zone','hours','status','clientStatus','cname'].some(k=>String(prev[k]??'')!==String(q[k]??''));
-  if(!q.sessionDate || !q.sessionStart) return;
+  if(!q.sessionStart && !curScheduleId) { updateSchedStatus(); return; }
   if(q.sessionDate < localISO() && !bookingChanged) return;
   await syncToSchedule(q);
 }
