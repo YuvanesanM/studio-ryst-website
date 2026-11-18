@@ -20,6 +20,8 @@ node .claude/skills/visual-qa/scripts/capture.mjs http://127.0.0.1:8765/play.htm
 ```
 Presets: `phone-sm` 320x640, `phone` 390x844, `tablet` 820x1180, `laptop` 1440x900, `tv720` 1280x720, `tv` 1920x1080, `tv4k` 3840x2160, or any `WxH`. Writes PNGs plus `report.json`, prints PASS/FAIL per size, exits 1 on failure.
 
+The TV text minimum defaults to 2.5vh; set a project's own with `--tv-min-vw 1.1` or `--tv-min-vh 2`.
+
 Other options: `--mock "**/game*=fixture.json"` to render a specific game state without the live server, `--block "**/googletagmanager.com/**"`, `--storage '{"ryst_proxy_token":"t"}'`, `--reduced-motion`, `--full` (full-page, non-TV), `--wait 1500`.
 
 **Compare before/after**

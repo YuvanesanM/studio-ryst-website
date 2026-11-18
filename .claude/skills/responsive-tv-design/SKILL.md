@@ -5,12 +5,13 @@ description: "Large-screen TV and projector interface design and its paired mobi
 
 # Responsive TV design
 
-The TV is read from 3 to 5 metres away, often outdoors near a pool, by people who never touch it. Design for distance, glare and glances.
+The TV is read from 3 to 8 metres away (sun loungers at the villa), outdoors in glare and at night, by people who never touch it. Design for distance, glare and glances.
 
 ## Context (inspect first)
 
 - **RYST PLAY / RYST 109A:** `display.html` is the pool-area TV; its header comments already state the rule "type sizes are set in vw/vh so they scale to whatever resolution". `play.html` is the phone controller.
 - **Studio RYST:** the lobby TV schedule display lives in the `signage` repo (`index.html`), shown on signage.ryst.in.
+- **Older browsers:** the villa LED wall runs an older Chromium. Write plain ES2017 (no `?.`, `??`, class fields) and give `inset`, `gap`, `clamp()`, `aspect-ratio` and `backdrop-filter` `@supports` fallbacks; `display.html` has a LEGACY-BROWSER FALLBACKS block to follow. Check 4:3 (1440x1080) as well as 16:9; narrower screens step the HUD down with `@media (max-aspect-ratio:3/2)`.
 - Brand: Deep Teal `#07333B` ground for TV, Warm Ivory `#F6F3EC` text, Champagne Gold `#D8B879` for highlights, Seafoam `#A9CFC5` secondary.
 
 ## Sizing rules (16:9, scale with the viewport)
@@ -26,7 +27,7 @@ Base everything on viewport units so 1280x720, 1920x1080 and 3840x2160 look iden
 | Hero numerals (timer, die) | 140px+ | 13vh+ |
 | Icons | 48px minimum | 4.5vh |
 
-Rule of thumb: text height should be at least 1/200 of viewing distance; at 4 m, nothing under ~25px at 1080p.
+Rule of thumb: text height should be at least 1/200 of viewing distance; at 4 m, nothing under ~25px at 1080p. RYST PLAY's pool screen documents its own minimums in `RYST-109A/.claude/skills/responsive-tv-design` (small labels about 1.1vw, body 1.4-1.6vw); follow those there.
 
 ## Layout
 
