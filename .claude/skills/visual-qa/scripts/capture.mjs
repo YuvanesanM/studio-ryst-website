@@ -15,6 +15,8 @@
 //   --storage <json>    JSON object written to localStorage before load
 //   --reduced-motion    emulate prefers-reduced-motion: reduce
 //   --distance          also save a 25%-scale copy of TV shots (approximates 4 m viewing)
+//   --tv-min-vh <n>     minimum TV text size as % of viewport height (default 2.5)
+//   --tv-min-vw <n>     or as % of viewport width (overrides --tv-min-vh), e.g. 1.1
 //
 // Checks reported per size: page errors, console errors, failed requests, horizontal
 // overflow, text smaller than the size's minimum (TV: 2.5vh), elements outside the
@@ -82,11 +84,11 @@ for (const s of sizes) {
   await page.waitForTimeout(+opt('wait', 800));
   await page.evaluate(() => document.fonts && document.fonts.ready).catch(() => {});
 
-  r.checks = await page.evaluate(({ kind }) => {
+  r.checks = await page.evaluate(({ kind, minVh, minVw }) => {
     const vw = innerWidth, vh = innerHeight, res = {};
     res.horizontalOverflowPx = Math.max(0, document.documentElement.scrollWidth - vw);
     res.verticalScroll = kind === 'tv' && document.documentElement.scrollHeight > vh + 1;
-    const minPx = kind === 'tv' ? vh * 0.025 : kind === 'phone' ? 12 : 11;
+    const minPx = kind === 'tv' ? (minVw ? vw * minVw / 100 : vh * minVh / 100) : kind === 'phone' ? 12 : 11;
     const visible = el => { const cs = getComputedStyle(el), b = el.getBoundingClientRect(); return cs.visibility !== 'hidden' && cs.display !== 'none' && +cs.opacity > 0.05 && b.width > 0 && b.height > 0 && b.bottom > 0 && b.top < vh * (kind === 'tv' ? 1 : 50); };
     const textEls = [...document.querySelectorAll('body *')].filter(el => [...el.childNodes].some(n => n.nodeType === 3 && n.textContent.trim().length > 1) && visible(el));
     res.smallText = textEls.filter(el => parseFloat(getComputedStyle(el).fontSize) < minPx - 0.5)
@@ -103,7 +105,7 @@ for (const s of sizes) {
     }
     res.brokenImages = [...document.images].filter(i => i.complete && i.naturalWidth === 0 && visible(i)).map(i => i.currentSrc || i.src).slice(0, 10);
     return res;
-  }, { kind: s.kind });
+  }, { kind: s.kind, minVh: parseFloat(opt('tv-min-vh', '2.5')), minVw: opt('tv-min-vw', null) ? parseFloat(opt('tv-min-vw')) : null });
 
   const file = path.join(out, `${s.name}-${s.w}x${s.h}.png`);
   await page.screenshot({ path: file, fullPage: flag('full') && s.kind !== 'tv' });

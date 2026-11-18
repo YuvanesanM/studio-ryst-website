@@ -22,13 +22,13 @@ The identity is **premium coastal resort meets modern arcade**: calm, sun-washed
 | Warm Ivory | `#F6F3EC` | Light ground on phones, text on teal |
 | Seafoam | `#A9CFC5` | Secondary surfaces, quiet states, dividers on teal |
 
-Derive tints and shades from these; never introduce an unrelated hue for chrome. Player and game colours (Ludo red/green/yellow/blue, card faces) are game semantics, not brand chrome: tune them to sit in the palette (slightly desaturated, warmed toward ivory) rather than using pure primaries.
+These are the target brand values. The current RYST PLAY code uses close earlier values (teal `#06202a`-`#0f4656`, gold `#e2bf73`, ivory `#f4efe4`, seafoam `#7fe3d4`); move screens to the target tokens as they are redesigned, through CSS custom properties, not one hex at a time. Derive tints and shades from these; never introduce an unrelated hue for chrome. Player and game colours (Ludo red/green/yellow/blue, card faces) are game semantics, not brand chrome: tune them to sit in the palette (slightly desaturated, warmed toward ivory) rather than using pure primaries.
 
 Contrast pairs that pass WCAG AA for body text: Ivory on Deep Teal, Deep Teal on Ivory, Deep Teal on Seafoam. Gold on Deep Teal passes for large text only (use it for display numerals and headings, not paragraphs). Gold on Ivory fails - never set gold text on ivory.
 
 ### Typography already in the project
 
-Self-hosted in `assets/fonts/`: **Cormorant Garamond** (serif, 600 and italic) for display and the resort voice; **DM Sans** (variable) for UI, numbers and instructions. Keep this pairing unless the direction document says otherwise. Use tabular figures (`font-variant-numeric: tabular-nums`) for scores and timers.
+Self-hosted in `assets/fonts/`: **DM Sans** (variable, 700-800 for UI) for interface text, titles in games and **every number**; **Cormorant Garamond** (600 and italic) only as a brand accent such as "RYST *Play*" or a party script. Never set scores or timers in Cormorant: its numerals read as letters at a distance. Use tabular figures (`font-variant-numeric: tabular-nums`) for scores and timers.
 
 ## Workflow
 
@@ -51,7 +51,7 @@ Self-hosted in `assets/fonts/`: **Cormorant Garamond** (serif, 600 and italic) f
 - **Coastal material language.** Sand grain, water caustics, linen, brushed brass, sun-faded paint. Subtle texture over flat fills on large grounds; flat and crisp for game pieces.
 - **Arcade energy is earned.** Saturation, glow and particles are reserved for play moments: a roll, a capture, a win. The idle screen is calm.
 - **One illustration hand.** Match the existing beach art: rounded geometric shapes, 2-3 tones per object, no outlines thicker than ~3% of the object, light from top-left.
-- **Avoid AI-slop tells.** No purple-blue gradients, no glassmorphism stacks, no generic emoji as final art, no centred-everything layouts, no default Inter-plus-gradient look.
+- **Avoid AI-slop tells.** No purple-blue gradients, no stacked layers of glass, no emoji as icons or final art (draw it: inline SVG, canvas or three.js), no centred-everything layouts, no default Inter-plus-gradient look. RYST PLAY does use single glass panels with a 1px light edge over teal; one layer, deliberately.
 
 ## Quality standards
 

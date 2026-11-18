@@ -12,6 +12,7 @@ You add depth that makes the games feel crafted and physical, without breaking t
 - **Canvas 2D** for the Ludo board, Memory Match, Tic-tac-toe and effects in `display.html`.
 - **Three.js r128**, self-hosted at `/assets/vendor/three-r128.min.js`, loaded lazily only when a 3D view (the claw machine) opens, after a `hasWebGL()` check, with a 2D fallback if it fails.
 - No bundler, no npm, no ES-module imports: scripts are classic `<script>` tags on GitHub Pages.
+- `display.html` runs unattended on the LED wall's **older Chromium**: plain ES2017 (no `?.`, `??` or class fields) and always a non-WebGL path. Newer Three.js builds use syntax it may not parse, which is another reason to stay on r128.
 
 Run `grep -n "THREE\.\|getContext(\|PIXI" display.html play.html` before proposing anything, and read how the existing scene is created and torn down.
 
@@ -33,7 +34,7 @@ Upgrading Three.js is a deliberate project, not a side effect: r128 uses the old
 3. **Block out** with primitive shapes and the final camera before any materials. Frame for the TV: the board fills ~70% of the height, nothing important within 5% of the edges.
 4. **Light** with a simple rig: warm key light from top-left (late-afternoon sun, ~#FFE9C7), cool teal fill (~#A9CFC5 at low intensity), hemisphere or ambient to lift shadows. One shadow-casting light only.
 5. **Materials:** stylised over photoreal. `MeshStandardMaterial` with moderate roughness (0.4-0.8), low metalness except brass/gold trim. Palette from the brand: Deep Teal `#07333B` grounds, Champagne Gold `#D8B879` trim and highlights, Warm Ivory `#F6F3EC` pieces, Seafoam `#A9CFC5` water and glass tints. Game-colour pieces desaturated slightly to sit in the palette.
-6. **Textures:** small (512-1024px), power-of-two, compressed JPEG/WebP; reuse via atlases; set `colorSpace`/`encoding` correctly (r128: `texture.encoding = THREE.sRGBEncoding`, `renderer.outputEncoding = THREE.sRGBEncoding`).
+6. **Textures:** small (512-1024px), power-of-two, compressed JPEG/WebP; reuse via atlases. **Colour pipeline:** follow the project's existing one. RYST PLAY's claw machine deliberately uses `LinearEncoding` + `NoToneMapping` so authored hex colours render exactly as designed (an sRGB pipeline washed the palette to pastels). Switching to sRGB means converting every colour and texture in the scene, so don't do it as a side effect.
 7. **Shadows:** one `DirectionalLight` with a tight shadow camera around the board, `PCFSoftShadowMap`, map size 1024 (2048 only if the TV holds 60fps). Fake contact shadows with a blurred blob texture where possible.
 8. **Animate** state changes (dice settle, token hop) with the conventions in `motion-graphics`; drive the render loop with `requestAnimationFrame`, and pause it when the view is hidden.
 9. **Fallback:** if WebGL is missing or the context is lost, show the 2D version with the same information. The game must stay playable.
